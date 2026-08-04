@@ -103,13 +103,9 @@ export function MainView(props) {
   };
 
 
-  //Lógica para regresar al usuario al login si no está autorizado...
-
-  useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      navigate("/login")
-    };
-  }, [isLoggedIn]);
+  // El listado es público: sin token se puede navegar, pero las acciones
+  // (publicar, guardar requerimientos, ver solo lo mío) requieren sesión
+  const haySesion = Boolean(localStorage.getItem('token'));
 
 // Lógica para filtrar las viviendas del usuario logueado
   const handleMyHousingSwitch = () => {
@@ -118,7 +114,7 @@ export function MainView(props) {
   };
 
   const handleMyRequestsSwitch = () => {
-    setMyRequests((prevValue) => !prevValue);
+    setMyRequestsSwitch((prevValue) => !prevValue);
   };
 
 
@@ -191,24 +187,26 @@ export function MainView(props) {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <FormControlLabel
-            style={{ marginTop: "-30px", marginBottom: "5px", padding: 0, justifyContent: "end", width: '100%' }}
-            control={
-              <Switch
-                checked={myHousingSwitch}
-                onChange={handleMyHousingSwitch}
-                color="primary"
-              />
-            }
-            label="Mostrar sólo mis propiedades"
-          />
-          
+          {haySesion && (
+            <FormControlLabel
+              style={{ marginTop: "-30px", marginBottom: "5px", padding: 0, justifyContent: "end", width: '100%' }}
+              control={
+                <Switch
+                  checked={myHousingSwitch}
+                  onChange={handleMyHousingSwitch}
+                  color="primary"
+                />
+              }
+              label="Mostrar sólo mis propiedades"
+            />
+          )}
+
           <HousingList myHousingSwitch={myHousingSwitch}/>
 
           <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
             <Fab
               color="primary"
-              onClick={() => navigate("/addhousing")}
+              onClick={() => navigate(haySesion ? "/addhousing" : "/login")}
               aria-label="add"
             >
               <AddIcon />
