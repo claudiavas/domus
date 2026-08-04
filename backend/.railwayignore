@@ -1,0 +1,3 @@
+node_modules
+verde-backend.git
+.env.local
