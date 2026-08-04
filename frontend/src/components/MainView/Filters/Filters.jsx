@@ -5,14 +5,21 @@ import HousingContextFilter from "../../FilterHousing/HousingContextFilter";
 import { AuthContext } from "../../Contexts/AuthContext";
 import { addRequest } from "../../apiService/apiService";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Filters(props) {
 
   const { resetFilters, room, baths, meter, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter);
   const { payload } = useContext(AuthContext);
   const [feedback, setFeedback] = useState(null); // { tipo, mensaje }
+  const navigate = useNavigate();
 
   const guardarRequerimiento = async () => {
+    // Guardar requerimientos requiere sesión: el listado es público
+    if (!payload?._id) {
+      navigate("/login");
+      return;
+    }
     try {
       await addRequest({
         userId: payload?._id,
@@ -52,58 +59,32 @@ function Filters(props) {
   return (
 
     <div>
+      {/* Cabecera del panel en flujo normal (sticky): funciona igual en el
+          Drawer permanente de escritorio y en el temporal de móvil */}
       <Box sx={{
-        position: 'fixed',
-        left: '0px',
-        top: '0px',
-        zIndex: '9998',
-        backgroundColor: '#ffffff', // Fondo blanco
-        padding: '0px',
-        width: '312px',
-        height: '100px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 2,
+        backgroundColor: '#ffffff',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-
+        gap: 1,
+        py: 2,
+        borderBottom: '1px solid #eee',
       }}>
-        <Button variant="contained" color="primary" onClick={guardarRequerimiento} style={{ position: 'relative' }}>
+        <Button variant="contained" color="primary" onClick={guardarRequerimiento}>
           Guardar Requerimiento
         </Button>
+        <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" sx={{ border: '1px solid #ddd' }}>
+          <FilterAltOffIcon fontSize="small" />
+        </IconButton>
       </Box>
 
       <Snackbar open={!!feedback} autoHideDuration={4000} onClose={() => setFeedback(null)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert severity={feedback?.tipo || "success"} onClose={() => setFeedback(null)}>{feedback?.mensaje}</Alert>
       </Snackbar>
 
-      <Box
-        sx={{
-          position: 'fixed',
-          left: '270px',
-          bottom: '20px',
-          zIndex: '9999',
-        }}
-      >
-        <Fab
-          color="action"
-          aria-label="limpiar filtros"
-          sx={{
-            width: '30px', // Ajusta el ancho del botón
-            height: '30px', // Ajusta el alto del botón
-          }}
-        >
-          <IconButton
-            aria-label="Limpiar Filtros"
-            sx={{
-              fontSize: '14px', // Ajusta el tamaño del ícono
-            }}
-            onClick={resetFilters} // Mueve el evento onClick aquí
-          >
-            <FilterAltOffIcon />
-          </IconButton>
-        </Fab>
-      </Box>
-
-      <Toolbar />
       <h3 style={{ marginLeft: '1em' }}>Ubicación</h3>
       <LocationFilter />
       <Divider />
