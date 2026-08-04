@@ -16,6 +16,7 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 - **Publicación de inmuebles** con subida de imágenes a Cloudinary
 - **Autenticación JWT** con registro, login, recuperación de contraseña por email y perfiles con avatar
 - **Contacto directo** con el anunciante por WhatsApp, teléfono o email
+- **Tests de integración** de la API con Jest + Supertest sobre MongoDB en memoria
 
 ## Stack
 
@@ -67,6 +68,32 @@ cd frontend && railway up --ci   # servicio domus-frontend
 ```
 
 Variables de entorno en Railway: `MONGO_URL` (referencia al servicio MongoDB), `JWT_SECRET`, `FRONTEND_URL` y `BREVO_APIKEY` en el backend; `VITE_BACKEND_URL` en el frontend.
+
+## Tests
+
+La API tiene tests de integración con **Jest + Supertest** que corren contra una **MongoDB en memoria** (no tocan datos reales): registro y login con JWT, alta y filtrado de viviendas, y requerimientos.
+
+```bash
+cd backend
+npm test
+```
+
+```text
+Usuarios: registro y login
+  ✓ el registro devuelve 201 y un token JWT
+  ✓ no permite registrar dos veces el mismo email
+  ✓ el login con credenciales correctas devuelve token y datos del usuario
+  ✓ el login con password incorrecto devuelve 400
+Viviendas
+  ✓ sin viviendas, el listado devuelve 200 con array vacío
+  ✓ crear una vivienda y recuperarla con el filtro de activas
+  ✓ el filtro por status no devuelve viviendas de otro estado
+Requerimientos
+  ✓ sin requerimientos, el listado devuelve 200 con array vacío
+  ✓ crear un requerimiento y verlo en el listado
+
+Tests: 9 passed, 9 total
+```
 
 ## Datos de demostración
 
