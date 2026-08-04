@@ -22,7 +22,9 @@ const App = () => {
 return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage/>}></Route>
+        {/* El listado es público: el login solo hace falta para publicar o guardar */}
+        <Route path="/" element={<MainView/>}></Route>
+        <Route path="/home" element={<HomePage/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/housinglist" element={<HousingList/>}></Route>

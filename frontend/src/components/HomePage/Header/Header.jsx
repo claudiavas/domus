@@ -24,7 +24,7 @@ export const Header = ({component}) => {
     setAnchorEl(null);
   };
 
-  const isMainView = location.pathname === '/mainview';
+  const isMainView = location.pathname === '/mainview' || location.pathname === '/';
 
   // Lógica para cerrar sesión...
 
@@ -33,9 +33,7 @@ export const Header = ({component}) => {
   const logout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate("/login")
-    console.log("isLoggedIn en MainView:", isLoggedIn)
-    console.log("logout ejecutándose")
+    navigate("/") // el listado es público: al salir se sigue navegando
   };
 
 
@@ -114,20 +112,34 @@ export const Header = ({component}) => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
 
-          <MenuItem onClick={() => (
-            navigate("/userprofile")
-          )}>
-            <Avatar sx={{ width: 32, height: 32 }}>
-              {/* {`${profile.name.charAt(0)}${profile.surname.charAt(0)}`} */}
-            </Avatar> Mi perfil
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={logout}>
-            <ListItemIcon>
-              <LogoutIcon fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
+          {isLoggedIn ? (
+            <div>
+              <MenuItem onClick={() => (
+                navigate("/userprofile")
+              )}>
+                <Avatar sx={{ width: 32, height: 32 }} src={profile.profilePicture} /> Mi perfil
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={logout}>
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                Cerrar sesión
+              </MenuItem>
+            </div>
+          ) : (
+            <div>
+              <MenuItem onClick={() => navigate("/login")}>
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" style={{ transform: 'rotate(180deg)' }} />
+                </ListItemIcon>
+                Iniciar sesión
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/register")}>
+                <Avatar sx={{ width: 32, height: 32 }} /> Registrarse
+              </MenuItem>
+            </div>
+          )}
         </Menu>
       </React.Fragment>
     </Container>

@@ -56,19 +56,22 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
       sx={{
         flexGrow: 3,
         display: 'flex',
+        // En móvil la tarjeta se apila en columna; en escritorio, en fila
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: { xs: '10px', md: 0 },
         padding: 0,
-        margin: '-5px 15px 20px -20px',
-        height: '230px'
+        margin: { xs: '0 0 20px 0', md: '-5px 15px 20px -20px' },
+        height: { xs: 'auto', md: '230px' },
       }}
     >
-      <span style={{ flex: '1 0 39%' }}>
+      <Box sx={{ flex: { md: '1 0 39%' }, width: { xs: '100%', md: 'auto' } }}>
         {/* LEFT SIDE */}
         <Card style={{ height: 230 }}>
           <PhotoCarousel showThumbs={showThumbsValue} images={images} style={{ height: '100%' }} />
         </Card>
-      </span>
+      </Box>
 
-      <span style={{ flex: '1 0 45%', marginLeft: '10px', marginRight: '10px', padding: 0 }}>
+      <Box component="span" sx={{ flex: { md: '1 0 45%' }, mx: { md: '10px' }, p: 0 }}>
         {/* CENTER */}
         <span style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {/* TOP, CENTER */}
@@ -116,17 +119,25 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
           <Card style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '0px', marginLeft: '5px', padding: "4px" }}>
               <h4 style={{ margin: '0px', padding: 0, color: "#1976d2", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
-                {formattedPrice} {currencySymbol}  <div>precio/m2: {precioxm2} {currencySymbol} </div>
+                {/* En venta: precio total + €/m². En alquiler: €/mes. Vacacional: €/semana */}
+                {transaction === 'sale' ? (
+                  <>
+                    {formattedPrice} {currencySymbol}
+                    <div>precio/m2: {precioxm2} {currencySymbol}</div>
+                  </>
+                ) : (
+                  <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
+                )}
                 <Button onClick={() => navigate(`/housingdetails/${_id}`)} color="primary" variant="outlined">Ver Más</Button>
               </h4>
             </div>
           </Card>
         </span>
-      </span>
+      </Box>
 
-      <span>
+      <Box component="span" sx={{ width: { xs: '100%', md: 'auto' } }}>
         {/* RIGHT */}
-        <Card style={{ padding: "15px 3px 5px 3px", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: "150px"}}>
+        <Card sx={{ padding: "15px 3px 5px 3px", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: { xs: '100%', md: '150px' } }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
             {user.realEstateLogo && showRealEstateLogo && user.profilePicture ? (
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -188,7 +199,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
           </div>
 
         </Card>
-      </span>
+      </Box>
     </Box >
   )
 }
