@@ -78,7 +78,12 @@ export const getProfile = async (_id) => {
 export const getActiveRequest = async () => {
   const {data} = await axios.get(`${BackendUrl}/api/request`);
   return data;
-} 
+}
+
+export const addRequest = async (body) => {
+  const { data } = await axios.post(`${BackendUrl}/api/request`, body);
+  return data;
+}
 
 export const updateRequest = async (_id, body) => {
   const { data } = await axios.put(`${BackendUrl}/api/request/${_id}`, body);
