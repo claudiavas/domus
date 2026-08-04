@@ -1,0 +1,66 @@
+{
+    "housing": {
+        "type": {
+            "apartment": "piso",
+            "penthouse": "ático",
+            "duplex": "duplex",
+            "house": "casa",
+            "chalet": "chalet",
+            "other": "otro"
+        },
+        "transaction": {
+            "sale": "venta",
+            "rent": "alquiler",
+            "vacation_rentals": "alquiler vacacional"
+        },
+        "floorLevel": {
+            "Top_floor": "último piso",
+            "Intermediate_floor": "piso intermedio",
+            "Ground_floor": "bajo",
+            "top_floor": "último piso",
+            "intermediate_floor": "piso intermedio",
+            "ground_floor": "bajo"
+        },
+        "facing": {
+            "North": "norte",
+            "South": "sur",
+            "East": "este",
+            "West": "oeste",
+            "north": "norte",
+            "south": "sur",
+            "east": "este",
+            "west": "oeste"
+        },
+        "propertyAge": {
+            "New": "nuevo",
+            "Up_to_5 years": "hasta 5 años",
+            "6_to_10 years": "6 a 10 años",
+            "11_to_20 years": "11 a 20 años",
+            "More_than_20 years": "más de 20 años",
+            "new": "nuevo",
+            "up_to_5 years": "hasta 5 años"
+        },
+        "condition": {
+            "new": "nuevo",
+            "good_condition": "buen estado",
+            "to_renovate": "a reformar"
+        },
+        "furnished": {
+            "unfurnished": "sin amueblar",
+            "semifurnished": "semiamueblado",
+            "furnished": "amueblado"
+        },
+        "kitchenEquipment": {
+            "standard_equipment": "equipamiento estandar",
+            "semi_equipped": "semi equipado",
+            "fully_equipped": "totalmente equipado"
+        },
+        "status": {
+            "active": "activo",
+            "selled": "vendido",
+            "rented": "alquilado",
+            "inactive": "inactivo",
+            "deleted": "eliminado"
+        }
+    }
+}
