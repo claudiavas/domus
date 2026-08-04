@@ -70,11 +70,11 @@ const deleteHouse = async (req, res, next) => {
 // Permanent Delete house 
 const permanentDeleteHouse = async (req, res) => {
   try {
-    const housingId = req.param.housingId;
+    const housingId = req.params.houseId;
     const housing = await  Housing.findByIdAndDelete(housingId);
 
     if (!housing) {
-      return res.status.json(404).json({msg: 'No se encontro la vivienda'});
+      return res.status(404).json({msg: 'No se encontro la vivienda'});
     }
     res.status(200).json({msg: 'La vivienda ha sido eliminada exitosamente'});
   } catch ( error ) {

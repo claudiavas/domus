@@ -22,9 +22,7 @@ const getRequest = async (req, res) => {
         const requests = await Request.find(filter)
           .populate("user");
           console.log('array de request', requests);
-      if (requests.length === 0) {
-        return res.status(400).json({ msg: 'No se han encontrado solicitudes' });
-      }
+      // Lista vacía no es un error: el frontend itera sobre el array
       return res.status(200).json(requests);
     }
   } catch (error) {
