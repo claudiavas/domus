@@ -7,6 +7,7 @@ import Slider from '@mui/material/Slider';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
 import FormLabel from '@mui/material/FormLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -357,7 +358,6 @@ export function LocationFilter() {
         </Select>
       </FormControl>
 
-      <br></br><br></br>
 
       <FormControl style={{ width: '90%' }}>
         <InputLabel id="municipality-label">Municipio*</InputLabel>
@@ -376,7 +376,6 @@ export function LocationFilter() {
         </Select>
       </FormControl>
 
-      <br></br><br></br>
 
       <FormControl style={{ width: '90%' }}>
         <InputLabel id="population-label">Población*</InputLabel>
@@ -395,7 +394,6 @@ export function LocationFilter() {
         </Select>
       </FormControl>
 
-      <br></br><br></br>
 
       <FormControl style={{ width: '90%' }}>
         <InputLabel id="neighborhood-label">Barrio*</InputLabel>
@@ -414,7 +412,6 @@ export function LocationFilter() {
         </Select>
       </FormControl>
 
-      <br></br><br></br>
     </div>
   );
 }
@@ -439,24 +436,15 @@ export function PriceFilterMin() {
 
   return (
     
-    <FormControl sx={{ m: 1, minWidth: 120, marginLeft:'1em' }} size="small">
-      <InputLabel id="demo-select-small-label">Precio Minimo</InputLabel>
-      <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
-        value={minPrice}
-        label="Precio minimo"
-        onChange={handleChangeMinPrice}
-      >
-        <MenuItem value={1000}>1000</MenuItem>
-        <MenuItem value={10000}>10000</MenuItem>
-        <MenuItem value={20000}>20000</MenuItem>
-        <MenuItem value={40000}>40000</MenuItem>
-        <MenuItem value={150000}>150000</MenuItem>
-        <MenuItem value={500000}>500000</MenuItem>
-
-      </Select>
-    </FormControl>
+    <TextField
+      size="small"
+      type="number"
+      label="Mínimo"
+      value={minPrice}
+      onChange={handleChangeMinPrice}
+      InputProps={{ endAdornment: <InputAdornment position="end">€</InputAdornment> }}
+      sx={{ width: '43%', ml: '1em' }}
+    />
 
   );
 
@@ -474,24 +462,15 @@ export function PriceFilterMax() {
 
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120, marginLeft:'1em' }} size="small">
-      <InputLabel id="demo-select-small-label">Precio Maximo</InputLabel>
-      <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
-        value={maxPrice}
-        label="Precio maximo"
-        onChange={handleChangeMaxPrice}
-      >
-        <MenuItem value={1000}>1000</MenuItem>
-        <MenuItem value={10000}>10000</MenuItem>
-        <MenuItem value={20000}>20000</MenuItem>
-        <MenuItem value={40000}>40000</MenuItem>
-        <MenuItem value={150000}>150000</MenuItem>
-        <MenuItem value={500000}>500000</MenuItem>
-
-      </Select>
-    </FormControl>
+    <TextField
+      size="small"
+      type="number"
+      label="Máximo"
+      value={maxPrice}
+      onChange={handleChangeMaxPrice}
+      InputProps={{ endAdornment: <InputAdornment position="end">€</InputAdornment> }}
+      sx={{ width: '43%', ml: '0.5em' }}
+    />
 
   );
 
@@ -544,7 +523,7 @@ export function RoomFilter() {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 150, marginLeft:'1em' }} size="small">
+    <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
       <InputLabel id="demo-select-small-label">Habitaciones</InputLabel>
       <Select
         labelId="demo-select-small-label"
@@ -554,21 +533,12 @@ export function RoomFilter() {
         onChange={handleChangeRooms}
       >
 
-        <MenuItem value={1}>1</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={4}>4</MenuItem>
-        <MenuItem value={5}>5</MenuItem>
-        <MenuItem value={6}>6</MenuItem>
-        <MenuItem value={7}>7</MenuItem>
-        <MenuItem value={8}>8</MenuItem>
-        <MenuItem value={9}>9</MenuItem>
-        <MenuItem value={10}>10</MenuItem>
-        <MenuItem value={11}>11</MenuItem>
-        <MenuItem value={12}>12</MenuItem>
-        <MenuItem value={13}>13</MenuItem>
-        <MenuItem value={14}>14</MenuItem>
-        <MenuItem value={15}>15</MenuItem>
+        <MenuItem value={1}>1+</MenuItem>
+        <MenuItem value={2}>2+</MenuItem>
+        <MenuItem value={3}>3+</MenuItem>
+        <MenuItem value={4}>4+</MenuItem>
+        <MenuItem value={5}>5+</MenuItem>
+        <MenuItem value={6}>6+</MenuItem>
 
       </Select>
     </FormControl>
@@ -588,7 +558,7 @@ export function BathFilter() {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 90 }} size="small">
+    <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
       <InputLabel id="demo-select-small-label">Baños</InputLabel>
       <Select
         labelId="demo-select-small-label"
@@ -598,11 +568,11 @@ export function BathFilter() {
         onChange={handleChangeBaths}
       >
 
-        <MenuItem value={1}>1</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={4}>4</MenuItem>
-        <MenuItem value={5}>5</MenuItem>
+        <MenuItem value={1}>1+</MenuItem>
+        <MenuItem value={2}>2+</MenuItem>
+        <MenuItem value={3}>3+</MenuItem>
+        <MenuItem value={4}>4+</MenuItem>
+        <MenuItem value={5}>5+</MenuItem>
 
       </Select>
     </FormControl>
@@ -619,7 +589,7 @@ export function GaragesFilter() {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 90, marginLeft:'1em' }} size="small">
+    <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
       <InputLabel id="demo-select-small-label">Garaje</InputLabel>
       <Select
         labelId="demo-select-small-label"
@@ -629,11 +599,9 @@ export function GaragesFilter() {
         onChange={handleChangeGarage}
       >
 
-        <MenuItem value={1}>1</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={4}>4</MenuItem>
-        <MenuItem value={5}>5</MenuItem>
+        <MenuItem value={1}>1+</MenuItem>
+        <MenuItem value={2}>2+</MenuItem>
+        <MenuItem value={3}>3+</MenuItem>
 
       </Select>
     </FormControl>

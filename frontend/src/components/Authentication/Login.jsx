@@ -63,9 +63,7 @@ export function Login() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
             <Typography component="h1" variant="h5">
               Ingresa a Domus
             </Typography>

@@ -20,12 +20,12 @@ export function HousingList({myHousingSwitch}) {
   
     // Aplicar el filtro de habitaciones y metros cuadrados
     const myHousingFilter = myHousingSwitch ? house.user._id === profile._id : true;
-    const cumpleFiltroHabitaciones = room ? house.rooms === parseInt(room) : true;
+    const cumpleFiltroHabitaciones = room ? house.rooms >= parseInt(room) : true;
     const cumpleFiltroMetrosCuadrados = house.squareMeters >= meter;
-    const cumpleFiltroBaths = baths ? house.baths === parseInt(baths) : true;
-    const cumpleFiltroGarage = garage ? house.garages === parseInt(garage) : true;
-    const cumpleFiltroMinPrice = house.price >= minPrice;
-    const cumpleFiltroMaxPrice = house.price <= maxPrice;
+    const cumpleFiltroBaths = baths ? house.baths >= parseInt(baths) : true;
+    const cumpleFiltroGarage = garage ? house.garages >= parseInt(garage) : true;
+    const cumpleFiltroMinPrice = minPrice ? house.price >= Number(minPrice) : true;
+    const cumpleFiltroMaxPrice = maxPrice ? house.price <= Number(maxPrice) : true;
     // Los nombres del modelo de vivienda difieren de los del estado de checkboxes
     const cumpleFiltroCheckbox =  (!checkbox.closet || house.closets) &&
     (!checkbox.air_condicioned || house.airConditioned) &&
@@ -37,10 +37,10 @@ export function HousingList({myHousingSwitch}) {
     (!checkbox.terrace || house.terrace) &&
     (!checkbox.storage || house.storage) &&
     (!checkbox.accessible || house.accessible);
-    const cumpleFiltroProvince = province ? (house.province.CPRO === province.CPRO) : true;
-    const cumpleFiltroMunicipality = municipality ? (house.municipality.CMUM === municipality.CMUM) : true;
-    const cumpleFiltroNeighborhood = neighborhood ? (house.neighborhood.NNUCLE50 === neighborhood.NNUCLE50) : true;
-    const cumpleFiltroPopulation = population ? (house.population.CUN === population.CUN) : true;
+    const cumpleFiltroProvince = province ? (house.province?.CPRO === province.CPRO) : true;
+    const cumpleFiltroMunicipality = municipality ? (house.municipality?.CMUM === municipality.CMUM) : true;
+    const cumpleFiltroNeighborhood = neighborhood ? (house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50) : true;
+    const cumpleFiltroPopulation = population ? (house.population?.CUN === population.CUN) : true;
     
 
     return myHousingFilter  && cumpleFiltroHabitaciones &&  cumpleFiltroMetrosCuadrados && cumpleFiltroBaths && cumpleFiltroGarage && cumpleFiltroMinPrice  && cumpleFiltroMaxPrice && cumpleFiltroCheckbox && cumpleFiltroProvince && cumpleFiltroMunicipality &&cumpleFiltroPopulation && cumpleFiltroNeighborhood  ;
@@ -81,6 +81,9 @@ export function HousingList({myHousingSwitch}) {
           furnished={house.furnished}
           garages={house.garages}
           images={house.images}
+          pool={house.pool}
+          terrace={house.terrace}
+          garden={house.garden}
           showRealEstateLogo={house.showRealEstateLogo}
           user={house.user}
           userId={house.user._id}

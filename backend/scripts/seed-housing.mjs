@@ -66,13 +66,26 @@ async function geo(path) {
   return j.data || [];
 }
 
+const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+
 async function loadGeo() {
   const provinces = await geo('provincias?');
   const provByCpro = Object.fromEntries(provinces.map(p => [p.CPRO, p]));
+  // capital de cada provincia: municipio homónimo o, si no, el primero
+  const targets = [...CITIES];
+  for (const prov of provinces) {
+    const munis = await geo(`municipios?CPRO=${prov.CPRO}`);
+    if (!munis.length) continue;
+    const cap = munis.find(m => norm(m.DMUN50) === norm(prov.PRO))
+      || munis.find(m => norm(prov.PRO).includes(norm(m.DMUN50)))
+      || munis[0];
+    if (!targets.some(t => t.cpro === prov.CPRO && t.cmum === cap.CMUM)) {
+      targets.push({ cpro: prov.CPRO, cmum: cap.CMUM, peso: 1, _muni: cap });
+    }
+  }
   const out = [];
-  for (const c of CITIES) {
-    const munis = await geo(`municipios?CPRO=${c.cpro}`);
-    const muni = munis.find(m => m.CMUM === c.cmum);
+  for (const c of targets) {
+    const muni = c._muni || (await geo(`municipios?CPRO=${c.cpro}`)).find(m => m.CMUM === c.cmum);
     if (!muni) { console.log(`⚠️ municipio no encontrado ${c.cpro}/${c.cmum}`); continue; }
     const pobs = await geo(`poblaciones?CPRO=${c.cpro}&CMUM=${c.cmum}`);
     const pob = pobs[0] || {};
@@ -231,10 +244,13 @@ userIds.push(CLAUDIA_ID); // Claudia también publica alguna
 console.log('4/5 Borrando viviendas anteriores...');
 await wipeHousing();
 
-console.log('5/5 Creando 60 viviendas...');
+const TOTAL = Math.max(120, cities.length + 40);
+console.log(`5/5 Creando ${TOTAL} viviendas (≥1 por provincia, ${cities.length} ciudades)...`);
 let ok = 0, fail = 0;
-for (let i = 0; i < 60; i++) {
-  const h = buildHouse(cities, userIds, exteriors, interiors, i);
+for (let i = 0; i < TOTAL; i++) {
+  // las primeras N garantizan una vivienda en cada ciudad/provincia
+  const ciudadFija = i < cities.length ? cities[i] : null;
+  const h = buildHouse(ciudadFija ? [ciudadFija] : cities, userIds, exteriors, interiors, i);
   const r = await fetch(`${API}/api/housing`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(h) });
   if (r.ok) ok++; else { fail++; console.log(`  ❌ ${h.title}: ${(await r.text()).substring(0, 100)}`); }
 }

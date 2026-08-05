@@ -66,6 +66,28 @@ export const EditUserProfile = () => {
     subscription: profile.subscription,
   });
 
+  // El profile llega de forma asíncrona: cuando aparece (o cambia de usuario)
+  // hay que volcar sus valores al formulario, si no los campos quedan vacíos
+  useEffect(() => {
+    if (profile && profile._id) {
+      setFormData((prev) => ({
+        ...prev,
+        documentNumber: profile.documentNumber,
+        agentRegistrationNumber: profile.agentRegistrationNumber,
+        agentRegistrationCommunity: profile.agentRegistrationCommunity,
+        name: profile.name,
+        surname: profile.surname,
+        mainOfficeProvince: profile.mainOfficeProvince,
+        telephone1: profile.telephone1 || profile.telephone,
+        telephone2: profile.telephone2,
+        profileSummary: profile.profileSummary,
+        realEstateLogo: profile.realEstateLogo,
+        profilePicture: profile.profilePicture,
+        subscription: profile.subscription,
+      }));
+    }
+  }, [profile]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -108,13 +130,13 @@ export const EditUserProfile = () => {
 
 
       {/* Avatar + search icon  */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', margin: '2rem 10rem 0rem 10rem' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mx: { xs: 2, md: 10 }, mt: '2rem' }}>
         {/* Avatar */}
         <div style={{ display: 'grid', gap: '1px', justifyItems: 'center', marginLeft: '14px' }}>
           <Avatar
             style={{ marginBottom: '2px', width: '80px', height: '80px' }}
             alt="User Avatar"
-            src={imageUrls[0]}
+            src={imageUrls[0] || profile.profilePicture}
           />
         </div>
         {/* Upload button */}
@@ -126,13 +148,13 @@ export const EditUserProfile = () => {
               color="primary"
               component="span"
             >
-              <Images />
+              <Images singular />
             </Button>
           </label>
         </div>
-      </div>
+      </Box>
 
-      <Container fixed>
+      <Box sx={{ mx: { xs: 2, md: 10 }, mt: 2 }}>
         {/*  DOCUMENTS */}
         <form onSubmit={handleSubmit}>
           <Paper elevation={3} style={{ padding: '3rem', marginLeft: "1rem", marginBottom: '2rem', marginTop: '2rem' }}>
@@ -141,6 +163,9 @@ export const EditUserProfile = () => {
               <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'row' }}>
                 <Grid item xs={12} sm={6} md={6} lg={2}>
                   <FormControl style={{ width: '82%' }}>
+                    {/* Sin InputLabel el Select no muestra la etiqueta flotante
+                        y queda inconsistente con el resto de campos */}
+                    <InputLabel id="DocumentType-l">Tipo Documento</InputLabel>
                     <Select
                       name="DocumentType"
                       value={formData.DocumentType}
@@ -270,8 +295,9 @@ export const EditUserProfile = () => {
                     <TextField
                       name="email"
                       label="Email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      value={profile.email || ''}
+                      disabled
+                      helperText="El email es tu nombre de usuario y no se puede cambiar"
                       fullWidth
                     />
                   </FormControl>
@@ -315,7 +341,7 @@ export const EditUserProfile = () => {
             </div>
           </Paper>
         </form >
-      </Container>
+      </Box>
 
       {/* Botón de envío */}
       < div style={{ display: "flex", justifyContent: "flex-end", height: '2rem', marginBottom: "6rem"}}> {/* Esto es un hack para que el botón no tape los campos de texto */}
