@@ -42,14 +42,15 @@ export function RequestList({ myRequestsSwitch, alUsarBusqueda }) {
     );
   }
 
-  if (!requesting || requesting.length === 0) {
-    return <h1>No hay datos de busquedas disponibles.</h1>;
+  const mias = requesting.filter((r) => r.user?._id && r.user._id === profile?._id);
+  if (!mias.length) {
+    return <h1>Aún no has guardado ninguna búsqueda.</h1>;
   }
 
   return (
     <Grid container spacing={2}>
       {requesting
-        .filter((r) => (myRequestsSwitch ? r.user?._id === profile?._id : true))
+        .filter((r) => r.user?._id && r.user._id === profile?._id) // solo las mías
         .map((request) => (
         <Grid item xs={12} md={6} key={request._id}>
         <RequestCard

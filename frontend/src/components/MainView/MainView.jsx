@@ -211,7 +211,8 @@ export function MainView(props) {
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
             <Tab label="Inmuebles" {...a11yProps(0)} />
             <Tab label="Mapa" {...a11yProps(1)} />
-            <Tab label="Mis búsquedas" {...a11yProps(2)} />
+            {/* Las búsquedas guardadas son personales: solo con sesión */}
+            {haySesion && <Tab label="Mis búsquedas" {...a11yProps(2)} />}
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
@@ -234,13 +235,13 @@ export function MainView(props) {
         <TabPanel value={tabValue} index={1}>
           <HousingMap />
         </TabPanel>
-        <TabPanel value={tabValue} index={2}>
+        {haySesion && <TabPanel value={tabValue} index={2}>
           <RequestList alUsarBusqueda={() => {
             setTabValue(0);
             // En móvil, abrir el panel para que se vean los filtros aplicados
             if (window.innerWidth < 600) setMobileOpen(true);
           }}/>
-        </TabPanel>
+        </TabPanel>}
         <Footer />
       </Box>
     </Box>
