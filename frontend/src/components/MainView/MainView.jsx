@@ -188,7 +188,7 @@ export function MainView(props) {
           // minWidth 0 evita que el contenido fuerce al flex-item a desbordar
           // el viewport en móvil; el padding se reduce en pantallas pequeñas
           minWidth: 0,
-          p: { xs: 1, sm: 3 },
+          p: { xs: 1.5, sm: 3 },
           width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
@@ -213,23 +213,18 @@ export function MainView(props) {
             <Tab label="Mapa" {...a11yProps(1)} />
             <Tab label="Mis búsquedas" {...a11yProps(2)} />
           </Tabs>
-          {/* El switch va a la derecha, a la altura de los tabs */}
-          {tabValue === 0 && haySesion && (
-            <FormControlLabel
-              sx={{ mr: 0 }}
-              control={<Switch checked={myHousingSwitch} onChange={handleMyHousingSwitch} color="primary" />}
-              label="Mostrar sólo mis propiedades"
-            />
-          )}
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <HousingList myHousingSwitch={myHousingSwitch}/>
+          <HousingList myHousingSwitch={myHousingSwitch} onToggleMias={handleMyHousingSwitch}/>
 
-          <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999', display: mobileOpen ? 'none' : 'block' }}>
+          {/* En móvil: más pequeño y por encima de la paginación fija */}
+          {/* En móvil: pequeño y por encima de la línea de paginación */}
+          <Box sx={{ position: 'fixed', right: { xs: '12px', sm: '20px' }, bottom: { xs: '68px', sm: '20px' }, zIndex: '9999', display: mobileOpen ? 'none' : 'block' }}>
             <Fab
               color="primary"
               onClick={() => navigate(haySesion ? "/addhousing" : "/login")}
               aria-label="add"
+              sx={{ width: { xs: 44, sm: 56 }, height: { xs: 44, sm: 56 } }}
             >
               <AddIcon />
             </Fab>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RequestCard } from './RequestCard/RequestCard';
-import { Box, Card, Skeleton } from '@mui/material';
+import { Box, Card, Skeleton, Grid } from '@mui/material';
 import { getActiveRequest } from '../../apiService/apiService';
 import { useContext } from 'react';
 import { AuthContext } from '../../Contexts/AuthContext';
@@ -47,11 +47,11 @@ export function RequestList({ myRequestsSwitch, alUsarBusqueda }) {
   }
 
   return (
-    <span>
+    <Grid container spacing={2}>
       {requesting
         .filter((r) => (myRequestsSwitch ? r.user?._id === profile?._id : true))
         .map((request) => (
-        //<Link to={`/housingdetails/${house._id}`} key={house._id}>
+        <Grid item xs={12} md={6} key={request._id}>
         <RequestCard
           key={request._id}
           _id={request._id}
@@ -92,9 +92,8 @@ export function RequestList({ myRequestsSwitch, alUsarBusqueda }) {
           storage={request.storage}
           accessible={request.accessible}
         />
-        // </Link>
+        </Grid>
       ))}
-  
-    </span>
+    </Grid>
   );
 }

@@ -16,8 +16,17 @@ const pinDomus = L.divIcon({
 function AjustarTamano() {
   const map = useMap();
   useEffect(() => {
-    const timers = [100, 400, 900].map((ms) => setTimeout(() => map.invalidateSize(), ms));
-    return () => timers.forEach(clearTimeout);
+    const timers = [100, 400, 900, 1800].map((ms) => setTimeout(() => map.invalidateSize(), ms));
+    // recalcular cuando el contenedor se hace visible (diálogos, carrusel)
+    // o cambia de tamaño: si no, el mapa se pinta parcialmente
+    const el = map.getContainer();
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) map.invalidateSize();
+    });
+    io.observe(el);
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(el);
+    return () => { timers.forEach(clearTimeout); io.disconnect(); ro.disconnect(); };
   }, [map]);
   return null;
 }

@@ -59,17 +59,14 @@ export function Login() {
           <CssBaseline />
           <Box
             sx={{
-              marginTop: 8,
+              minHeight: '78vh',
+              justifyContent: 'center',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
             <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
-            {/* Volver al listado público sin iniciar sesión */}
-            <Button size="small" onClick={() => navigate('/')} sx={{ textTransform: 'none', mb: 1 }}>
-              ← Continuar como invitado
-            </Button>
             <Typography component="h1" variant="h5">
               Ingresa a Domus
             </Typography>
@@ -116,6 +113,11 @@ export function Login() {
                   </Link>
                 </Grid>
               </Grid>
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
+                  Continuar como invitado
+                </Link>
+              </Box>
             </Box>
           </Box>
           <Copyright sx={{ mt: 8, mb: 4 }}/>

@@ -124,13 +124,28 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
     }
 
   return (
-    <Card sx={{ mb: '20px', mx: { md: '15px' }, p: 2, display: 'flex', gap: 1 }}>
-      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-      {/* Chips solo con datos presentes */}
-      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
-        {transaction && <Chip label={t(`transaction.${transaction}`, { ns: "housing" })} color="primary" variant="contained" size="small" />}
-        {type && <Chip label={t(`type.${type}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
-        {furnished && <Chip label={t(`furnished.${furnished}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
+    <Card sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Cabecera: chips a la izquierda, acciones arriba a la derecha */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          {transaction && <Chip label={t(`transaction.${transaction}`, { ns: "housing" })} color="primary" variant="contained" size="small" />}
+          {type && <Chip label={t(`type.${type}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
+          {furnished && <Chip label={t(`furnished.${furnished}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
+        </Box>
+        <Box sx={{ display: 'flex', gap: 0.5, ml: 1 }}>
+          <Tooltip title="Usar búsqueda" arrow>
+            <IconButton size="small" color="primary" onClick={usarBusqueda}>
+              <ManageSearchIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          {user?._id && user._id === profile?._id && (
+            <Tooltip title="Eliminar búsqueda" arrow>
+              <IconButton size="small" color="primary" onClick={handleDeleteRequest}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
       </Box>
 
       <h4 style={{ margin: '0 0 6px 0' }}>{title || 'Búsqueda guardada'}</h4>
@@ -180,7 +195,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
       )}
 
       {/* Precio con su divisor tenue, como en la card de inmuebles */}
-      <Divider sx={{ mx: '-8px' }} />
+      <Divider sx={{ mx: '-8px', mt: 'auto' }} />
       <Box sx={{ pt: '6px' }}>
         <h4 style={{ margin: 0, color: '#31AFB4' }}>
           {minPrice ? `Desde ${formattedMinPrice} ${currencySymbol}` : ''}
@@ -188,23 +203,6 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
           {maxPrice ? `Hasta ${formattedMaxPrice} ${currencySymbol}` : ''}
           {!minPrice && !maxPrice ? 'Sin límite de precio' : ''}
         </h4>
-      </Box>
-      </Box>
-
-      {/* Columna derecha: usar búsqueda y eliminar */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5, borderLeft: '1px solid #eee', pl: 1 }}>
-        <Tooltip title="Usar búsqueda" arrow placement="left">
-          <IconButton color="primary" onClick={usarBusqueda}>
-            <ManageSearchIcon />
-          </IconButton>
-        </Tooltip>
-        {user?._id && user._id === profile?._id && (
-          <Tooltip title="Eliminar búsqueda" arrow placement="left">
-            <IconButton sx={{ color: 'text.secondary' }} onClick={handleDeleteRequest}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        )}
       </Box>
     </Card>
   )
