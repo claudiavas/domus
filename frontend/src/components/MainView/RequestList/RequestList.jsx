@@ -40,7 +40,7 @@ export function RequestList({ myHousingSwitch }) {
           key={request._id}
           _id={request._id}
           showRealEstateLogo={request.showRealEstateLogo}
-          user={request.user}
+          user={request.user || {}} // un requerimiento sin usuario no debe romper la tarjeta
           title={request.title}
           type={request.type}
           transaction={request.transaction}

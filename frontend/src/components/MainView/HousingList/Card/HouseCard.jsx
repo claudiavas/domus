@@ -15,7 +15,7 @@ import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
 
-export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title }) {
+export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden }) {
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
   const showThumbsValue = false;
@@ -39,11 +39,12 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
     return text.replace(/\([^()]*\)/g, "").trim()
   };
 
+  // Mongoose elimina los objetos vacíos al guardar: estos campos pueden faltar
   const locationText = [
-    province.PRO,
-    municipality.DMUN50,
-    population.NENTSI50,
-    neighborhood.NNUCLE50
+    province?.PRO,
+    municipality?.DMUN50,
+    population?.NENTSI50,
+    neighborhood?.NNUCLE50
   ]
     .filter(Boolean)
     .filter((value, index, self) => self.indexOf(value) === index)
@@ -53,7 +54,9 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
   return (
     <Box
       component="main"
+      onClick={() => navigate(`/housingdetails/${_id}`)}
       sx={{
+        cursor: 'pointer',
         flexGrow: 3,
         display: 'flex',
         // En móvil la tarjeta se apila en columna; en escritorio, en fila
@@ -64,7 +67,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         height: { xs: 'auto', md: '230px' },
       }}
     >
-      <Box sx={{ flex: { md: '1 0 39%' }, width: { xs: '100%', md: 'auto' } }}>
+      <Box onClick={(e) => e.stopPropagation()} sx={{ flex: { md: '1 0 39%' }, width: { xs: '100%', md: 'auto' }, cursor: 'default' }}>
         {/* LEFT SIDE */}
         <Card style={{ height: 230 }}>
           <PhotoCarousel showThumbs={showThumbsValue} images={images} style={{ height: '100%' }} />
@@ -81,7 +84,10 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 <>
                   <Chip label={t(`transaction.${transaction}`, {ns:"housing"})} color="primary" variant="contained" size="small" style={{ marginRight: '15px' }} />
                   <Chip label={t(`type.${type}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
-                  {furnished && <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />}
+                  {pool ? <Chip label="Piscina" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
+                    : terrace ? <Chip label="Terraza" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
+                    : garden ? <Chip label="Jardín" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
+                    : furnished ? <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} /> : null}
                 </>
               }
             </div>
@@ -128,7 +134,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 ) : (
                   <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
                 )}
-                <Button onClick={() => navigate(`/housingdetails/${_id}`)} color="primary" variant="outlined">Ver Más</Button>
+                <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
               </h4>
             </div>
           </Card>
@@ -175,9 +181,10 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
 
 
 
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+          {/* Los botones de contacto no deben navegar al detalle */}
+          <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
 
-          {user.telephone1 && 
+          {user.telephone1 &&
             <WhatsAppButton phoneNumber={user.telephone1} />}
            
 

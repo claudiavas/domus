@@ -48,6 +48,20 @@ export const AuthProvider = ({ children }) => {
     console.log("isLoggedIn", isLoggedIn)
   }, [payload]);
 
+  // Al cerrar sesión hay que vaciar payload y profile: si no, el avatar
+  // y los datos del usuario siguen visibles aunque ya no haya token.
+  // Al iniciar sesión (SPA, sin recargar la página) hay que cargar el
+  // payload: el useEffect de montaje ya corrió sin token
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setPayload({});
+      setProfile({});
+    } else {
+      const token = localStorage.getItem('token');
+      if (token) fetchPayload(token);
+    }
+  }, [isLoggedIn]);
+
   useEffect(() => {
     // console.log("profile", profile)
   }, [profile]);

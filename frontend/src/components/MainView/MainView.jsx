@@ -123,10 +123,8 @@ export function MainView(props) {
 
       <AppBar
         position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
+        // A ancho completo, por encima del drawer (patrón estándar de MUI)
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
           <IconButton
@@ -157,16 +155,24 @@ export function MainView(props) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            // El AppBar va por encima: el drawer móvil empieza justo debajo
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              mt: '56px',
+              height: 'calc(100% - 56px)',
+            },
           }}
         >
-          <Filters />
+          <Filters onClose={handleDrawerToggle} />
         </Drawer>
         <Drawer
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block'  },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, marginTop: "60px"},
+            // Restar el alto del AppBar: si no, el pie del panel (botón de
+            // guardar búsqueda) queda por debajo del área visible
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, marginTop: "60px", height: 'calc(100% - 60px)' },
           }}
           open
         >
@@ -187,27 +193,35 @@ export function MainView(props) {
         <Toolbar />
 
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
             <Tab label="Inmuebles" {...a11yProps(0)} />
-            <Tab label="Requerimientos" {...a11yProps(1)} />
+            <Tab label="Mis búsquedas" {...a11yProps(1)} />
           </Tabs>
-        </Box>
-        <TabPanel value={tabValue} index={0}>
-          {haySesion && (
+          {/* El switch va a la derecha, a la altura de los tabs */}
+          {tabValue === 0 && haySesion && (
             <FormControlLabel
-              style={{ marginTop: "-30px", marginBottom: "5px", padding: 0, justifyContent: "end", width: '100%' }}
-              control={
-                <Switch
-                  checked={myHousingSwitch}
-                  onChange={handleMyHousingSwitch}
-                  color="primary"
-                />
-              }
+              sx={{ mr: 0 }}
+              control={<Switch checked={myHousingSwitch} onChange={handleMyHousingSwitch} color="primary" />}
               label="Mostrar sólo mis propiedades"
             />
           )}
-
+          {tabValue === 1 && haySesion && (
+            <FormControlLabel
+              sx={{ mr: 0 }}
+              control={<Switch checked={myRequestsSwitch} onChange={handleMyRequestsSwitch} color="primary" />}
+              label="Mostrar sólo mis búsquedas"
+            />
+          )}
+        </Box>
+        <TabPanel value={tabValue} index={0}>
           <HousingList myHousingSwitch={myHousingSwitch}/>
 
           <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
@@ -222,19 +236,7 @@ export function MainView(props) {
 
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-        <FormControlLabel
-            style={{ marginTop: "-30px", marginBottom: "5px", padding: 0, justifyContent: "end", width: '100%' }}
-            control={
-              <Switch
-                checked={myRequestsSwitch}
-                onChange={handleMyRequestsSwitch}
-                color="primary"
-              />
-            }
-            label="Mostrar sólo mis requerimientos"
-          />
-          <RequestList/>
-            
+          <RequestList myRequestsSwitch={myRequestsSwitch}/>
         </TabPanel>
       </Box>
     </Box>

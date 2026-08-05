@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useLocation } from "react-router-dom";
 
 
-export const Images = () => {
+export const Images = ({ singular }) => {
   const { imageUrls, setImageUrls } = useContext(ImagesContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
@@ -94,14 +94,14 @@ useEffect(() => {
   return (
     <>
       <Button color="primary" startIcon={<CloudUploadIcon />} onClick={handleOpenDialog}>
-        Subir Imágenes
+        {singular ? 'Subir Imagen' : 'Subir Imágenes'}
       </Button>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md">
         <DialogTitle>
           <Grid container alignItems="center">
             <Grid item xs={6}>
-              Subir Imágenes y/o Videos
+              {singular ? 'Subir Imagen' : 'Subir Imágenes y/o Videos'}
             </Grid>
             <Grid item xs={6} container justifyContent="flex-end">
               <Button variant="contained" component="label">
