@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { Box, Card, Skeleton, Pagination, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
 import HouseCard from './Card/HouseCard';
 import { HousingContext } from '../../Contexts/HousingContext';
@@ -22,6 +23,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   const POR_PAGINA = 12;
   const [pagina, setPagina] = useState(1);
   const [orden, setOrden] = useState('recientes');
+  const esMovil = useMediaQuery('(max-width:600px)');
 
   // Filtro compartido con el mapa + switch de "solo las mías".
   // En modo relevancia no se excluye: se puntúa cada vivienda
@@ -147,19 +149,17 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
         />
       ))}
       {totalPaginas > 1 && (
-        <Box sx={{
-          position: 'sticky',
-          bottom: 0,
-          zIndex: 5,
-          display: 'flex',
-          justifyContent: 'center',
-          py: 1,
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          borderTop: '1px solid #eee',
-          ml: { md: '-20px' },
-          mr: { md: '15px' },
-        }}>
-          <Pagination count={totalPaginas} page={paginaActual} onChange={cambiarPagina} color="primary" />
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 2, ml: { md: '-20px' }, mr: { md: '15px' } }}>
+          <Pagination
+            count={totalPaginas}
+            page={paginaActual}
+            onChange={cambiarPagina}
+            color="primary"
+            // En móvil, compacto para que quepa en una sola línea
+            size={esMovil ? 'small' : 'medium'}
+            siblingCount={esMovil ? 0 : 1}
+            boundaryCount={1}
+          />
         </Box>
       )}
     </div>
