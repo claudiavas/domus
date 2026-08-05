@@ -288,7 +288,7 @@ export function LocationFilter() {
   const valorEnLista = (lista, sel, campo) => lista.find(x => x[campo] === sel?.[campo]) || '';
 
   return (
-    <div style={{ marginLeft: '1em' }}>
+    <div>
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
         <InputLabel id="province-label">Provincia*</InputLabel>
         <Select labelId="province-label" label="Provincia*" name="province" value={valorEnLista(provinces, province, 'CPRO')} onChange={elegirProvincia}>

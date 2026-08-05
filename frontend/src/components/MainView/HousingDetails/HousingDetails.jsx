@@ -133,8 +133,22 @@ export const HousingDetails = () => {
 
       <Grid container spacing={1}>
         {/* TITLE */}
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid item xs={12} md={12} lg={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {housingData.title && <Typography variant="h6">{housingData.title}</Typography>}
+          {housingData.user._id === profile._id && (
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <Tooltip title="Editar" arrow>
+                <IconButton color="primary" onClick={() => navigate(`/updatehousing/${_id}`, { state: { housingData } })}>
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Eliminar" arrow>
+                <IconButton sx={{ color: 'text.secondary' }} onClick={() => handleDeleteHousing(_id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         </Grid>
 
 
@@ -184,22 +198,22 @@ export const HousingDetails = () => {
           <Card style={{ padding: "8px 8px 8px 8px", height: "100%" }}>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <FullscreenOutlinedIcon />
+                <FullscreenOutlinedIcon sx={{ color: 'primary.main' }} />
                 <h5 style={{ margin: 0 }}>{housingData.squareMeters} m2</h5>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <BedOutlinedIcon />
+                <BedOutlinedIcon sx={{ color: 'primary.main' }} />
                 <h5 style={{ margin: 0 }}>{housingData.rooms}</h5>
               </Box>
               {housingData.baths ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <BathtubIcon />
+                  <BathtubIcon sx={{ color: 'primary.main' }} />
                   <h5 style={{ margin: 0 }}>{housingData.baths}</h5>
                 </Box>
               ) : null}
               {housingData.garages ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <DirectionsCarIcon />
+                  <DirectionsCarIcon sx={{ color: 'primary.main' }} />
                   <h5 style={{ margin: 0 }}>{housingData.garages}</h5>
                 </Box>
               ) : null}
@@ -332,36 +346,11 @@ export const HousingDetails = () => {
       </Grid>
 
       <Box>
-        {/* UPDATE HOUSING BUTTON */}
 
-        {housingData.user._id === profile._id &&
-          <Link to={`/updatehousing/${_id}`} state={{ housingData }}>
-            <Box sx={{ position: 'fixed', right: '90px', bottom: '20px', zIndex: '9999' }}>
-              <Fab color="secondary" aria-label="edit">
-                 <EditIcon />
-              </Fab>
-            </Box>
-          </Link>}
-
-          {/* DELETE HOUSING ICON */}
-
-      {housingData.user._id === profile._id &&
-            <Box sx={{ position: 'fixed', right: '160px', bottom: '20px', zIndex: '9999' }}>
-              <Fab color="error" aria-label="eliminar propiedad">
-                <DeleteIcon onClick={() => handleDeleteHousing(_id)}/>
-              </Fab>
-            </Box>}
 
             {/* Botón para volver a la ventana de navegación anterior */}
 
-        <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
-            <Fab color="action" aria-label="regresar">
-              {/* <IconButton aria-label="Volver" onClick={() => history.goBack()}> */}
-              <IconButton aria-label="Volver" onClick={() => (navigate(`/mainview`))}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Fab>
-          </Box>
+        
 
       </Box>
       </Box>
