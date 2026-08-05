@@ -882,12 +882,21 @@ export const AddHousing = () => {
           </Grid>
         </Paper>
 
-        {/* BOTÓN ENVIAR */}
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "6rem" }}>
+        {/* BOTÓN GUARDAR: siempre visible al pie */}
+        <Box sx={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 10,
+          backgroundColor: '#fff',
+          borderTop: '1px solid #eee',
+          py: 1.5,
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}>
           <Button variant="contained" color="primary" type="submit">
-            Enviar
+            Guardar
           </Button>
-        </div>
+        </Box>
 
         {/* Botón para volver a la ventana de navegación anterior */}
 

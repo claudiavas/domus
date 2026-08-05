@@ -24,7 +24,8 @@ export const Header = ({component}) => {
     setAnchorEl(null);
   };
 
-  const isMainView = location.pathname === '/mainview' || location.pathname === '/';
+  // Comparar en minúsculas: la ruta registrada es /MainView
+  const isMainView = ['/mainview', '/'].includes(location.pathname.toLowerCase());
 
   // Lógica para cerrar sesión...
 
@@ -40,12 +41,19 @@ export const Header = ({component}) => {
 
 
   return (
-    <Container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Container maxWidth={false} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       {isMainView ? (
         <>
-          <Typography variant="h6" noWrap component="div">
-            DOMUS
-          </Typography>
+          {/* En el menú: solo el icono y las letras en blanco a la derecha */}
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+            onClick={() => navigate('/mainview')}
+          >
+            <Box component="img" src="/favicon-domus.png" alt="" sx={{ height: 34 }} />
+            <Typography variant="h6" noWrap component="div" sx={{ color: '#fff', fontWeight: 700, letterSpacing: 1 }}>
+              DOMUS
+            </Typography>
+          </Box>
         </>
       ) : (
         <>

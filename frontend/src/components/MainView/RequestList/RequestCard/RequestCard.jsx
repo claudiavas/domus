@@ -76,10 +76,10 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
 
 
   const locationText = [
-    province.PRO,
-    municipality.DMUN50,
-    population.NENTSI50,
-    neighborhood.NNUCLE50
+    province?.PRO,
+    municipality?.DMUN50,
+    population?.NENTSI50,
+    neighborhood?.NNUCLE50
   ]
     .filter(Boolean)
     .filter((value, index, self) => self.indexOf(value) === index)
@@ -168,7 +168,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
                 <div>Precio Máximo: {maxPrice} {currencySymbol} </div>
                 <div style={{ display: 'flex' }}>
                 {
-                    user._id === profile._id &&
+                    user?._id && user._id === profile?._id &&
                   <>
                     <EditIcon style={{ cursor: 'pointer' }} onClick={() => navigate(`/housingdetails/${_id}`)} />
                     <DeleteIcon style={{ cursor: 'pointer' }} onClick={handleDeleteRequest} />
