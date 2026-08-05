@@ -8,7 +8,7 @@ const PASSWORD = process.env.E2E_PASSWORD || 'Test1234!';
 
 test('la portada muestra el listado público sin iniciar sesión', async ({ page }) => {
   await page.goto(BASE);
-  await expect(page.getByRole('button', { name: /ver más/i }).first()).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText(/ver más/i).first()).toBeVisible({ timeout: 15000 });
 });
 
 test('login lleva al MainView y lista viviendas', async ({ page }) => {
@@ -18,7 +18,7 @@ test('login lleva al MainView y lista viviendas', async ({ page }) => {
   await page.getByRole('button', { name: /ingresar/i }).click();
   await page.waitForURL(/MainView/i);
   // hay tarjetas de viviendas con su botón "Ver más"
-  await expect(page.getByRole('button', { name: /ver más/i }).first()).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText(/ver más/i).first()).toBeVisible({ timeout: 15000 });
 });
 
 test('el filtro de provincia reduce el listado', async ({ page }) => {
@@ -27,13 +27,13 @@ test('el filtro de provincia reduce el listado', async ({ page }) => {
   await page.locator('input[name="password"], input[type="password"]').first().fill(PASSWORD);
   await page.getByRole('button', { name: /ingresar/i }).click();
   await page.waitForURL(/MainView/i);
-  await expect(page.getByRole('button', { name: /ver más/i }).first()).toBeVisible({ timeout: 15000 });
-  const total = await page.getByRole('button', { name: /ver más/i }).count();
+  await expect(page.getByText(/ver más/i).first()).toBeVisible({ timeout: 15000 });
+  const total = await page.getByText(/ver más/i).count();
 
   await page.locator('div.MuiSelect-select').first().click();
   await page.getByRole('option', { name: 'BARCELONA' }).click();
   await expect
-    .poll(async () => page.getByRole('button', { name: /ver más/i }).count())
+    .poll(async () => page.getByText(/ver más/i).count())
     .toBeLessThan(total);
 });
 
@@ -44,7 +44,7 @@ test('sin scroll horizontal en móvil', async ({ browser }) => {
   await page.locator('input[name="password"], input[type="password"]').first().fill(PASSWORD);
   await page.getByRole('button', { name: /ingresar/i }).click();
   await page.waitForURL(/MainView/i);
-  await expect(page.getByRole('button', { name: /ver más/i }).first()).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText(/ver más/i).first()).toBeVisible({ timeout: 15000 });
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth
   );
