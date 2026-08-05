@@ -74,7 +74,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         </Card>
       </Box>
 
-      <Box component="span" sx={{ flex: { md: '1 0 45%' }, mx: { md: '10px' }, p: 0 }}>
+      <Box component="span" sx={{ flex: '1 1 auto', minWidth: 0, mx: { md: '10px' }, p: 0 }}>
         {/* CENTER */}
         <span style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {/* TOP, CENTER */}
@@ -118,6 +118,25 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 <div></div>
               )}
             </div>
+
+            {/* Asesor integrado: avatar pequeño + nombre + contacto, sin card aparte */}
+            <Divider sx={{ mx: '5px' }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: '8px', py: '4px' }}>
+              <Avatar alt={`${user.name} ${user.surname}`} src={user.profilePicture} sx={{ width: 28, height: 28 }} />
+              <Box component="span" sx={{ fontSize: 13, fontWeight: 500, flexGrow: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {user.name} {user.surname}
+              </Box>
+              {/* Los botones de contacto no deben navegar al detalle */}
+              <Box onClick={(e) => e.stopPropagation()} sx={{ display: 'flex', alignItems: 'center' }}>
+                {user.telephone1 && <WhatsAppButton phoneNumber={user.telephone1} />}
+                {user.telephone2 && <PhoneNumber phoneNumber={user.telephone2} />}
+                <Tooltip title={user.email} arrow>
+                  <IconButton component="a" href={`mailto:${user.email}`} size="small" color="primary">
+                    <EmailOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
           </Card>
 
 
@@ -141,72 +160,6 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         </span>
       </Box>
 
-      <Box component="span" sx={{ width: { xs: '100%', md: 'auto' } }}>
-        {/* RIGHT */}
-        <Card sx={{ padding: "15px 3px 5px 3px", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: { xs: '100%', md: '150px' } }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-            {user.realEstateLogo && showRealEstateLogo && user.profilePicture ? (
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                <div><Avatar alt="profile picture" src={user.profilePicture} sx={{ width: 56, height: 56 }} /></div>
-                <div><Avatar alt="real estate logo" src={user.realEstateLogo} sx={{ width: 75, height: 75 }} /></div>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                {user.profilePicture ? (
-                  <div><Avatar alt="profile picture" src={user.profilePicture} sx={{ width: 56, height: 56 }} /></div>
-                ) : (
-
-                  <Avatar sx={{ width: 56, height: 56 }} />
-                )}
-              </div>
-            )}
-          </div>
-
-          <div style={{ alignSelf: 'center', marginTop: '10px' }}>
-            <h4 style={{ fontWeight: 'bold', textAlign: 'center', margin: '0px' }}>
-              {user.name} {user.surname}
-            </h4>
-          </div>
-
-          {user.agentRegistrationNumber && user.agentRegistrationCommunity &&
-            <Tooltip title={`Registro No. ${profile.agentRegistrationNumber} C.A. de ${profile.agentRegistrationCommunity}`}>
-              <IconButton
-                size="small"
-                style={{ marginBottom: '5px' }}
-                color="success"
-              >
-                <CardMembershipIcon fontSize="medium" />
-              </IconButton>
-            </Tooltip>}
-
-
-
-          {/* Los botones de contacto no deben navegar al detalle */}
-          <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-
-          {user.telephone1 &&
-            <WhatsAppButton phoneNumber={user.telephone1} />}
-           
-
-          {user.telephone2 && 
-            <PhoneNumber phoneNumber={user.telephone2} />}
-
-          <Tooltip title={user.email} arrow>
-            <IconButton
-              component="a"
-              href={`mailto:${user.email}`}
-              size="small"
-              style={{ marginBottom: '5px' }}
-              color="primary"
-            >
-              <EmailOutlinedIcon fontSize="medium" />
-            </IconButton>
-          </Tooltip>
-
-          </div>
-
-        </Card>
-      </Box>
     </Box >
   )
 }
