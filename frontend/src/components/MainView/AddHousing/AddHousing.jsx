@@ -900,14 +900,7 @@ export const AddHousing = () => {
 
         {/* Botón para volver a la ventana de navegación anterior */}
 
-        <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
-            <Fab color="action" aria-label="regresar">
-              {/* <IconButton aria-label="Volver" onClick={() => history.goBack()}> */}
-              <IconButton aria-label="Volver" onClick={() => (navigate(`/mainview`))}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Fab>
-          </Box>
+        
 
       </form>
     </div>

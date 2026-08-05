@@ -362,14 +362,7 @@ export const EditUserProfile = () => {
       </div >
 
     {/* BACK BUTTON */}
-      <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
-        <Fab color="action" aria-label="regresar">
-          {/* <IconButton aria-label="Volver" onClick={() => history.goBack()}> */}
-          <IconButton aria-label="Volver" onClick={() => (navigate(`/mainview`))}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </Fab>
-      </Box>
+      
 
       {/*  </Box>*/}
       <Snackbar

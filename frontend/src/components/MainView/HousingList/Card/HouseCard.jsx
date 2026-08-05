@@ -16,7 +16,7 @@ import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
 import { MiniMapa } from '../../HousingMap/MiniMapa';
 
-export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden, coordinates }) {
+export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden, coordinates, createdAt }) {
   const [mapaAbierto, setMapaAbierto] = useState(false);
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -31,6 +31,10 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
   } else if (currency === 'EUR') {
     currencySymbol = '€';
   }
+
+  const fechaPublicacion = createdAt
+    ? new Date(createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
 
   const formattedPrice = (new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 }))
     .format(price)
@@ -122,22 +126,22 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
             {/* Separación uniforme entre datos a cualquier ancho (sin márgenes fijos) */}
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <FullscreenOutlinedIcon />
+                <FullscreenOutlinedIcon sx={{ color: 'primary.main' }} />
                 <h5 style={{ margin: 0 }}>{squareMeters} m2</h5>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <BedOutlinedIcon />
+                <BedOutlinedIcon sx={{ color: 'primary.main' }} />
                 <h5 style={{ margin: 0 }}>{rooms}</h5>
               </Box>
               {baths ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <BathtubIcon />
+                  <BathtubIcon sx={{ color: 'primary.main' }} />
                   <h5 style={{ margin: 0 }}>{baths}</h5>
                 </Box>
               ) : null}
               {garages ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <DirectionsCarIcon />
+                  <DirectionsCarIcon sx={{ color: 'primary.main' }} />
                   <h5 style={{ margin: 0 }}>{garages}</h5>
                 </Box>
               ) : null}
@@ -175,7 +179,14 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 ) : (
                   <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
                 )}
-                <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
+                <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  {fechaPublicacion && (
+                    <Box component="span" sx={{ color: 'text.secondary', fontWeight: 400, fontSize: 12 }}>
+                      Publicado el {fechaPublicacion}
+                    </Box>
+                  )}
+                  <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
+                </Box>
               </h4>
             </Box>
           </Card>
