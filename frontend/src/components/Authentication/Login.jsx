@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -64,6 +65,10 @@ export function Login() {
             }}
           >
             <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
+            {/* Volver al listado público sin iniciar sesión */}
+            <Button size="small" onClick={() => navigate('/')} sx={{ textTransform: 'none', mb: 1 }}>
+              ← Continuar como invitado
+            </Button>
             <Typography component="h1" variant="h5">
               Ingresa a Domus
             </Typography>
