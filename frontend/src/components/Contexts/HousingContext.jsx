@@ -32,15 +32,13 @@ export const HousingProvider = ({ children }) => {
   const contextValue = {
     housing,
     setHousing,
+    isLoading,
   };
 
+  // Siempre renderizar la app: cada vista decide cómo mostrar su carga
   return (
     <HousingContext.Provider value={contextValue}>
-      {isLoading ? (
-        <div>Cargando...</div> // Mostrar "Cargando..." mientras los datos se están cargando
-      ) : (
-      children // Renderizar los componentes hijos una vez que los datos se hayan cargado
-      )}
+      {children}
     </HousingContext.Provider>
   );
 };
