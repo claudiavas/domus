@@ -22,9 +22,8 @@ export const WhatsAppButton = ({ phoneNumber }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         size="small"
-        style={{ marginBottom: '5px' }}
       >
-        <WhatsAppIcon color="primary" fontSize="medium" />
+        <WhatsAppIcon color="primary" fontSize="small" />
       </IconButton>
     </Tooltip>
   );

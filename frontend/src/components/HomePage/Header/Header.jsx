@@ -49,7 +49,7 @@ export const Header = ({component}) => {
             sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
             onClick={() => navigate('/mainview')}
           >
-            <Box component="img" src="/favicon-domus.png" alt="" sx={{ height: 34 }} />
+            <Box component="img" src="/logo-domus-blanco.png" alt="" sx={{ height: 34 }} />
             <Typography variant="h6" noWrap component="div" sx={{ color: '#fff', fontWeight: 700, letterSpacing: 1 }}>
               DOMUS
             </Typography>

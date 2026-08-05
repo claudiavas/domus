@@ -96,28 +96,29 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               <LocationOnOutlinedIcon style={{ marginRight: '5px' }} />
               <h6 style={{ margin: '0px' }}>{locationText}</h6>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', flexGrow: 1 }}>
-              <FullscreenOutlinedIcon />
-              <h5 style={{ margin: '0px', marginLeft: '5px', marginRight: '50px' }}>{squareMeters} m2</h5>
-              <BedOutlinedIcon style={{ marginRight: '10px' }} />
-              <h5 style={{ margin: '0px' }}>{rooms}</h5>
+            {/* Separación uniforme entre datos a cualquier ancho (sin márgenes fijos) */}
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', columnGap: { xs: 2, sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <FullscreenOutlinedIcon />
+                <h5 style={{ margin: 0 }}>{squareMeters} m2</h5>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <BedOutlinedIcon />
+                <h5 style={{ margin: 0 }}>{rooms}</h5>
+              </Box>
               {baths ? (
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', marginLeft: "60px", flexGrow: 1 }}>
-                  <BathtubIcon style={{ marginRight: '10px' }} />
-                  <h5 style={{ margin: '0px' }}>{baths}</h5>
-                </div>
-              ) : (
-                <div></div>
-              )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <BathtubIcon />
+                  <h5 style={{ margin: 0 }}>{baths}</h5>
+                </Box>
+              ) : null}
               {garages ? (
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', flexGrow: 1 }}>
-                  <DirectionsCarIcon style={{ marginRight: '10px' }} />
-                  <h5 style={{ margin: '0px' }}>{garages}</h5>
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <DirectionsCarIcon />
+                  <h5 style={{ margin: 0 }}>{garages}</h5>
+                </Box>
+              ) : null}
+            </Box>
 
             {/* Asesor integrado: avatar pequeño + nombre + contacto, sin card aparte */}
             <Divider sx={{ mx: '5px' }} />
@@ -137,25 +138,23 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 </Tooltip>
               </Box>
             </Box>
-          </Card>
 
-
-          {/* BOTTOM, CENTER */}
-          <Card style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '0px', marginLeft: '5px', padding: "4px" }}>
+            {/* Precio integrado, con el mismo patrón de divisor que el asesor */}
+            <Divider sx={{ mx: '5px' }} />
+            <Box sx={{ px: '8px', py: '6px' }}>
               <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
                 {/* En venta: precio total + €/m². En alquiler: €/mes. Vacacional: €/semana */}
                 {transaction === 'sale' ? (
                   <>
                     {formattedPrice} {currencySymbol}
-                    <div>precio/m2: {precioxm2} {currencySymbol}</div>
+                    <div>{precioxm2} {currencySymbol}/m²</div>
                   </>
                 ) : (
                   <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
                 )}
                 <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
               </h4>
-            </div>
+            </Box>
           </Card>
         </span>
       </Box>
