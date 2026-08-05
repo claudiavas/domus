@@ -194,6 +194,11 @@ export function MainView(props) {
 
 
         <Box sx={{
+          // Siempre visible al hacer scroll, pegada bajo el AppBar
+          position: 'sticky',
+          top: { xs: 56, sm: 64 },
+          zIndex: 10,
+          backgroundColor: '#fff',
           borderBottom: 1,
           borderColor: 'divider',
           display: 'flex',
