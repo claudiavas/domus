@@ -146,7 +146,7 @@ export function LocationFilter() {
   return (
     <div>
 
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
         <InputLabel id="province-label">Provincia*</InputLabel>
         <Select
           labelId="province-label"
@@ -166,7 +166,7 @@ export function LocationFilter() {
         </Select>
       </FormControl> 
 
-<FormControl style={{ width: '90%' }}>
+<FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!municipalities.length}>
         <InputLabel id="municipality-label">Municipio*</InputLabel>
         <Select
           labelId="municipality-label"
@@ -185,7 +185,7 @@ export function LocationFilter() {
 
         </Select>
       </FormControl> 
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!populations.length}>
         <InputLabel id="province-label">Población*</InputLabel>
         <Select
           labelId="population-label"
@@ -206,7 +206,7 @@ export function LocationFilter() {
       </FormControl> 
 
 
- <FormControl style={{ width: '90%' }}>
+ <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!neighborhoods.length}>
         <InputLabel id="neighborhood-label">Barrio*</InputLabel>
         <Select
           labelId="neighborhood-label*"
@@ -341,7 +341,7 @@ export function LocationFilter() {
 
   return (
     <div style={{ marginLeft:'1em'}}>
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
         <InputLabel id="province-label">Provincia*</InputLabel>
         <Select
           labelId="province-label"
@@ -359,7 +359,7 @@ export function LocationFilter() {
       </FormControl>
 
 
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!municipalities.length}>
         <InputLabel id="municipality-label">Municipio*</InputLabel>
         <Select
           labelId="municipality-label"
@@ -377,7 +377,7 @@ export function LocationFilter() {
       </FormControl>
 
 
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!populations.length}>
         <InputLabel id="population-label">Población*</InputLabel>
         <Select
           labelId="population-label"
@@ -395,7 +395,7 @@ export function LocationFilter() {
       </FormControl>
 
 
-      <FormControl style={{ width: '90%' }}>
+      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!neighborhoods.length}>
         <InputLabel id="neighborhood-label">Barrio*</InputLabel>
         <Select
           labelId="neighborhood-label*"

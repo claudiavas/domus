@@ -93,14 +93,6 @@ function Filters(props) {
       '& .MuiFormControl-root': { my: 0.75, display: 'flex' }, // flex (no inline): elimina el hueco de línea entre selects apilados
       '& .MuiDivider-root': { mt: 1.5 },
       '& .MuiInputBase-root': { fontSize: 14 },
-      // Compactar SOLO los controles grandes (ubicación): los size="small"
-      // (precio, habitaciones...) ya vienen compactos de MUI y tocarlos
-      // desalinea etiqueta y flecha del desplegable
-      '& .MuiInputBase-root:not(.MuiInputBase-sizeSmall) .MuiInputBase-input': { py: '8px' },
-      '& .MuiInputBase-root:not(.MuiInputBase-sizeSmall) .MuiSelect-select': { py: '8px', minHeight: 'unset' },
-      '& .MuiInputLabel-root:not(.MuiInputLabel-shrink):not(.MuiInputLabel-sizeSmall)': {
-        transform: 'translate(14px, 9px) scale(1)',
-      },
       '& .MuiFormControlLabel-root': { my: '-4px' },
       '& .MuiCheckbox-root': { py: '4px' },
     }}>
