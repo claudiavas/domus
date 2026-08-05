@@ -11,5 +11,19 @@ export const theme = createTheme({
       light: '#62C4C8',
       contrastText: '#ffffff',
     },
+    // Alerts en la gama de la marca: éxito = verde Domus,
+    // warning = ámbar cálido que no choca con el teal
+    success: {
+      main: DOMUS_GREEN,
+      dark: '#238A8E',
+      light: '#62C4C8',
+      contrastText: '#ffffff',
+    },
+    warning: {
+      main: '#E6A23C',
+      dark: '#C7842A',
+      light: '#F0BC6B',
+      contrastText: '#ffffff',
+    },
   },
 });

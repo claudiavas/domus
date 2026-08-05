@@ -36,8 +36,8 @@ export const EditUserProfile = () => {
   };
 
   const snackbarStyle = {
-    backgroundColor: '#2196f3', // Color de fondo de la notificación
-    color: '#fff', // Color del texto de la notificación
+    backgroundColor: '#31AFB4', // verde de marca
+    color: '#fff',
   };
 
 
@@ -355,12 +355,9 @@ export const EditUserProfile = () => {
             borderRadius: '4px',
             fontSize: '1rem',
             fontWeight: 'bold',
-            backgroundColor: '#2196f3',
-            color: '#fff',
           }}
-          /* TODO: Llamar a popup de cambiar la contraseña */
           onClick={handleSubmit} >
-          Enviar
+          Guardar
         </Button >
       </div >
 
