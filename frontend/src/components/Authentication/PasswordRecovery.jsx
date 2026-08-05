@@ -1,4 +1,5 @@
 import Avatar from '@mui/material/Avatar';
+import { theme as temaDomus } from '../../theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -18,7 +19,7 @@ import queryString from 'query-string';
 import { useParams, useLocation } from 'react-router-dom';
 import { getPayload } from '../apiService/apiService';
 
-const defaultTheme = createTheme();
+const defaultTheme = temaDomus;
 
 export function PasswordRecovery() {
   const [error, setError] = useState("");

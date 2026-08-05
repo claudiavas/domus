@@ -270,7 +270,7 @@ export const UpdateHousing = () => {
     //  HEADING
 
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
-      <h1 style={{ marginTop: 0, background: '#1976d2', color: 'white', padding: '0.5rem', display: 'flex', justifyContent: 'space-between' }}><Header component="Editar Inmueble" /></h1>
+      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem', display: 'flex', justifyContent: 'space-between' }}><Header component="Editar Inmueble" /></h1>
 
       <form onSubmit={handleSubmit}>
 

@@ -1,4 +1,5 @@
 import Avatar from '@mui/material/Avatar';
+import { theme as temaDomus } from '../../theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -18,7 +19,7 @@ import React, { useState, useContext } from 'react';
 import { register } from '../apiService/apiService';
 import { AuthContext } from '../Contexts/AuthContext';
 
-const defaultTheme = createTheme();
+const defaultTheme = temaDomus;
 
 export function Register() {
   const navigate = useNavigate();
