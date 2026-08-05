@@ -237,193 +237,96 @@ export function LocationFilter() {
 
 export function LocationFilter() {
   const { provinces } = useContext(LocationContext);
+  // Los valores viven en el contexto de filtros: así "limpiar filtros" y
+  // "usar búsqueda guardada" se reflejan también en estos desplegables
+  const { province, setProvince, municipality, setMunicipality, population, setPopulation, neighborhood, setNeighborhood } = useContext(HousingContext);
+
   const [municipalities, setMunicipalities] = useState([]);
   const [populations, setPopulations] = useState([]);
   const [neighborhoods, setNeighborhoods] = useState([]);
 
-  const [selectedMunicipality, setSelectedMunicipality] = useState('');
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedPopulation, setSelectedPopulation] = useState('');
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
-
-  const [formData, setFormData] = useState({});
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log(formData);
-    try {
-      const response = await addHousing(formData);
-      console.log(formData);
-      setHousing([...housing, formData]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const { setProvince, setMunicipality, setNeighborhood, setPopulation } = useContext(HousingContext);
-
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    const fieldValue = type === 'checkbox' ? checked : value;
-
-    switch (name) {
-      case 'province':
-        setProvince(value);
-        setSelectedProvince(value);
-        break;
-      case 'municipality':
-        setMunicipality(value);
-        setSelectedMunicipality(value);
-        break;
-      case 'neighborhood':
-        setNeighborhood(value);
-        setSelectedNeighborhood(value);
-        break;
-      case 'population':
-        setPopulation(value);
-        setSelectedPopulation(value);
-        break;
-      default:
-        break;
-    }
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: fieldValue,
-    }));
-  };
-
-  const fetchMunicipalities = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/municipios?CPRO=${selectedProvince.CPRO}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
-      setMunicipalities(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchPopulations = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/poblaciones?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
-      setPopulations(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchNeighborhoods = async () => {
-    try {
-      const encodedNENTS150 = selectedPopulation.NENTSI50.replace(/\s/g, '%20');
-      const { data } = await axios.get(`https://apiv1.geoapi.es/nucleos?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&NENTSI50=${encodedNENTS150}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
-      setNeighborhoods(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const GEOKEY = 'eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760';
 
   useEffect(() => {
-    if (selectedProvince) {
-      fetchMunicipalities();
+    if (province?.CPRO) {
+      axios.get(`https://apiv1.geoapi.es/municipios?CPRO=${province.CPRO}&type=JSON&key=${GEOKEY}&sandbox=0`)
+        .then(({ data }) => setMunicipalities(data.data || []))
+        .catch(console.error);
+    } else {
+      setMunicipalities([]);
     }
-  }, [selectedProvince]);
+  }, [province]);
 
   useEffect(() => {
-    if (selectedMunicipality) {
-      fetchPopulations();
+    if (province?.CPRO && municipality?.CMUM) {
+      axios.get(`https://apiv1.geoapi.es/poblaciones?CPRO=${province.CPRO}&CMUM=${municipality.CMUM}&type=JSON&key=${GEOKEY}&sandbox=0`)
+        .then(({ data }) => setPopulations(data.data || []))
+        .catch(console.error);
+    } else {
+      setPopulations([]);
     }
-  }, [selectedMunicipality]);
+  }, [province, municipality]);
 
   useEffect(() => {
-    if (selectedPopulation) {
-      fetchNeighborhoods();
+    if (province?.CPRO && municipality?.CMUM && population?.NENTSI50) {
+      const nents = population.NENTSI50.replace(/\s/g, '%20');
+      axios.get(`https://apiv1.geoapi.es/nucleos?CPRO=${province.CPRO}&CMUM=${municipality.CMUM}&NENTSI50=${nents}&type=JSON&key=${GEOKEY}&sandbox=0`)
+        .then(({ data }) => setNeighborhoods((data.data || []).filter(n => !/DISEMINADO/i.test(n.NNUCLE50 || ''))))
+        .catch(console.error);
+    } else {
+      setNeighborhoods([]);
     }
-  }, [selectedPopulation]);
+  }, [province, municipality, population]);
+
+  // Al cambiar un nivel se limpian los inferiores
+  const elegirProvincia = (e) => { setProvince(e.target.value || undefined); setMunicipality(undefined); setPopulation(undefined); setNeighborhood(undefined); };
+  const elegirMunicipio = (e) => { setMunicipality(e.target.value || undefined); setPopulation(undefined); setNeighborhood(undefined); };
+  const elegirPoblacion = (e) => { setPopulation(e.target.value || undefined); setNeighborhood(undefined); };
+  const elegirBarrio = (e) => { setNeighborhood(e.target.value || undefined); };
+
+  // El Select compara por identidad: usar el objeto de la lista con el mismo código
+  const valorEnLista = (lista, sel, campo) => lista.find(x => x[campo] === sel?.[campo]) || '';
 
   return (
-    <div style={{ marginLeft:'1em'}}>
+    <div style={{ marginLeft: '1em' }}>
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
         <InputLabel id="province-label">Provincia*</InputLabel>
-        <Select
-          labelId="province-label"
-          label="Provincia*"
-          name="province"
-          value={formData.province || ''}
-          onChange={handleChange}
-        >
-          {provinces.map((province) => (
-            <MenuItem key={province.CPRO} value={province}>
-              {province.PRO}
-            </MenuItem>
+        <Select labelId="province-label" label="Provincia*" name="province" value={valorEnLista(provinces, province, 'CPRO')} onChange={elegirProvincia}>
+          {provinces.map((p) => (
+            <MenuItem key={p.CPRO} value={p}>{p.PRO}</MenuItem>
           ))}
         </Select>
       </FormControl>
-
 
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!municipalities.length}>
         <InputLabel id="municipality-label">Municipio*</InputLabel>
-        <Select
-          labelId="municipality-label"
-          label="Municipio*"
-          name="municipality"
-          value={formData.municipality || ''}
-          onChange={handleChange}
-        >
-          {municipalities.map((municipality) => (
-            <MenuItem key={municipality.CMUM} value={municipality}>
-              {municipality.DMUN50}
-            </MenuItem>
+        <Select labelId="municipality-label" label="Municipio*" name="municipality" value={valorEnLista(municipalities, municipality, 'CMUM')} onChange={elegirMunicipio}>
+          {municipalities.map((m) => (
+            <MenuItem key={m.CMUM} value={m}>{m.DMUN50}</MenuItem>
           ))}
         </Select>
       </FormControl>
-
 
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!populations.length}>
         <InputLabel id="population-label">Población*</InputLabel>
-        <Select
-          labelId="population-label"
-          label="Población*"
-          name="population"
-          value={formData.population || ''}
-          onChange={handleChange}
-        >
-          {populations.map((population) => (
-            <MenuItem key={population.CUN} value={population}>
-              {population.NENTSI50}
-            </MenuItem>
+        <Select labelId="population-label" label="Población*" name="population" value={valorEnLista(populations, population, 'CPOB')} onChange={elegirPoblacion}>
+          {populations.map((pob) => (
+            <MenuItem key={pob.CPOB} value={pob}>{pob.NENTSI50}</MenuItem>
           ))}
         </Select>
       </FormControl>
-
 
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!neighborhoods.length}>
         <InputLabel id="neighborhood-label">Barrio*</InputLabel>
-        <Select
-          labelId="neighborhood-label*"
-          label="Barrio*"
-          name="neighborhood"
-          value={formData.neighborhood || ''}
-          onChange={handleChange}
-        >
-          {neighborhoods.map((neighborhood) => (
-            <MenuItem key={neighborhood.CUN} value={neighborhood}>
-              {neighborhood.NNUCLE50}
-            </MenuItem>
+        <Select labelId="neighborhood-label" label="Barrio*" name="neighborhood" value={valorEnLista(neighborhoods, neighborhood, 'NNUCLE50')} onChange={elegirBarrio}>
+          {neighborhoods.map((n, i) => (
+            <MenuItem key={n.NNUCLE50 || i} value={n}>{n.NNUCLE50}</MenuItem>
           ))}
         </Select>
       </FormControl>
-
     </div>
   );
 }
-
-
-
-
-
-//End Location
-
-
-// Price filter
 
 export function PriceFilterMin() {
   const { minPrice, setMinPrice } = useContext(HousingContext);

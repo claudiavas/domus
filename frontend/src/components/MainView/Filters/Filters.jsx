@@ -118,8 +118,10 @@ function Filters(props) {
         </Box>
       )}
 
-      {/* Limpiar filtros: flotante en la esquina superior derecha del panel */}
-      <Fab
+      {/* Limpiar filtros: flotante SOLO en el panel de escritorio. El drawer
+          móvil tiene su botón en la barra; si ambos renderizaran el Fab fijo,
+          el del drawer cerrado (inerte) taparía al visible y robaría los clics */}
+      {!props.onClose && <Fab
         size="small"
         color="primary"
         aria-label="Limpiar filtros"
@@ -127,7 +129,7 @@ function Filters(props) {
         sx={{ position: 'fixed', top: 72, left: 265, zIndex: 3, display: { xs: 'none', sm: 'flex' } }}
       >
         <FilterAltOffIcon fontSize="small" />
-      </Fab>
+      </Fab>}
 
       <Snackbar open={!!feedback} autoHideDuration={4000} onClose={() => setFeedback(null)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert severity={feedback?.tipo || "success"} onClose={() => setFeedback(null)}>{feedback?.mensaje}</Alert>

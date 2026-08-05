@@ -246,7 +246,7 @@ export function MainView(props) {
           <HousingMap />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <RequestList myRequestsSwitch={myRequestsSwitch}/>
+          <RequestList myRequestsSwitch={myRequestsSwitch} alUsarBusqueda={() => setTabValue(0)}/>
         </TabPanel>
       </Box>
     </Box>
