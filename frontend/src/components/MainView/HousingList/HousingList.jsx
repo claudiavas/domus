@@ -4,6 +4,7 @@ import HouseCard from './Card/HouseCard';
 import { HousingContext } from '../../Contexts/HousingContext';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HousingContextFilter from '../../FilterHousing/HousingContextFilter';
+import { filtraViviendas } from '../../../utils/filtraViviendas';
 import { useTranslation } from 'react-i18next';
 //import { RoomFilter } from '../../FilterHousing';
 //import { Link } from 'react-router-dom';
@@ -17,35 +18,10 @@ export function HousingList({myHousingSwitch}) {
   console.log("Los datos de Housing son:", housing)
   const { profile } = useContext(AuthContext);
   const { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter)
-  const housingFiltrado = housing.filter((house) => {
-  
-    // Aplicar el filtro de habitaciones y metros cuadrados
-    const myHousingFilter = myHousingSwitch ? house.user._id === profile._id : true;
-    const cumpleFiltroHabitaciones = room ? house.rooms >= parseInt(room) : true;
-    const cumpleFiltroMetrosCuadrados = house.squareMeters >= meter;
-    const cumpleFiltroBaths = baths ? house.baths >= parseInt(baths) : true;
-    const cumpleFiltroGarage = garage ? house.garages >= parseInt(garage) : true;
-    const cumpleFiltroMinPrice = minPrice ? house.price >= Number(minPrice) : true;
-    const cumpleFiltroMaxPrice = maxPrice ? house.price <= Number(maxPrice) : true;
-    // Los nombres del modelo de vivienda difieren de los del estado de checkboxes
-    const cumpleFiltroCheckbox =  (!checkbox.closet || house.closets) &&
-    (!checkbox.air_condicioned || house.airConditioned) &&
-    (!checkbox.heating || house.heating) &&
-    (!checkbox.elevator || house.elevator) &&
-    (!checkbox.outside_view || house.outsideView) &&
-    (!checkbox.garden || house.garden) &&
-    (!checkbox.pool || house.pool) &&
-    (!checkbox.terrace || house.terrace) &&
-    (!checkbox.storage || house.storage) &&
-    (!checkbox.accessible || house.accessible);
-    const cumpleFiltroProvince = province ? (house.province?.CPRO === province.CPRO) : true;
-    const cumpleFiltroMunicipality = municipality ? (house.municipality?.CMUM === municipality.CMUM) : true;
-    const cumpleFiltroNeighborhood = neighborhood ? (house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50) : true;
-    const cumpleFiltroPopulation = population ? (house.population?.CUN === population.CUN) : true;
-    
-
-    return myHousingFilter  && cumpleFiltroHabitaciones &&  cumpleFiltroMetrosCuadrados && cumpleFiltroBaths && cumpleFiltroGarage && cumpleFiltroMinPrice  && cumpleFiltroMaxPrice && cumpleFiltroCheckbox && cumpleFiltroProvince && cumpleFiltroMunicipality &&cumpleFiltroPopulation && cumpleFiltroNeighborhood  ;
-  })
+  // Filtro compartido con el mapa + switch de "solo las mías"
+  const filtros = { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
+  const housingFiltrado = filtraViviendas(housing, filtros)
+    .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
   // Las viviendas del usuario logueado se muestran al final: al navegar
   // interesa ver primero la oferta de otros (las propias tienen su switch)
   .sort((a, b) => {
