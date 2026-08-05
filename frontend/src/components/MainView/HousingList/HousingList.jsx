@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { Box, Card, Skeleton } from '@mui/material';
+import { useContext, useState, useEffect } from 'react';
+import { Box, Card, Skeleton, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import HouseCard from './Card/HouseCard';
 import { HousingContext } from '../../Contexts/HousingContext';
 import { AuthContext } from '../../Contexts/AuthContext';
@@ -18,6 +18,11 @@ export function HousingList({myHousingSwitch}) {
   console.log("Los datos de Housing son:", housing)
   const { profile } = useContext(AuthContext);
   const { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter)
+  // Paginación en cliente: 12 viviendas por página
+  const POR_PAGINA = 12;
+  const [pagina, setPagina] = useState(1);
+  const [orden, setOrden] = useState('recientes');
+
   // Filtro compartido con el mapa + switch de "solo las mías"
   const filtros = { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
   const housingFiltrado = filtraViviendas(housing, filtros)
@@ -62,10 +67,35 @@ export function HousingList({myHousingSwitch}) {
     return <h1>No hay datos de viviendas disponibles.</h1>;
   }
 
+  // Ordenación
+  const ordenadas = [...housingFiltrado].sort((a, b) => {
+    if (orden === 'precio') return a.price - b.price;
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // más recientes
+  });
+
+  const totalPaginas = Math.max(1, Math.ceil(ordenadas.length / POR_PAGINA));
+  const paginaActual = Math.min(pagina, totalPaginas);
+  const visibles = ordenadas.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA);
+
+  const cambiarPagina = (_e, nueva) => {
+    setPagina(nueva);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div>
+      {/* Ordenación */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+        <FormControl size="small" sx={{ minWidth: 170 }}>
+          <InputLabel id="orden-label">Ordenar por</InputLabel>
+          <Select labelId="orden-label" label="Ordenar por" value={orden} onChange={(e) => { setOrden(e.target.value); setPagina(1); }}>
+            <MenuItem value="recientes">Más recientes</MenuItem>
+            <MenuItem value="precio">Menor precio</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       {/* Renderizar los elementos filtrados */}
-      {housingFiltrado.map((house) => (
+      {visibles.map((house) => (
         <HouseCard
           key={house._id}
           _id={house._id}
@@ -86,6 +116,7 @@ export function HousingList({myHousingSwitch}) {
           garages={house.garages}
           images={house.images}
           coordinates={house.coordinates}
+          createdAt={house.createdAt}
           pool={house.pool}
           terrace={house.terrace}
           garden={house.garden}
@@ -94,6 +125,11 @@ export function HousingList({myHousingSwitch}) {
           userId={house.user._id}
         />
       ))}
+      {totalPaginas > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+          <Pagination count={totalPaginas} page={paginaActual} onChange={cambiarPagina} color="primary" />
+        </Box>
+      )}
     </div>
 
 

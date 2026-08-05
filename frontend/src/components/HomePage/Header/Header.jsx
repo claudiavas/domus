@@ -6,6 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 export const Header = ({component}) => {
@@ -63,16 +64,21 @@ export const Header = ({component}) => {
         </>
       ) : (
         <>
-          <HomeIcon onClick={() => (navigate("/mainview"))} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton color="inherit" aria-label="Volver" onClick={() => navigate(-1)} edge="start">
+              <ArrowBackIcon />
+            </IconButton>
+            <HomeIcon sx={{ cursor: 'pointer' }} onClick={() => (navigate("/mainview"))} />
+          </Box>
 
-          <Typography variant="h5" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ fontSize: { xs: 16, sm: 20 } }}>
             {component}
           </Typography>
         </>
       )}
       <React.Fragment>
-        <Box >
-          <Tooltip title="Account settings">
+        <Box sx={{ ml: 'auto' }}>
+          <Tooltip title="Cuenta">
             <IconButton
               onClick={handleClick}
               size="small"

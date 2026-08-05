@@ -12,6 +12,7 @@ import { AppBar, Box, Drawer, IconButton, Toolbar, Typography, Tabs, Tab, Fab, F
 import AddIcon from '@mui/icons-material/Add';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import Filters from './Filters/Filters';
+import { Footer } from '../Footer';
 import { useState, useContext, useEffect } from 'react';
 import { HousingList } from './HousingList/HousingList';
 import { RequestList } from './RequestList/RequestList';
@@ -220,13 +221,6 @@ export function MainView(props) {
               label="Mostrar sólo mis propiedades"
             />
           )}
-          {tabValue === 2 && haySesion && (
-            <FormControlLabel
-              sx={{ mr: 0 }}
-              control={<Switch checked={myRequestsSwitch} onChange={handleMyRequestsSwitch} color="primary" />}
-              label="Mostrar sólo mis búsquedas"
-            />
-          )}
         </Box>
         <TabPanel value={tabValue} index={0}>
           <HousingList myHousingSwitch={myHousingSwitch}/>
@@ -246,8 +240,13 @@ export function MainView(props) {
           <HousingMap />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <RequestList myRequestsSwitch={myRequestsSwitch} alUsarBusqueda={() => setTabValue(0)}/>
+          <RequestList alUsarBusqueda={() => {
+            setTabValue(0);
+            // En móvil, abrir el panel para que se vean los filtros aplicados
+            if (window.innerWidth < 600) setMobileOpen(true);
+          }}/>
         </TabPanel>
+        <Footer />
       </Box>
     </Box>
   );

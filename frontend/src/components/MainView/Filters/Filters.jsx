@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Fab, IconButton, Snackbar, Alert, Toolbar } from "@mui/material";
+import { Box, Button, Divider, Fab, IconButton, Snackbar, Alert, Toolbar, Tooltip } from "@mui/material";
 import { BathFilter, LocationFilter, PriceFilterMin, SquareMeters, RoomFilter, GaragesFilter, CheckboxesFilters, PriceFilterMax } from "../../FilterHousing";
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import CloseIcon from '@mui/icons-material/Close';
@@ -109,7 +109,7 @@ function Filters(props) {
           borderBottom: '1px solid #eee',
           justifyContent: 'space-between',
         }}>
-          <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" color="primary">
+          <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" sx={{ color: 'text.secondary' }}>
             <FilterAltOffIcon fontSize="small" />
           </IconButton>
           <IconButton aria-label="Cerrar filtros" onClick={props.onClose} size="small">
@@ -121,15 +121,15 @@ function Filters(props) {
       {/* Limpiar filtros: flotante SOLO en el panel de escritorio. El drawer
           móvil tiene su botón en la barra; si ambos renderizaran el Fab fijo,
           el del drawer cerrado (inerte) taparía al visible y robaría los clics */}
-      {!props.onClose && <Fab
-        size="small"
-        color="primary"
-        aria-label="Limpiar filtros"
-        onClick={resetFilters}
-        sx={{ position: 'fixed', top: 72, left: 265, zIndex: 3, display: { xs: 'none', sm: 'flex' } }}
-      >
-        <FilterAltOffIcon fontSize="small" />
-      </Fab>}
+      {!props.onClose && <Tooltip title="Limpiar filtros" arrow>
+        <IconButton
+          aria-label="Limpiar filtros"
+          onClick={resetFilters}
+          sx={{ position: 'fixed', top: 72, left: 272, zIndex: 3, color: 'text.secondary' }}
+        >
+          <FilterAltOffIcon />
+        </IconButton>
+      </Tooltip>}
 
       <Snackbar open={!!feedback} autoHideDuration={4000} onClose={() => setFeedback(null)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert severity={feedback?.tipo || "success"} onClose={() => setFeedback(null)}>{feedback?.mensaje}</Alert>

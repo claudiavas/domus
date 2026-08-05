@@ -15,6 +15,7 @@ import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { useTranslation } from 'react-i18next';
 import { updateRequest } from '../../../apiService/apiService'
 
@@ -123,151 +124,88 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
     }
 
   return (
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 3,
-        display: 'flex',
-        padding: 0,
-        margin: '-5px 15px 20px -20px',
-        height: 'auto',
-      }}
-    >
+    <Card sx={{ mb: '20px', mx: { md: '15px' }, p: 2, display: 'flex', gap: 1 }}>
+      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+      {/* Chips solo con datos presentes */}
+      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
+        {transaction && <Chip label={t(`transaction.${transaction}`, { ns: "housing" })} color="primary" variant="contained" size="small" />}
+        {type && <Chip label={t(`type.${type}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
+        {furnished && <Chip label={t(`furnished.${furnished}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
+      </Box>
 
-      <span style={{ flex: '1 1 100%', marginLeft: '10px', marginRight: '10px', padding: 0 }}>
-        {/* LEFT */}
-        <span style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          {/* TOP, LEFT */}
-          <Card style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column', margin: '0px 0px 8px 0px' }}>
-            <div style={{ display: 'inline-flex', padding: '25px', margin: '10px 10px 8px 5px' }}>
-              {
-                <>
-                  {transaction && <Chip label={t(`transaction.${transaction}`, { ns: "housing" })} color="primary" variant="contained" size="small" style={{ marginRight: '15px' }} />}
-                  {type && <Chip label={t(`type.${type}`, { ns: "housing" })} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />}
-                  {furnished && <Chip label={t(`furnished.${furnished}`, { ns: "housing" })} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />}
-                </>
-              }
-           </div>
-            <div>
-              <h3 style={{ margin: '5px 5px 5px 5px', marginBottom: '5px', flexGrow: 1 }}>{title}</h3>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', padding: '25px', flexGrow: 1 }}>
-                <LocationOnOutlinedIcon style={{ marginRight: '10px' }} />
-                <h6 style={{ margin: '0px' }}>{locationText}</h6>
-              </div>
-            </div>
+      <h4 style={{ margin: '0 0 6px 0' }}>{title || 'Búsqueda guardada'}</h4>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px', padding: '25px', marginBottom: '5px' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FullscreenOutlinedIcon style={{ marginRight: '10px' }} />
-                <h5>Min {minM2} m2</h5>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FullscreenOutlinedIcon style={{ marginRight: '10px' }} />
-                <h5>Max {maxM2} m2</h5>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <BedOutlinedIcon style={{ marginRight: '10px' }} />
-                <h5>{rooms}</h5>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {baths ?
-                  <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                    <BathtubIcon style={{ marginRight: '10px' }} />
-                    <h5 style={{ margin: '0px' }}>{baths}</h5>
-                  </div> :
-                  <div></div>
-                }
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {garages ?
-                  <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                    <DirectionsCarIcon style={{ marginRight: '10px' }} />
-                    <h5 style={{ margin: '0px' }}>{garages}</h5>
-                  </div> :
-                  <div></div>
-                }</div>
-            </div>
-          </Card>
+      {locationText && (
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <LocationOnOutlinedIcon fontSize="small" sx={{ mr: '5px', color: 'primary.main' }} />
+          <h6 style={{ margin: 0 }}>{locationText}</h6>
+        </Box>
+      )}
 
+      {/* Criterios en una fila repartida (mismo patrón que la card de inmuebles) */}
+      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-start', columnGap: { xs: 3, sm: 4 }, rowGap: 0.5, mb: 1 }}>
+        {minM2 ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <FullscreenOutlinedIcon sx={{ color: 'primary.main' }} />
+            <h5 style={{ margin: 0 }}>{minM2}+ m2</h5>
+          </Box>
+        ) : null}
+        {rooms ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <BedOutlinedIcon sx={{ color: 'primary.main' }} />
+            <h5 style={{ margin: 0 }}>{rooms}+</h5>
+          </Box>
+        ) : null}
+        {baths ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <BathtubIcon sx={{ color: 'primary.main' }} />
+            <h5 style={{ margin: 0 }}>{baths}+</h5>
+          </Box>
+        ) : null}
+        {garages ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <DirectionsCarIcon sx={{ color: 'primary.main' }} />
+            <h5 style={{ margin: 0 }}>{garages}+</h5>
+          </Box>
+        ) : null}
+      </Box>
 
-          {/* BOTTOM, LEFT */}
-          <Card style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '0px', marginLeft: '5px', padding: "4px" }}>
-              <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
-                <div>Precio Minimo: {minPrice} {currencySymbol} </div>
-                <div>Precio Máximo: {maxPrice} {currencySymbol} </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Button size="small" variant="contained" onClick={usarBusqueda}>
-                    Usar búsqueda
-                  </Button>
-                  {user?._id && user._id === profile?._id && (
-                    <Tooltip title="Eliminar búsqueda" arrow>
-                      <IconButton size="small" color="error" onClick={handleDeleteRequest}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </div>
-              </h4>
-            </div>
-          </Card>
-        </span>
-      </span>
-      <span style={{ flex: '1 0 29%' }}>
-        {/* CENTER SIDE */}
-        <Card style={{ height: '100%' }}>
-          {/* TEXT ESPECIFICATIONS */}
+      {/* Equipamiento pedido, como chips pequeños */}
+      {booleanItems.some(Boolean) && (
+        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
+          {booleanItems.filter(Boolean).map((item) => (
+            <Chip key={item.label} label={item.label} size="small" variant="outlined" />
+          ))}
+        </Box>
+      )}
 
-          <div style={{ padding: "8px 8px 8px 8px" }}>
-            <Grid container spacing={2}>
-              <Grid item xs={7}>
-                {floorLevel && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Nivel de piso:</Typography>
-                )}
-                {facing && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Orientación:</Typography>
-                )}
-                {propertyAge && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Antigüedad del inmueble:</Typography>
-                )}
-                {condition && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Condición:</Typography>
-                )}
-                {furnished && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Amueblado:</Typography>
-                )}
-                {kitchenEquipment && (
-                  <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Equipamiento de cocina:</Typography>
-                )}
-              </Grid>
-              <Grid item xs={5}>
-                {floorLevel && <Typography variant="subtitle1">{t(`floorLevel.${floorLevel}`, { ns: "housing" })}</Typography>}
-                {facing && <Typography variant="subtitle1">{t(`facing.${facing}`, { ns: "housing" })}</Typography>}
-                {propertyAge && <Typography variant="subtitle1">{t(`propertyAge.${propertyAge}`, { ns: "housing" })}</Typography>}
-                {condition && <Typography variant="subtitle1">{t(`condition.${condition}`, { ns: "housing" })}</Typography>}
-                {furnished && <Typography variant="subtitle1">{t(`furnished.${furnished}`, { ns: "housing" })}</Typography>}
-                {kitchenEquipment && <Typography variant="subtitle1">{t(`kitchenEquipment.${kitchenEquipment}`, { ns: "housing" })}</Typography>}
-              </Grid>
-            </Grid>
-          </div>
+      {/* Precio con su divisor tenue, como en la card de inmuebles */}
+      <Divider sx={{ mx: '-8px' }} />
+      <Box sx={{ pt: '6px' }}>
+        <h4 style={{ margin: 0, color: '#31AFB4' }}>
+          {minPrice ? `Desde ${formattedMinPrice} ${currencySymbol}` : ''}
+          {minPrice && maxPrice ? ' · ' : ''}
+          {maxPrice ? `Hasta ${formattedMaxPrice} ${currencySymbol}` : ''}
+          {!minPrice && !maxPrice ? 'Sin límite de precio' : ''}
+        </h4>
+      </Box>
+      </Box>
 
-          <Divider style={{ margin: "10px" }} />
-
-          {/* BOOLEAN ESPECIFICATIONS */}
-          <Grid container spacing={0}>
-            {booleanItems.map((item, index) => (
-              item && (
-                <Grid item xs={6} key={index}>
-                  <Typography>
-                    <Checkbox checked={true} />
-                    {item.label && <span>{item.label}</span>} {item.value && <span>{item.value}</span>}
-                  </Typography>
-                </Grid>
-              )
-            ))}
-          </Grid>
-        </Card>
-      </span>
-    </Box >
+      {/* Columna derecha: usar búsqueda y eliminar */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5, borderLeft: '1px solid #eee', pl: 1 }}>
+        <Tooltip title="Usar búsqueda" arrow placement="left">
+          <IconButton color="primary" onClick={usarBusqueda}>
+            <ManageSearchIcon />
+          </IconButton>
+        </Tooltip>
+        {user?._id && user._id === profile?._id && (
+          <Tooltip title="Eliminar búsqueda" arrow placement="left">
+            <IconButton sx={{ color: 'text.secondary' }} onClick={handleDeleteRequest}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
+    </Card>
   )
 }

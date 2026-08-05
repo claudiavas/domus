@@ -40,13 +40,11 @@ export const LocationProvider = ({ children }) => {
     communities,
   };
 
+  // Siempre renderizar la app: los desplegables simplemente se rellenan
+  // cuando llegan las provincias (los skeletons cubren la espera visual)
   return (
     <LocationContext.Provider value={contextValue}>
-      {isLoading ? ( // Mostrar "Cargando..." mientras los datos se están cargando
-        <div>Cargando...</div>
-      ) : (
-        children // Renderizar los componentes hijos una vez que los datos se hayan cargado
-      )}
+      {children}
     </LocationContext.Provider>
   );
 };
