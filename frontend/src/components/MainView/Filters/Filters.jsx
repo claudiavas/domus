@@ -67,7 +67,7 @@ function Filters(props) {
         terrace: checkbox.terrace || undefined,
         storage: checkbox.storage || undefined,
         accessible: checkbox.accessible || undefined,
-        title: `Búsqueda${province?.PRO ? ` en ${province.PRO}` : ""}${municipality?.DMUN ? ` - ${municipality.DMUN}` : ""}`,
+        title: `Búsqueda${province?.PRO ? ` en ${province.PRO}` : ""}${municipality?.DMUN50 ? ` - ${municipality.DMUN50}` : ""}`,
       });
       setFeedback({ tipo: "success", mensaje: "Búsqueda guardada. La verás en la pestaña Mis búsquedas." });
     } catch (error) {
@@ -104,11 +104,14 @@ function Filters(props) {
           zIndex: 2,
           backgroundColor: '#ffffff',
           display: { xs: 'flex', sm: 'none' },
-          justifyContent: 'flex-end',
           py: 0.5,
           px: 1,
           borderBottom: '1px solid #eee',
+          justifyContent: 'space-between',
         }}>
+          <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" color="primary">
+            <FilterAltOffIcon fontSize="small" />
+          </IconButton>
           <IconButton aria-label="Cerrar filtros" onClick={props.onClose} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
@@ -121,7 +124,7 @@ function Filters(props) {
         color="primary"
         aria-label="Limpiar filtros"
         onClick={resetFilters}
-        sx={{ position: 'fixed', top: { xs: 66, sm: 72 }, left: 265, zIndex: 3 }}
+        sx={{ position: 'fixed', top: 72, left: 265, zIndex: 3, display: { xs: 'none', sm: 'flex' } }}
       >
         <FilterAltOffIcon fontSize="small" />
       </Fab>
