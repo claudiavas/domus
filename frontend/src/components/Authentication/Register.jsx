@@ -144,18 +144,19 @@ export function Register() {
               <span>Registrarme</span>
             </LoadingButton>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <Grid container justifyContent="flex-end">
-              <Grid item>
+            {/* Invitado a la izquierda; a la derecha el enlace a login (en dos líneas) */}
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item xs>
+                <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
+                  Continuar como invitado
+                </Link>
+              </Grid>
+              <Grid item sx={{ maxWidth: 160, textAlign: 'right' }}>
                 <Link onClick={() => navigate("/login")} variant="body2">
                   ¿Ya tienes una cuenta? Ingresa aquí
                 </Link>
               </Grid>
             </Grid>
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
-                Continuar como invitado
-              </Link>
-            </Box>
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
