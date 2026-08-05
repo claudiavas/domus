@@ -10,7 +10,7 @@ export const PhotoCarousel = ({ showThumbs, images, extraSlide }) => {
       {[
         ...images.map((image, index) => (
           <span key={index}>
-            <img src={image} alt="housing images" style={{objectFit: 'contain', width: '100%', height: '100%'}} />
+            <img src={image} alt="housing images" style={{ objectFit: 'cover', width: '100%', height: 230 }} />
           </span>
         )),
         ...(extraSlide ? [<span key="extra" style={{ display: 'block', height: '100%' }}>{extraSlide}</span>] : []),
