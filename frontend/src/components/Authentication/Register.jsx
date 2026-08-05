@@ -151,6 +151,11 @@ export function Register() {
                 </Link>
               </Grid>
             </Grid>
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
+                Continuar como invitado
+              </Link>
+            </Box>
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
