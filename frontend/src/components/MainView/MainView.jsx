@@ -82,8 +82,8 @@ export function MainView(props) {
         {...other}
       >
         {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
+          <Box sx={{ p: { xs: 1, sm: 3 } }}>
+            <Typography component="div">{children}</Typography>
           </Box>
         )}
       </div>
@@ -175,7 +175,14 @@ export function MainView(props) {
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{
+          flexGrow: 1,
+          // minWidth 0 evita que el contenido fuerce al flex-item a desbordar
+          // el viewport en móvil; el padding se reduce en pantallas pequeñas
+          minWidth: 0,
+          p: { xs: 1, sm: 3 },
+          width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` },
+        }}
       >
         <Toolbar />
 
