@@ -119,7 +119,7 @@ export const HousingDetails = () => {
   return (
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
       {/* HEADING */}
-      <h1 style={{ marginTop: 0, background: '#1976d2', color: 'white', padding: '0.5rem', display: 'flex', justifyContent: 'space-between' }}><Header component="Detalle del Inmueble" /></h1>
+      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem', display: 'flex', justifyContent: 'space-between' }}><Header component="Detalle del Inmueble" /></h1>
 
       {/* PHOTOGALLERY */}
       <PhotoGallery itemData={housingData.images} />
@@ -264,7 +264,7 @@ export const HousingDetails = () => {
 
           <Card style={{ height: "100%" }}>
             <div style={{ margin: '8px 8px 8px 8px' }}>
-              <h4 style={{ margin: '0px', padding: 0, color: "#1976d2", alignItems: "center" }}>
+              <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", alignItems: "center" }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}><Typography>Precio:</Typography> {formattedPrice} {currencySymbol}</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}><Typography>Precio/m2:</Typography> {precioxm2} {currencySymbol}</div>
               </h4>

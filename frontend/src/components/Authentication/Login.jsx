@@ -1,4 +1,5 @@
 import Avatar from '@mui/material/Avatar';
+import { theme as temaDomus } from '../../theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -16,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../Contexts/AuthContext';
 import { login } from '../apiService/apiService';
 
-const defaultTheme = createTheme();
+const defaultTheme = temaDomus;
 
 export function Login() {
   const [error, setError] = useState("");

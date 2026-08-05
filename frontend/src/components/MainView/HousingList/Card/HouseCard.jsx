@@ -124,7 +124,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
           {/* BOTTOM, CENTER */}
           <Card style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '0px', marginLeft: '5px', padding: "4px" }}>
-              <h4 style={{ margin: '0px', padding: 0, color: "#1976d2", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
+              <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
                 {/* En venta: precio total + €/m². En alquiler: €/mes. Vacacional: €/semana */}
                 {transaction === 'sale' ? (
                   <>

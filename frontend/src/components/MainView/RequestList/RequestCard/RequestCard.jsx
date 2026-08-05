@@ -163,7 +163,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
           {/* BOTTOM, LEFT */}
           <Card style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '0px', marginLeft: '5px', padding: "4px" }}>
-              <h4 style={{ margin: '0px', padding: 0, color: "#1976d2", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
+              <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
                 <div>Precio Minimo: {minPrice} {currencySymbol} </div>
                 <div>Precio Máximo: {maxPrice} {currencySymbol} </div>
                 <div style={{ display: 'flex' }}>
