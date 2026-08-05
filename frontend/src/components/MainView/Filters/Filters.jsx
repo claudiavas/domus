@@ -123,11 +123,12 @@ function Filters(props) {
           el del drawer cerrado (inerte) taparía al visible y robaría los clics */}
       {!props.onClose && <Tooltip title="Limpiar filtros" arrow>
         <IconButton
+          size="small"
           aria-label="Limpiar filtros"
           onClick={resetFilters}
-          sx={{ position: 'fixed', top: 72, left: 272, zIndex: 3, color: 'text.secondary' }}
+          sx={{ position: 'fixed', top: 74, left: 280, zIndex: 3, color: 'text.secondary' }}
         >
-          <FilterAltOffIcon />
+          <FilterAltOffIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
 

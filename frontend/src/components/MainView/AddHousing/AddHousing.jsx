@@ -706,13 +706,13 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="furnished-label">Amueblado</InputLabel>
+                <InputLabel id="furnished-label">Nivel de amueblado</InputLabel>
                 <Select
                   name="furnished"
                   value={formData.furnished}
                   onChange={handleChange}
                   labelId="furnished-label"
-                  label="Amueblado"
+                  label="Nivel de amueblado"
                 >
                   <MenuItem value="unfurnished">Sin Amueblar</MenuItem>
                   <MenuItem value="semifurnished">Semi Amueblado</MenuItem>

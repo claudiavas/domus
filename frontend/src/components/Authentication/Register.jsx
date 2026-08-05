@@ -65,17 +65,14 @@ export function Register() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            minHeight: '78vh',
+            justifyContent: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
           <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
-            {/* Volver al listado público sin iniciar sesión */}
-            <Button size="small" onClick={() => navigate('/')} sx={{ textTransform: 'none', mb: 1 }}>
-              ← Continuar como invitado
-            </Button>
           <Typography component="h1" variant="h5">
            Regístrate en Domus
           </Typography>
