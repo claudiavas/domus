@@ -126,7 +126,7 @@ export const EditUserProfile = () => {
 
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
       
-      <h1 style={{ marginTop: 0, background: '#1976d2', color: 'white', padding: '0.5rem' }}><Header component="Mi Perfil"/></h1>
+      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component="Mi Perfil"/></h1>
 
 
       {/* Avatar + search icon  */}

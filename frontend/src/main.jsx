@@ -12,6 +12,8 @@ import '@fontsource/roboto/700.css';
 import './index.css'
 
 import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from './theme';
 import { AuthProvider } from './components/Contexts/AuthContext.jsx';
 import { LocationProvider } from './components/Contexts/LocationContext.jsx';
 import { HousingProvider } from './components/Contexts/HousingContext.jsx';
@@ -20,6 +22,7 @@ import { ImagesProvider } from './components/Contexts/ImagesContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <ThemeProvider theme={theme}>
     <CssBaseline />
     <AuthProvider>
       <LocationProvider>
@@ -32,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </HousingProvider>
       </LocationProvider>
     </AuthProvider>
+    </ThemeProvider>
 
   </React.StrictMode>,
 )

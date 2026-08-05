@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { theme as temaDomus } from '../../theme';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
@@ -14,7 +15,7 @@ import { NavBar } from './Header/NavBar';
 import { useEffect, useContext } from 'react';
 import { AuthContext } from '../Contexts/AuthContext';
 
-const defaultTheme = createTheme();
+const defaultTheme = temaDomus;
 
 export const HomePage = () => {
   

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { theme as temaDomus } from '../../theme';
 import { Container, Box, Typography, Avatar, TextField, Link, Grid, Snackbar, Alert } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -69,7 +70,7 @@ export function ForgotPassword() {
     }
   };
 
-  const defaultTheme = createTheme();
+  const defaultTheme = temaDomus;
 
   return (
     <ThemeProvider theme={defaultTheme}>
