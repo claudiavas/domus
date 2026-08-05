@@ -159,6 +159,35 @@ async function wipeHousing() {
   console.log(`  borradas ${houses.length} viviendas previas`);
 }
 
+
+// Coordenadas aproximadas: capitales por CPRO + ciudades concretas por 'cpro-cmum'
+const COORDS = {
+  '01': [42.8467, -2.6716], '02': [38.9943, -1.8585], '03': [38.3452, -0.4810],
+  '04': [36.8340, -2.4637], '05': [40.6565, -4.6818], '06': [38.8794, -6.9707],
+  '07': [39.5696, 2.6502], '08': [41.3874, 2.1686], '09': [42.3439, -3.6969],
+  '10': [39.4753, -6.3723], '11': [36.5271, -6.2886], '12': [39.9864, -0.0513],
+  '13': [38.9848, -3.9274], '14': [37.8882, -4.7794], '15': [43.3623, -8.4115],
+  '16': [40.0704, -2.1374], '17': [41.9794, 2.8214], '18': [37.1773, -3.5986],
+  '19': [40.6337, -3.1674], '20': [43.3183, -1.9812], '21': [37.2614, -6.9447],
+  '22': [42.1401, -0.4089], '23': [37.7796, -3.7849], '24': [42.5987, -5.5671],
+  '25': [41.6176, 0.6200], '26': [42.4627, -2.4450], '27': [43.0121, -7.5559],
+  '28': [40.4168, -3.7038], '29': [36.7213, -4.4214], '30': [37.9922, -1.1307],
+  '31': [42.8125, -1.6458], '32': [42.3358, -7.8639], '33': [43.3619, -5.8494],
+  '34': [42.0096, -4.5288], '35': [28.1235, -15.4363], '36': [42.4310, -8.6444],
+  '37': [40.9701, -5.6635], '38': [28.4636, -16.2518], '39': [43.4623, -3.8100],
+  '40': [40.9429, -4.1088], '41': [37.3891, -5.9845], '42': [41.7666, -2.4790],
+  '43': [41.1189, 1.2445], '44': [40.3440, -1.1069], '45': [39.8628, -4.0273],
+  '46': [39.4699, -0.3763], '47': [41.6523, -4.7245], '48': [43.2630, -2.9350],
+  '49': [41.5036, -5.7440], '50': [41.6488, -0.8891], '51': [35.8894, -5.3213],
+  '52': [35.2923, -2.9381],
+  // ciudades no capitales del seed
+  '28-005': [40.4820, -3.3635], // Alcalá de Henares
+  '08-015': [41.4500, 2.2474],  // Badalona
+  '46-131': [38.9680, -0.1800], // Gandia
+  '03-031': [38.5342, -0.1314], // Benidorm
+  '29-069': [36.5101, -4.8825], // Marbella
+};
+
 // ---------- 5. Generación de viviendas ----------
 const TIPOS = [
   { v: 'apartment', peso: 50, label: 'Piso', gen: 'm' }, { v: 'house', peso: 15, label: 'Casa', gen: 'f' },
@@ -195,7 +224,7 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
   const extras = Object.entries(EXTRAS_TXT).filter(([k]) => (k === 'garages' ? garages > 0 : feats[k])).map(([, txt]) => txt).slice(0, 3);
   const adj = pick(ADJ)[tipo.gen === 'f' ? 1 : 0];
   const title = `${tipo.label} ${adj} en ${zona}`;
-  const description = `${tipo.label} de ${m2} m² con ${rooms} ${rooms === 1 ? 'dormitorio' : 'dormitorios'} y ${baths} ${baths === 1 ? 'baño' : 'baños'} en ${zona}, ${city.municipality.DMUN}.` +
+  const description = `${tipo.label} de ${m2} m² con ${rooms} ${rooms === 1 ? 'dormitorio' : 'dormitorios'} y ${baths} ${baths === 1 ? 'baño' : 'baños'} en ${zona}, ${city.municipality.DMUN50}.` +
     (extras.length ? ` Cuenta con ${extras.join(', ')}.` : '') +
     (trans === 'rent' ? ' Disponible para entrar a vivir.' : trans === 'vacation_rentals' ? ' Ideal para tus vacaciones.' : ' Una oportunidad única en la zona.');
   const nImgs = between(3, 5);
@@ -209,6 +238,11 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
   return {
     userId: pick(userIds),
     type: tipo.v, transaction: trans, country: 'Spain', currency: 'EUR', status: 'active',
+    coordinates: (() => {
+      const base = COORDS[`${city.cpro}-${city.cmum}`] || COORDS[city.cpro] || [40.0, -3.7];
+      // dispersión de ~±2km para que no se apilen los pins
+      return { lat: base[0] + (rnd() - 0.5) * 0.04, lng: base[1] + (rnd() - 0.5) * 0.05 };
+    })(),
     province: city.province, municipality: city.municipality,
     population: city.population, neighborhood: nucleo || {}, zipCode: {},
     squareMeters: m2, price, rooms, baths, garages,

@@ -5,6 +5,7 @@ import { Grid, Typography, TextField, Input, Card, Chip, Divider, Checkbox } fro
 import Paper from '@mui/material/Paper';
 import { getActiveHousing, getHouse, updateHousing } from '../../apiService/apiService';
 import { PhotoGallery } from './PhotoGallery';
+import { PhotoCarousel } from '../HousingList/Card/PhotoCarousel';
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from "react-router-dom";
@@ -117,12 +118,18 @@ export const HousingDetails = () => {
   }
 
   return (
-    <div style={{ margin: '0 3rem 3rem 3rem' }}>
-      {/* HEADING */}
-      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem', display: 'flex', justifyContent: 'space-between' }}><Header component="Detalle del Inmueble" /></h1>
+    <Box sx={{ pb: '3rem' }}>
+      {/* HEADING a ancho completo */}
+      <Box sx={{ background: '#31AFB4', color: 'white', p: '0.5rem', mb: 2 }}><Header component="Detalle del Inmueble" /></Box>
 
-      {/* PHOTOGALLERY */}
-      <PhotoGallery itemData={housingData.images} />
+      <Box sx={{ px: { xs: 1.5, md: '3rem' } }}>
+      {/* FOTOS: galería en escritorio, carrusel en móvil */}
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <PhotoGallery itemData={housingData.images} />
+      </Box>
+      <Box sx={{ display: { xs: 'block', sm: 'none' }, mb: 2 }}>
+        <PhotoCarousel showThumbs={false} images={housingData.images} />
+      </Box>
 
       <Grid container spacing={1}>
         {/* TITLE */}
@@ -175,64 +182,48 @@ export const HousingDetails = () => {
         <Grid item xs={12} md={6} lg={5} style={{ position: 'sticky', top: 0, zIndex: 999, height: '100%' }}>
           {/* MAIN ICONS */}
           <Card style={{ padding: "8px 8px 8px 8px", height: "100%" }}>
-            <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', flexGrow: 1 }}>
-              <FullscreenOutlinedIcon />
-              <h5 style={{ margin: '0px', marginLeft: '5px', marginRight: '50px' }}>{housingData.squareMeters} m2</h5>
-              <BedOutlinedIcon style={{ marginRight: '10px' }} />
-              <h5 style={{ margin: '0px' }}>{housingData.rooms}</h5>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <FullscreenOutlinedIcon />
+                <h5 style={{ margin: 0 }}>{housingData.squareMeters} m2</h5>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <BedOutlinedIcon />
+                <h5 style={{ margin: 0 }}>{housingData.rooms}</h5>
+              </Box>
               {housingData.baths ? (
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', marginLeft: "60px", flexGrow: 1 }}>
-                  <BathtubIcon style={{ marginRight: '10px' }} />
-                  <h5 style={{ margin: '0px' }}>{housingData.baths}</h5>
-                </div>
-              ) : (
-                <div></div>
-              )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <BathtubIcon />
+                  <h5 style={{ margin: 0 }}>{housingData.baths}</h5>
+                </Box>
+              ) : null}
               {housingData.garages ? (
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0px', padding: 0, marginBottom: '5px', flexGrow: 1 }}>
-                  <DirectionsCarIcon style={{ marginRight: '10px' }} />
-                  <h5 style={{ margin: '0px' }}>{housingData.garages}</h5>
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <DirectionsCarIcon />
+                  <h5 style={{ margin: 0 }}>{housingData.garages}</h5>
+                </Box>
+              ) : null}
+            </Box>
 
             <Divider style={{ margin: "10px" }} />
 
             {/* TEXT ESPECIFICATIONS */}
 
             <div style={{ padding: "8px 8px 8px 8px" }}>
-              <Grid container spacing={2}>
-                <Grid item xs={7}>
-                  {housingData.floorLevel && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Nivel de piso:</Typography>
-                  )}
-                  {housingData.facing && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Orientación:</Typography>
-                  )}
-                  {housingData.propertyAge && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Antigüedad del inmueble:</Typography>
-                  )}
-                  {housingData.condition && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Condición:</Typography>
-                  )}
-                  {housingData.furnished && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Amueblado:</Typography>
-                  )}
-                  {housingData.kitchenEquipment && (
-                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Equipamiento de cocina:</Typography>
-                  )}
-                </Grid>
-                <Grid item xs={5}>
-                  {housingData.floorLevel && <Typography variant="subtitle1">{t(`floorLevel.${floorLevel}`, {ns:"housing"})}</Typography>}
-                  {housingData.facing && <Typography variant="subtitle1">{t(`facing.${facing}`, {ns:"housing"})}</Typography>}
-                  {housingData.propertyAge && <Typography variant="subtitle1">{t(`propertyAge.${propertyAge}`, {ns:"housing"})}</Typography>}
-                  {housingData.condition && <Typography variant="subtitle1">{t(`condition.${condition}`, {ns:"housing"})}</Typography>}
-                  {housingData.furnished && <Typography variant="subtitle1">{t(`furnished.${furnished}`, {ns:"housing"})}</Typography>}
-                  {housingData.kitchenEquipment && <Typography variant="subtitle1">{t(`kitchenEquipment.${kitchenEquipment}`, {ns:"housing"})}</Typography>}
-                </Grid>
-              </Grid>
+              {/* Filas etiqueta-valor: siempre alineadas aunque la etiqueta ocupe dos líneas */}
+              {[
+                housingData.floorLevel && ['Nivel de piso', t(`floorLevel.${floorLevel}`, {ns:"housing"})],
+                housingData.facing && ['Orientación', t(`facing.${facing}`, {ns:"housing"})],
+                housingData.propertyAge && ['Antigüedad', t(`propertyAge.${propertyAge}`, {ns:"housing"})],
+                housingData.condition && ['Condición', t(`condition.${condition}`, {ns:"housing"})],
+                housingData.furnished && ['Amueblado', t(`furnished.${furnished}`, {ns:"housing"})],
+                housingData.kitchenEquipment && ['Cocina', t(`kitchenEquipment.${kitchenEquipment}`, {ns:"housing"})],
+              ].filter(Boolean).map(([etiqueta, valor]) => (
+                <Box key={etiqueta} sx={{ display: 'flex', gap: 1, py: 0.25 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', flexBasis: '45%', flexShrink: 0 }}>{etiqueta}:</Typography>
+                  <Typography variant="subtitle1" sx={{ overflowWrap: 'anywhere' }}>{valor}</Typography>
+                </Box>
+              ))}
             </div>
 
             <Divider style={{ margin: "10px" }} />
@@ -242,9 +233,9 @@ export const HousingDetails = () => {
               {booleanItems.map((item, index) => (
                 item && (
                   <Grid item xs={6} key={index}>
-                    <Typography>
-                      <Checkbox checked={true} />
-                      {item.label && <span>{item.label}</span>} {item.value && <span>{item.value}</span>}
+                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Checkbox checked={true} sx={{ py: 0.5 }} />
+                      <span>{item.label}</span>
                     </Typography>
                   </Grid>
                 )
@@ -340,7 +331,7 @@ export const HousingDetails = () => {
         </Grid>
       </Grid>
 
-      <div>
+      <Box>
         {/* UPDATE HOUSING BUTTON */}
 
         {housingData.user._id === profile._id &&
@@ -372,8 +363,9 @@ export const HousingDetails = () => {
             </Fab>
           </Box>
 
-      </div>
-    </div>
+      </Box>
+      </Box>
+    </Box>
   );
 
 } 

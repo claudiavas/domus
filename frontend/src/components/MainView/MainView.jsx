@@ -15,6 +15,7 @@ import Filters from './Filters/Filters';
 import { useState, useContext, useEffect } from 'react';
 import { HousingList } from './HousingList/HousingList';
 import { RequestList } from './RequestList/RequestList';
+import { HousingMap } from './HousingMap/HousingMap';
 import { Header } from '../HomePage/Header/Header';
 import { AuthContext } from '../Contexts/AuthContext';
 import { useNavigate } from "react-router-dom";
@@ -208,7 +209,8 @@ export function MainView(props) {
         }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
             <Tab label="Inmuebles" {...a11yProps(0)} />
-            <Tab label="Mis búsquedas" {...a11yProps(1)} />
+            <Tab label="Mapa" {...a11yProps(1)} />
+            <Tab label="Mis búsquedas" {...a11yProps(2)} />
           </Tabs>
           {/* El switch va a la derecha, a la altura de los tabs */}
           {tabValue === 0 && haySesion && (
@@ -218,7 +220,7 @@ export function MainView(props) {
               label="Mostrar sólo mis propiedades"
             />
           )}
-          {tabValue === 1 && haySesion && (
+          {tabValue === 2 && haySesion && (
             <FormControlLabel
               sx={{ mr: 0 }}
               control={<Switch checked={myRequestsSwitch} onChange={handleMyRequestsSwitch} color="primary" />}
@@ -229,7 +231,7 @@ export function MainView(props) {
         <TabPanel value={tabValue} index={0}>
           <HousingList myHousingSwitch={myHousingSwitch}/>
 
-          <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999' }}>
+          <Box sx={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '9999', display: mobileOpen ? 'none' : 'block' }}>
             <Fab
               color="primary"
               onClick={() => navigate(haySesion ? "/addhousing" : "/login")}
@@ -241,6 +243,9 @@ export function MainView(props) {
 
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
+          <HousingMap />
+        </TabPanel>
+        <TabPanel value={tabValue} index={2}>
           <RequestList myRequestsSwitch={myRequestsSwitch}/>
         </TabPanel>
       </Box>

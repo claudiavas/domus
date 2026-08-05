@@ -97,7 +97,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               <h6 style={{ margin: '0px' }}>{locationText}</h6>
             </div>
             {/* Separación uniforme entre datos a cualquier ancho (sin márgenes fijos) */}
-            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', columnGap: { xs: 2, sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <FullscreenOutlinedIcon />
                 <h5 style={{ margin: 0 }}>{squareMeters} m2</h5>

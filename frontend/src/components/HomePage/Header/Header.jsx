@@ -46,7 +46,13 @@ export const Header = ({component}) => {
         <>
           {/* En el menú: solo el icono y las letras en blanco a la derecha */}
           <Box
-            sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+            sx={{
+              display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer',
+              // En móvil, centrado real respecto a la barra completa
+              position: { xs: 'absolute', sm: 'static' },
+              left: { xs: '50%', sm: 'auto' },
+              transform: { xs: 'translateX(-50%)', sm: 'none' },
+            }}
             onClick={() => navigate('/mainview')}
           >
             <Box component="img" src="/logo-domus-blanco.png" alt="" sx={{ height: 34 }} />
