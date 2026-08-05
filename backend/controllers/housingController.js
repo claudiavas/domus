@@ -82,7 +82,24 @@ const permanentDeleteHouse = async (req, res) => {
   }
 }
 
-const updateHouse = (req,res) => {
+const updateHouse = async (req,res) => {
+  // Datos de demo: para fijar createdAt hay que saltarse a Mongoose
+  // (lo trata como inmutable) y usar el driver nativo
+  if (req.body.createdAt) {
+    try {
+      const { createdAt, ...resto } = req.body;
+      await Housing.collection.updateOne(
+        { _id: new ObjectId(req.params.houseId) },
+        { $set: { ...resto, createdAt: new Date(createdAt) } }
+      );
+      const house = await Housing.findById(req.params.houseId).populate('user');
+      return house
+        ? res.status(200).send(house)
+        : res.status(404).send({ msg: "No se han encontrado la vivienda" });
+    } catch (error) {
+      return res.status(400).send({ msg: error.message });
+    }
+  }
   Housing.findByIdAndUpdate({ _id: req.params.houseId }, req.body, { new: true })
       .populate('user')
       .then(house=>{
