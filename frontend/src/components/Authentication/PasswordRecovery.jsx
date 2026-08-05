@@ -72,7 +72,8 @@ export function PasswordRecovery() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            minHeight: '78vh',
+            justifyContent: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

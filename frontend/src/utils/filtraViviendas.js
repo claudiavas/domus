@@ -33,3 +33,35 @@ export function filtraViviendas(housing, filtros) {
       equipamiento && prov && muni && barrio && poblacion;
   });
 }
+
+// % de criterios activos que cumple una vivienda (100 si no hay criterios).
+// Para el orden por "mayor relevancia": no excluye, puntúa.
+export function puntuaRelevancia(house, filtros) {
+  const {
+    meter, room, baths, garage, minPrice, maxPrice, checkbox,
+    province, municipality, neighborhood, population,
+  } = filtros;
+
+  const criterios = [];
+  if (room) criterios.push(house.rooms >= parseInt(room));
+  if (Number(meter) > 0) criterios.push(house.squareMeters >= meter);
+  if (baths) criterios.push(house.baths >= parseInt(baths));
+  if (garage) criterios.push(house.garages >= parseInt(garage));
+  if (minPrice) criterios.push(house.price >= Number(minPrice));
+  if (maxPrice) criterios.push(house.price <= Number(maxPrice));
+  if (province) criterios.push(house.province?.CPRO === province.CPRO);
+  if (municipality) criterios.push(house.municipality?.CMUM === municipality.CMUM);
+  if (population) criterios.push(house.population?.CUN === population.CUN);
+  if (neighborhood) criterios.push(house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50);
+  const equipos = [
+    ['closet', 'closets'], ['air_condicioned', 'airConditioned'], ['heating', 'heating'],
+    ['elevator', 'elevator'], ['outside_view', 'outsideView'], ['garden', 'garden'],
+    ['pool', 'pool'], ['terrace', 'terrace'], ['storage', 'storage'], ['accessible', 'accessible'],
+  ];
+  for (const [filtro, campo] of equipos) {
+    if (checkbox[filtro]) criterios.push(Boolean(house[campo]));
+  }
+
+  if (!criterios.length) return 100;
+  return Math.round((criterios.filter(Boolean).length / criterios.length) * 100);
+}

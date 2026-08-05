@@ -16,7 +16,7 @@ import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
 import { MiniMapa } from '../../HousingMap/MiniMapa';
 
-export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden, coordinates, createdAt }) {
+export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden, coordinates, createdAt, relevancia }) {
   const [mapaAbierto, setMapaAbierto] = useState(false);
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -89,7 +89,8 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         <span style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {/* TOP, CENTER */}
           <Card style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column', margin: '0px 0px 8px 0px' }}>
-            <div style={{ display: 'inline-flex', margin: '10px 10px 8px 5px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '10px 10px 8px 5px' }}>
+              <div style={{ display: 'inline-flex' }}>
               {
                 <>
                   <Chip label={t(`transaction.${transaction}`, {ns:"housing"})} color="primary" variant="contained" size="small" style={{ marginRight: '15px' }} />
@@ -100,6 +101,22 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                     : furnished ? <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} /> : null}
                 </>
               }
+              </div>
+              <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {relevancia != null && (
+                  <Chip
+                    label={`${relevancia}% coincide`}
+                    size="small"
+                    color={relevancia >= 75 ? 'primary' : 'default'}
+                    variant={relevancia >= 75 ? 'contained' : 'outlined'}
+                  />
+                )}
+                {fechaPublicacion && (
+                  <Box component="span" sx={{ color: 'text.secondary', fontSize: 12, whiteSpace: 'nowrap' }}>
+                    {fechaPublicacion}
+                  </Box>
+                )}
+              </Box>
             </div>
             <h4 style={{ margin: '5px 5px 5px 5px', marginBottom: '5px', flexGrow: 1 }}>{title}</h4>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', flexGrow: 1 }}>
@@ -179,14 +196,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 ) : (
                   <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
                 )}
-                <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  {fechaPublicacion && (
-                    <Box component="span" sx={{ color: 'text.secondary', fontWeight: 400, fontSize: 12 }}>
-                      Publicado el {fechaPublicacion}
-                    </Box>
-                  )}
-                  <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
-                </Box>
+                <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
               </h4>
             </Box>
           </Card>

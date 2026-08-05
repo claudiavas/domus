@@ -77,7 +77,8 @@ export function ForgotPassword() {
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
-            marginTop: 12,
+            minHeight: '78vh',
+            justifyContent: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

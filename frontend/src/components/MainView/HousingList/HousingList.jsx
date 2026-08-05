@@ -1,15 +1,15 @@
 import { useContext, useState, useEffect } from 'react';
-import { Box, Card, Skeleton, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Card, Skeleton, Pagination, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
 import HouseCard from './Card/HouseCard';
 import { HousingContext } from '../../Contexts/HousingContext';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HousingContextFilter from '../../FilterHousing/HousingContextFilter';
-import { filtraViviendas } from '../../../utils/filtraViviendas';
+import { filtraViviendas, puntuaRelevancia } from '../../../utils/filtraViviendas';
 import { useTranslation } from 'react-i18next';
 //import { RoomFilter } from '../../FilterHousing';
 //import { Link } from 'react-router-dom';
 
-export function HousingList({myHousingSwitch}) {
+export function HousingList({ myHousingSwitch, onToggleMias }) {
 
   const {t} = useTranslation(['translation', 'filters']);
   
@@ -23,9 +23,12 @@ export function HousingList({myHousingSwitch}) {
   const [pagina, setPagina] = useState(1);
   const [orden, setOrden] = useState('recientes');
 
-  // Filtro compartido con el mapa + switch de "solo las mías"
+  // Filtro compartido con el mapa + switch de "solo las mías".
+  // En modo relevancia no se excluye: se puntúa cada vivienda
   const filtros = { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
-  const housingFiltrado = filtraViviendas(housing, filtros)
+  const esRelevancia = orden === 'relevancia';
+  const base = esRelevancia ? (housing || []) : filtraViviendas(housing, filtros);
+  const housingFiltrado = base
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
   // Las viviendas del usuario logueado se muestran al final: al navegar
   // interesa ver primero la oferta de otros (las propias tienen su switch)
@@ -68,8 +71,12 @@ export function HousingList({myHousingSwitch}) {
   }
 
   // Ordenación
-  const ordenadas = [...housingFiltrado].sort((a, b) => {
+  const conRelevancia = esRelevancia
+    ? housingFiltrado.map((h) => ({ ...h, _relevancia: puntuaRelevancia(h, filtros) }))
+    : housingFiltrado;
+  const ordenadas = [...conRelevancia].sort((a, b) => {
     if (orden === 'precio') return a.price - b.price;
+    if (esRelevancia) return b._relevancia - a._relevancia;
     return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // más recientes
   });
 
@@ -84,13 +91,26 @@ export function HousingList({myHousingSwitch}) {
 
   return (
     <div>
-      {/* Ordenación */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-        <FormControl size="small" sx={{ minWidth: 170 }}>
+      {/* Mis propiedades + ordenación, en la misma línea */}
+      {/* Una sola línea también en móvil, con controles compactos */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: 1, mb: 2, ml: { md: '-20px' }, mr: { md: '15px' } }}>
+        {Boolean(localStorage.getItem('token')) && onToggleMias ? (
+          <FormControlLabel
+            sx={{ ml: 0, mr: 0, '& .MuiFormControlLabel-label': { fontSize: { xs: 13, sm: 14 }, whiteSpace: 'nowrap' } }}
+            control={<Switch size="small" checked={myHousingSwitch} onChange={onToggleMias} color="primary" />}
+            label="Mis propiedades"
+          />
+        ) : <span />}
+        <FormControl size="small" sx={{
+          minWidth: { xs: 140, sm: 170 },
+          '& .MuiInputBase-root': { fontSize: { xs: 13, sm: 14 } },
+          '& .MuiInputLabel-root': { fontSize: { xs: 13, sm: 14 } },
+        }}>
           <InputLabel id="orden-label">Ordenar por</InputLabel>
           <Select labelId="orden-label" label="Ordenar por" value={orden} onChange={(e) => { setOrden(e.target.value); setPagina(1); }}>
             <MenuItem value="recientes">Más recientes</MenuItem>
             <MenuItem value="precio">Menor precio</MenuItem>
+            <MenuItem value="relevancia">Mayor relevancia</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -117,6 +137,7 @@ export function HousingList({myHousingSwitch}) {
           images={house.images}
           coordinates={house.coordinates}
           createdAt={house.createdAt}
+          relevancia={esRelevancia ? house._relevancia : null}
           pool={house.pool}
           terrace={house.terrace}
           garden={house.garden}
@@ -126,7 +147,18 @@ export function HousingList({myHousingSwitch}) {
         />
       ))}
       {totalPaginas > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+        <Box sx={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 5,
+          display: 'flex',
+          justifyContent: 'center',
+          py: 1,
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          borderTop: '1px solid #eee',
+          ml: { md: '-20px' },
+          mr: { md: '15px' },
+        }}>
           <Pagination count={totalPaginas} page={paginaActual} onChange={cambiarPagina} color="primary" />
         </Box>
       )}

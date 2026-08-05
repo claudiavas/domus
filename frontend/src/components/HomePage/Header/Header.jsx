@@ -7,6 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
 
 
 export const Header = ({component}) => {
@@ -77,7 +78,7 @@ export const Header = ({component}) => {
         </>
       )}
       <React.Fragment>
-        <Box sx={{ ml: 'auto' }}>
+        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
           <Tooltip title="Cuenta">
             <IconButton
               onClick={handleClick}
@@ -99,6 +100,7 @@ export const Header = ({component}) => {
         <Menu
           anchorEl={anchorEl}
           id="account-menu"
+          disableScrollLock
           open={open}
           onClose={handleClose}
           onClick={handleClose}
