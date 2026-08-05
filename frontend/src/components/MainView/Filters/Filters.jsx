@@ -118,9 +118,10 @@ function Filters(props) {
       {/* Limpiar filtros: flotante en la esquina superior derecha del panel */}
       <Fab
         size="small"
+        color="primary"
         aria-label="Limpiar filtros"
         onClick={resetFilters}
-        sx={{ position: 'fixed', top: { xs: 66, sm: 72 }, left: 265, zIndex: 3, backgroundColor: '#fff' }}
+        sx={{ position: 'fixed', top: { xs: 66, sm: 72 }, left: 265, zIndex: 3 }}
       >
         <FilterAltOffIcon fontSize="small" />
       </Fab>
