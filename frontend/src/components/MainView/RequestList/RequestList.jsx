@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RequestCard } from './RequestCard/RequestCard';
+import { Box, Card, Skeleton } from '@mui/material';
 import { getActiveRequest } from '../../apiService/apiService';
 
 
@@ -25,7 +26,17 @@ export function RequestList({ myHousingSwitch }) {
   }, []);
 
   if (loading) {
-    return <h1>Cargando...</h1>;
+    return (
+      <div>
+        {[1, 2].map((k) => (
+          <Card key={k} sx={{ p: 2, mb: '20px', mx: { md: '15px' } }}>
+            <Skeleton width="40%" height={32} />
+            <Skeleton width="60%" />
+            <Skeleton width="80%" />
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   if (!requesting || requesting.length === 0) {
