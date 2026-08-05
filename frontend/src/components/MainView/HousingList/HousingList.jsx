@@ -85,6 +85,7 @@ export function HousingList({myHousingSwitch}) {
           furnished={house.furnished}
           garages={house.garages}
           images={house.images}
+          coordinates={house.coordinates}
           pool={house.pool}
           terrace={house.terrace}
           garden={house.garden}

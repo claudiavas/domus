@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, CardActionArea, CardActions, Box, Card, CardContent, CardMedia, Divider, Avatar, Chip, AlertTitle, Tooltip, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, CardActionArea, CardActions, Box, Card, CardContent, CardMedia, Divider, Avatar, Chip, AlertTitle, Tooltip, IconButton } from '@mui/material';
 import { PhotoCarousel } from './PhotoCarousel';
 import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import BathtubIcon from '@mui/icons-material/Bathtub';
@@ -14,8 +14,10 @@ import { AuthContext } from '../../../Contexts/AuthContext';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
+import { MiniMapa } from '../../HousingMap/MiniMapa';
 
-export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden }) {
+export default function HouseCard({ _id, user, showRealEstateLogo, province, municipality, population, neighborhood, images, currency, price, squareMeters, rooms, transaction, type, furnished, garages, baths, title, pool, terrace, garden, coordinates }) {
+  const [mapaAbierto, setMapaAbierto] = useState(false);
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
   const showThumbsValue = false;
@@ -67,10 +69,14 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         height: { xs: 'auto', md: '230px' },
       }}
     >
-      <Box onClick={(e) => e.stopPropagation()} sx={{ flex: { md: '1 0 39%' }, width: { xs: '100%', md: 'auto' }, cursor: 'default' }}>
+      <Box onClick={(e) => e.stopPropagation()} sx={{ flex: { md: '0 0 40%' }, maxWidth: { md: '40%' }, width: { xs: '100%', md: 'auto' }, cursor: 'default' }}>
         {/* LEFT SIDE */}
         <Card style={{ height: 230 }}>
-          <PhotoCarousel showThumbs={showThumbsValue} images={images} style={{ height: '100%' }} />
+          <PhotoCarousel
+            showThumbs={showThumbsValue}
+            images={images}
+            extraSlide={coordinates?.lat ? <MiniMapa lat={coordinates.lat} lng={coordinates.lng} height={230} /> : null}
+          />
         </Card>
       </Box>
 
@@ -93,9 +99,26 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
             </div>
             <h4 style={{ margin: '5px 5px 5px 5px', marginBottom: '5px', flexGrow: 1 }}>{title}</h4>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', flexGrow: 1 }}>
-              <LocationOnOutlinedIcon style={{ marginRight: '5px' }} />
+              <Tooltip title="Ver en el mapa" arrow>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  sx={{ mr: '2px', p: '2px' }}
+                  onClick={(e) => { e.stopPropagation(); setMapaAbierto(true); }}
+                >
+                  <LocationOnOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <h6 style={{ margin: '0px' }}>{locationText}</h6>
             </div>
+
+            {/* Popup con la ubicación del inmueble */}
+            <Dialog open={mapaAbierto} onClose={(e) => setMapaAbierto(false)} maxWidth="sm" fullWidth onClick={(e) => e.stopPropagation()}>
+              <DialogTitle sx={{ py: 1.5, fontSize: 16 }}>{locationText}</DialogTitle>
+              <Box sx={{ height: 380 }}>
+                {mapaAbierto && coordinates?.lat && <MiniMapa lat={coordinates.lat} lng={coordinates.lng} />}
+              </Box>
+            </Dialog>
             {/* Separación uniforme entre datos a cualquier ancho (sin márgenes fijos) */}
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

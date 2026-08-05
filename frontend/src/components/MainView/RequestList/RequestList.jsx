@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { RequestCard } from './RequestCard/RequestCard';
 import { Box, Card, Skeleton } from '@mui/material';
 import { getActiveRequest } from '../../apiService/apiService';
+import { useContext } from 'react';
+import { AuthContext } from '../../Contexts/AuthContext';
 
 
-export function RequestList({ myHousingSwitch }) {
+export function RequestList({ myRequestsSwitch, alUsarBusqueda }) {
+  const { profile } = useContext(AuthContext);
   const [requesting, setRequest] = useState([]);
   const [loading, setLoading] = useState(true);
   console.log("requesting", requesting)
@@ -45,13 +48,17 @@ export function RequestList({ myHousingSwitch }) {
 
   return (
     <span>
-      {requesting.map((request) => (
+      {requesting
+        .filter((r) => (myRequestsSwitch ? r.user?._id === profile?._id : true))
+        .map((request) => (
         //<Link to={`/housingdetails/${house._id}`} key={house._id}>
         <RequestCard
           key={request._id}
           _id={request._id}
           showRealEstateLogo={request.showRealEstateLogo}
           user={request.user || {}} // un requerimiento sin usuario no debe romper la tarjeta
+          alUsarBusqueda={alUsarBusqueda}
+          requestCompleta={request}
           title={request.title}
           type={request.type}
           transaction={request.transaction}

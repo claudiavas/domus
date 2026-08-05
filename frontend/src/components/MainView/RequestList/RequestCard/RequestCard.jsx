@@ -9,6 +9,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../../../Contexts/AuthContext';
+import HousingContextFilter from '../../../FilterHousing/HousingContextFilter';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
@@ -22,12 +23,41 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
   minM2, maxM2, currency, minPrice, maxPrice, floorLevel,
   facing, propertyAge, rooms, baths, garages, condition, furnished, kitchenEquipment,
   closets, airConditioned, heating, elevator, outsideView, garden, pool, terrace, storage,
-  accessible, _id }) {
+  accessible, _id, requestCompleta, alUsarBusqueda }) {
 
   const { t } = useTranslation();
   const navigate = useNavigate()
   const showThumbsValue = false;
   const { profile } = useContext(AuthContext);
+  const filtros = useContext(HousingContextFilter);
+
+  // Vuelca los criterios guardados al panel de filtros y salta a Inmuebles
+  const usarBusqueda = () => {
+    const r = requestCompleta || {};
+    filtros.setProvince(r.province?.CPRO ? r.province : undefined);
+    filtros.setMunicipality(r.municipality?.CMUM ? r.municipality : undefined);
+    filtros.setPopulation(r.population?.CPOB || r.population?.NENTSI50 ? r.population : undefined);
+    filtros.setNeighborhood(r.neighborhood?.NNUCLE50 ? r.neighborhood : undefined);
+    filtros.setMinPrice(r.minPrice || '');
+    filtros.setMaxPrice(r.maxPrice || '');
+    filtros.setRoom(r.rooms > 1 ? String(r.rooms) : '');
+    filtros.setBaths(r.baths ? String(r.baths) : '');
+    filtros.setGarage(r.garages ? String(r.garages) : '');
+    filtros.setMeter(r.minM2 || 0);
+    filtros.setCheckbox({
+      closet: !!r.closets,
+      air_condicioned: !!r.airConditioned,
+      heating: !!r.heating,
+      elevator: !!r.elevator,
+      outside_view: !!r.outsideView,
+      garden: !!r.garden,
+      pool: !!r.pool,
+      terrace: !!r.terrace,
+      storage: !!r.storage,
+      accessible: !!r.accessible,
+    });
+    if (alUsarBusqueda) alUsarBusqueda();
+  };
 
 
 
@@ -166,15 +196,17 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
               <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
                 <div>Precio Minimo: {minPrice} {currencySymbol} </div>
                 <div>Precio Máximo: {maxPrice} {currencySymbol} </div>
-                <div style={{ display: 'flex' }}>
-                {
-                    user?._id && user._id === profile?._id &&
-                  <>
-                    <EditIcon style={{ cursor: 'pointer' }} onClick={() => navigate(`/housingdetails/${_id}`)} />
-                    <DeleteIcon style={{ cursor: 'pointer' }} onClick={handleDeleteRequest} />
-                  </>
-                }
-
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Button size="small" variant="contained" onClick={usarBusqueda}>
+                    Usar búsqueda
+                  </Button>
+                  {user?._id && user._id === profile?._id && (
+                    <Tooltip title="Eliminar búsqueda" arrow>
+                      <IconButton size="small" color="error" onClick={handleDeleteRequest}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </div>
               </h4>
             </div>
