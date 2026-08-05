@@ -7,7 +7,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import AddIcon from '@mui/icons-material/Add';
 
 
 export const Header = ({component}) => {
