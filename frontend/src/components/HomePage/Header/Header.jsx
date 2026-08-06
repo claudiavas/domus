@@ -8,6 +8,8 @@ import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import AddIcon from '@mui/icons-material/Add';
+import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { ColorModeContext } from '../../../theme';
 import { useTranslation } from 'react-i18next';
@@ -91,13 +93,15 @@ export const Header = ({component}) => {
       )}
       <React.Fragment>
         <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+          {/* Language and theme live in the bar on desktop and inside the
+              account menu on mobile, where horizontal space is scarce */}
           <Tooltip title={i18n.language?.startsWith('es') ? 'English' : 'Español'}>
-            <IconButton color="inherit" onClick={toggleLanguage} sx={{ fontSize: 14, fontWeight: 700, width: 40 }}>
+            <IconButton color="inherit" onClick={toggleLanguage} sx={{ fontSize: 14, fontWeight: 700, width: 40, display: { xs: 'none', sm: 'inline-flex' } }}>
               {i18n.language?.startsWith('es') ? 'EN' : 'ES'}
             </IconButton>
           </Tooltip>
           <Tooltip title={mode === 'light' ? t('darkMode') : t('lightMode')}>
-            <IconButton color="inherit" onClick={toggleColorMode}>
+            <IconButton color="inherit" onClick={toggleColorMode} sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
               {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
             </IconButton>
           </Tooltip>
@@ -156,6 +160,27 @@ export const Header = ({component}) => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
 
+          {/* Publishing entry mirrors the floating action button; guests are
+              routed to the login first */}
+          <MenuItem onClick={() => navigate(isLoggedIn ? "/addhousing" : "/login")}>
+            <ListItemIcon>
+              <AddIcon fontSize="small" />
+            </ListItemIcon>
+            {t('publishProperty')}
+          </MenuItem>
+          <MenuItem onClick={toggleLanguage} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+            <ListItemIcon>
+              <LanguageIcon fontSize="small" />
+            </ListItemIcon>
+            {i18n.language?.startsWith('es') ? 'English' : 'Español'}
+          </MenuItem>
+          <MenuItem onClick={toggleColorMode} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+            <ListItemIcon>
+              {mode === 'light' ? <DarkModeIcon fontSize="small" /> : <LightModeIcon fontSize="small" />}
+            </ListItemIcon>
+            {mode === 'light' ? t('darkMode') : t('lightMode')}
+          </MenuItem>
+          <Divider />
           {isLoggedIn ? (
             <div>
               <MenuItem onClick={() => (
