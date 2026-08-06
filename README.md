@@ -8,9 +8,9 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 |---|---|
 | ![Listado en escritorio](docs/screenshot-desktop.png) | ![Mapa con las viviendas](docs/screenshot-map.png) |
 
-| Modo oscuro | Móvil |
-|---|---|
-| ![Modo oscuro](docs/screenshot-dark.png) | ![Listado en móvil](docs/screenshot-mobile.png) |
+| Modo oscuro | Móvil | Filtros en móvil |
+|---|---|---|
+| ![Modo oscuro](docs/screenshot-dark.png) | ![Listado en móvil](docs/screenshot-mobile.png) | ![Panel de filtros en móvil](docs/screenshot-filters.png) |
 
 ## Qué hace
 
