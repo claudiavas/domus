@@ -88,16 +88,18 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         <span style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {/* TOP, CENTER */}
           <Card style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column', margin: '0px 0px 8px 0px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '10px 10px 8px 5px' }}>
-              <div style={{ display: 'inline-flex' }}>
+            {/* Chips wrap onto a second row when needed; the date keeps its
+                top-right spot and never gets pushed out */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', margin: '10px 10px 8px 5px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {
                 <>
-                  <Chip label={t(`transaction.${transaction}`, {ns:"housing"})} color="primary" variant="contained" size="small" style={{ marginRight: '15px' }} />
-                  <Chip label={t(`type.${type}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
-                  {pool ? <Chip label="Piscina" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
-                    : terrace ? <Chip label="Terraza" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
-                    : garden ? <Chip label="Jardín" color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} />
-                    : furnished ? <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" style={{ marginRight: '15px' }} /> : null}
+                  <Chip label={t(`transaction.${transaction}`, {ns:"housing"})} color="primary" variant="contained" size="small" />
+                  <Chip label={t(`type.${type}`, {ns:"housing"})} color="primary" variant="outlined" size="small" />
+                  {pool ? <Chip label="Piscina" color="primary" variant="outlined" size="small" />
+                    : terrace ? <Chip label="Terraza" color="primary" variant="outlined" size="small" />
+                    : garden ? <Chip label="Jardín" color="primary" variant="outlined" size="small" />
+                    : furnished ? <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" /> : null}
                 </>
               }
               </div>

@@ -23,7 +23,8 @@ import { GEOAPI_KEY, GEOAPI_URL } from '../../config';
 
 /**
  * Primary filter of the panel: buy / rent / vacation rental.
- * Selecting the active option again clears the choice (show everything).
+ * Multiple options can be active at once (e.g. buy and rent together);
+ * an empty selection shows every listing.
  */
 export function TransactionFilter() {
   const { t } = useTranslation('ui');
@@ -31,12 +32,11 @@ export function TransactionFilter() {
 
   return (
     <ToggleButtonGroup
-      exclusive
       fullWidth
       size="small"
       color="primary"
-      value={transaction || null}
-      onChange={(_e, value) => setTransaction(value || '')}
+      value={transaction || []}
+      onChange={(_e, value) => setTransaction(value || [])}
       sx={{ width: '90%', ml: '1em', my: 0.75 }}
     >
       <ToggleButton value="sale">{t('buy')}</ToggleButton>

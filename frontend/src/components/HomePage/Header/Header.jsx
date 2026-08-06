@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Avatar, Box, Divider, ListItemIcon, Tooltip, Container } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonIcon from '@mui/icons-material/Person';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
@@ -109,7 +112,8 @@ export const Header = ({component}) => {
             <IconButton
               onClick={handleClick}
               size="small"
-              sx={{ ml: 2 }}
+              // Mirrors the left inset of the drawer toggle on mobile
+              sx={{ ml: 2, mr: { xs: '-12px', sm: 0 } }}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
@@ -160,14 +164,6 @@ export const Header = ({component}) => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
 
-          {/* Publishing entry mirrors the floating action button; guests are
-              routed to the login first */}
-          <MenuItem onClick={() => navigate(isLoggedIn ? "/addhousing" : "/login")}>
-            <ListItemIcon>
-              <AddIcon fontSize="small" />
-            </ListItemIcon>
-            {t('publishProperty')}
-          </MenuItem>
           <MenuItem onClick={toggleLanguage} sx={{ display: { xs: 'flex', sm: 'none' } }}>
             <ListItemIcon>
               <LanguageIcon fontSize="small" />
@@ -186,8 +182,19 @@ export const Header = ({component}) => {
               <MenuItem onClick={() => (
                 navigate("/userprofile")
               )}>
-                <Avatar sx={{ width: 32, height: 32 }} src={profile.profilePicture} /> {t('myProfile')}
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                {t('myProfile')}
               </MenuItem>
+          {/* Publishing entry mirrors the floating action button; guests are
+              routed to the login first */}
+          <MenuItem onClick={() => navigate(isLoggedIn ? "/addhousing" : "/login")}>
+            <ListItemIcon>
+              <AddIcon fontSize="small" />
+            </ListItemIcon>
+            {t('publishProperty')}
+          </MenuItem>
               <Divider />
               <MenuItem onClick={logout}>
                 <ListItemIcon>
@@ -205,8 +212,19 @@ export const Header = ({component}) => {
                 Iniciar sesión
               </MenuItem>
               <MenuItem onClick={() => navigate("/register")}>
-                <Avatar sx={{ width: 32, height: 32 }} /> {t('register')}
+                <ListItemIcon>
+                  <PersonAddIcon fontSize="small" />
+                </ListItemIcon>
+                {t('register')}
               </MenuItem>
+          {/* Publishing entry mirrors the floating action button; guests are
+              routed to the login first */}
+          <MenuItem onClick={() => navigate(isLoggedIn ? "/addhousing" : "/login")}>
+            <ListItemIcon>
+              <AddIcon fontSize="small" />
+            </ListItemIcon>
+            {t('publishProperty')}
+          </MenuItem>
             </div>
           )}
         </Menu>
