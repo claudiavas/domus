@@ -52,7 +52,6 @@ export function ForgotPassword() {
 
 
       const response = await findUserByEmail(email);
-      console.log(response.length);
         if (response && response.length > 0) {
           const user = response[0];
           const name = user.name;

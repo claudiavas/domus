@@ -3,12 +3,13 @@ import React, { createContext, useState } from 'react';
 const HousingContextFilter = createContext();
 
 export function InmueblesProvider({ children }) {
+  const [transaction, setTransaction] = useState('');
   const [room, setRoom] = useState('');
   const [baths, setBaths] = useState('');
-  const [meter, setMeter] = useState(0); // sin mínimo por defecto
+  const [meter, setMeter] = useState(0); // no minimum by default
   const [garage, setGarage] = useState ('');
   const [minPrice, setMinPrice] = useState ('');
-  const [maxPrice, setMaxPrice] = useState (''); // sin tope por defecto, como el mínimo
+  const [maxPrice, setMaxPrice] = useState (''); // no ceiling by default, mirroring the minimum
   const [checkbox, setCheckbox] = useState({
     closet: false,
     air_condicioned: false,
@@ -27,6 +28,7 @@ export function InmueblesProvider({ children }) {
   const [population, setPopulation] = useState();
 
   const resetFilters = () => {
+    setTransaction('');
     setMeter(0);
     setRoom('');
     setBaths('');
@@ -77,7 +79,7 @@ export function InmueblesProvider({ children }) {
     setPopulation,
   };
   return (
-    <HousingContextFilter.Provider value={{ room, setRoom, baths, setBaths, meter, setMeter, garage, setGarage, minPrice, setMinPrice, maxPrice, setMaxPrice, checkbox, setCheckbox, province, setProvince, municipality, setMunicipality, neighborhood, setNeighborhood, population, setPopulation, resetFilters }}>
+    <HousingContextFilter.Provider value={{ transaction, setTransaction, room, setRoom, baths, setBaths, meter, setMeter, garage, setGarage, minPrice, setMinPrice, maxPrice, setMaxPrice, checkbox, setCheckbox, province, setProvince, municipality, setMunicipality, neighborhood, setNeighborhood, population, setPopulation, resetFilters }}>
       {children}
     </HousingContextFilter.Provider>
   );

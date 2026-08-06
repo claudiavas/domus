@@ -7,9 +7,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../../Contexts/AuthContext';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import { ColorModeContext } from '../../../theme';
+import { useTranslation } from 'react-i18next';
 
 
 export const Header = ({component}) => {
+
+  const { mode, toggleColorMode } = useContext(ColorModeContext);
+  const { t, i18n } = useTranslation('ui');
+
+  /** Switches between Spanish and English and remembers the choice. */
+  const toggleLanguage = () => {
+    const next = i18n.language?.startsWith('es') ? 'en' : 'es';
+    i18n.changeLanguage(next);
+    localStorage.setItem('lang', next);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -25,17 +39,16 @@ export const Header = ({component}) => {
     setAnchorEl(null);
   };
 
-  // Comparar en minúsculas: la ruta registrada es /MainView
+  // Compare lower-cased: the registered route is /MainView
   const isMainView = ['/mainview', '/'].includes(location.pathname.toLowerCase());
 
-  // Lógica para cerrar sesión...
 
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
   const logout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate("/") // el listado es público: al salir se sigue navegando
+    navigate("/") // browsing stays public after logout
   };
 
 
@@ -45,11 +58,11 @@ export const Header = ({component}) => {
     <Container maxWidth={false} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       {isMainView ? (
         <>
-          {/* En el menú: solo el icono y las letras en blanco a la derecha */}
+          {/* Menu variant: white icon plus wordmark */}
           <Box
             sx={{
               display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer',
-              // En móvil, centrado real respecto a la barra completa
+              // Centred against the full bar width on mobile
               position: { xs: 'absolute', sm: 'static' },
               left: { xs: '50%', sm: 'auto' },
               transform: { xs: 'translateX(-50%)', sm: 'none' },
@@ -78,7 +91,17 @@ export const Header = ({component}) => {
       )}
       <React.Fragment>
         <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-          <Tooltip title="Cuenta">
+          <Tooltip title={i18n.language?.startsWith('es') ? 'English' : 'Español'}>
+            <IconButton color="inherit" onClick={toggleLanguage} sx={{ fontSize: 14, fontWeight: 700, width: 40 }}>
+              {i18n.language?.startsWith('es') ? 'EN' : 'ES'}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={mode === 'light' ? t('darkMode') : t('lightMode')}>
+            <IconButton color="inherit" onClick={toggleColorMode}>
+              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('account')}>
             <IconButton
               onClick={handleClick}
               size="small"
@@ -138,14 +161,14 @@ export const Header = ({component}) => {
               <MenuItem onClick={() => (
                 navigate("/userprofile")
               )}>
-                <Avatar sx={{ width: 32, height: 32 }} src={profile.profilePicture} /> Mi perfil
+                <Avatar sx={{ width: 32, height: 32 }} src={profile.profilePicture} /> {t('myProfile')}
               </MenuItem>
               <Divider />
               <MenuItem onClick={logout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
-                Cerrar sesión
+                {t('logout')}
               </MenuItem>
             </div>
           ) : (
@@ -157,7 +180,7 @@ export const Header = ({component}) => {
                 Iniciar sesión
               </MenuItem>
               <MenuItem onClick={() => navigate("/register")}>
-                <Avatar sx={{ width: 32, height: 32 }} /> Registrarse
+                <Avatar sx={{ width: 32, height: 32 }} /> {t('register')}
               </MenuItem>
             </div>
           )}

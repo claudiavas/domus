@@ -33,25 +33,21 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 export const HousingDetails = () => {
 
   const navigate = useNavigate()
-  const { _id } = useParams(); // Obtener el parámetro de la URL
-  console.log("_id en HousingDetails", _id)
+  const { _id } = useParams();
   const { housing } = useContext(HousingContext);
-  console.log("housing en HousingDetails", housing)
   const { profile } = useContext(AuthContext);
   const {t} = useTranslation();
 
   const housingData = housing.find((item) => item._id === _id);
 
-  // Buscar la vivienda por ID
+
   useEffect(() => {
-    console.log("housingData en HousingDetails", housingData)
   }, [housing]);
 
   if (!housingData) {
     return <div>Vivienda no encontrada</div>;
   }
   const user = housingData.user
-  console.log("user en HousingDetails", user)
 
 
   const precioxm2 = (housingData.price / housingData.squareMeters).toFixed(0);
@@ -119,11 +115,11 @@ export const HousingDetails = () => {
 
   return (
     <Box sx={{ pb: '3rem' }}>
-      {/* HEADING a ancho completo */}
-      <Box sx={{ background: '#31AFB4', color: 'white', p: '0.5rem', mb: 2 }}><Header component="Detalle del Inmueble" /></Box>
+      {/* Full-width heading bar */}
+      <Box sx={{ background: '#31AFB4', color: 'white', p: '0.5rem', mb: 2 }}><Header component={t('detailTitle', {ns:'ui'})} /></Box>
 
       <Box sx={{ px: { xs: 1.5, md: '3rem' } }}>
-      {/* FOTOS: galería en escritorio, carrusel en móvil */}
+      {/* Photos: tiled gallery on desktop, swipeable carousel on mobile */}
       <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
         <PhotoGallery itemData={housingData.images} />
       </Box>
@@ -137,12 +133,12 @@ export const HousingDetails = () => {
           {housingData.title && <Typography variant="h6">{housingData.title}</Typography>}
           {housingData.user._id === profile._id && (
             <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Tooltip title="Editar" arrow>
+              <Tooltip title={t('edit', {ns:'ui'})} arrow>
                 <IconButton color="primary" onClick={() => navigate(`/updatehousing/${_id}`, { state: { housingData } })}>
                   <EditIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Eliminar" arrow>
+              <Tooltip title={t('delete', {ns:'ui'})} arrow>
                 <IconButton sx={{ color: 'text.secondary' }} onClick={() => handleDeleteHousing(_id)}>
                   <DeleteIcon />
                 </IconButton>
@@ -224,14 +220,14 @@ export const HousingDetails = () => {
             {/* TEXT ESPECIFICATIONS */}
 
             <div style={{ padding: "8px 8px 8px 8px" }}>
-              {/* Filas etiqueta-valor: siempre alineadas aunque la etiqueta ocupe dos líneas */}
+              {/* Label-value rows stay aligned even when a label wraps */}
               {[
-                housingData.floorLevel && ['Nivel de piso', t(`floorLevel.${floorLevel}`, {ns:"housing"})],
-                housingData.facing && ['Orientación', t(`facing.${facing}`, {ns:"housing"})],
-                housingData.propertyAge && ['Antigüedad', t(`propertyAge.${propertyAge}`, {ns:"housing"})],
-                housingData.condition && ['Condición', t(`condition.${condition}`, {ns:"housing"})],
-                housingData.furnished && ['Amueblado', t(`furnished.${furnished}`, {ns:"housing"})],
-                housingData.kitchenEquipment && ['Cocina', t(`kitchenEquipment.${kitchenEquipment}`, {ns:"housing"})],
+                housingData.floorLevel && [t('floorLevel', {ns:'ui'}), t(`floorLevel.${floorLevel}`, {ns:"housing"})],
+                housingData.facing && [t('orientation', {ns:'ui'}), t(`facing.${facing}`, {ns:"housing"})],
+                housingData.propertyAge && [t('propertyAge', {ns:'ui'}), t(`propertyAge.${propertyAge}`, {ns:"housing"})],
+                housingData.condition && [t('condition', {ns:'ui'}), t(`condition.${condition}`, {ns:"housing"})],
+                housingData.furnished && [t('furnishedLabel', {ns:'ui'}), t(`furnished.${furnished}`, {ns:"housing"})],
+                housingData.kitchenEquipment && [t('kitchen', {ns:'ui'}), t(`kitchenEquipment.${kitchenEquipment}`, {ns:"housing"})],
               ].filter(Boolean).map(([etiqueta, valor]) => (
                 <Box key={etiqueta} sx={{ display: 'flex', gap: 1, py: 0.25 }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold', flexBasis: '45%', flexShrink: 0 }}>{etiqueta}:</Typography>

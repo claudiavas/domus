@@ -1,19 +1,22 @@
-// Filtro de viviendas compartido entre el listado y el mapa.
-// Recibe el array de viviendas y el objeto del HousingContextFilter.
+/**
+ * Shared listing filter used by both the list view and the map view.
+ * Receives the housing array and the filter context values.
+ */
 export function filtraViviendas(housing, filtros) {
   const {
-    meter, room, baths, garage, minPrice, maxPrice, checkbox,
+    transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox,
     province, municipality, neighborhood, population,
   } = filtros;
 
   return (housing || []).filter((house) => {
+    const operacion = transaction ? house.transaction === transaction : true;
     const habitaciones = room ? house.rooms >= parseInt(room) : true;
     const metros = house.squareMeters >= meter;
     const banos = baths ? house.baths >= parseInt(baths) : true;
     const garaje = garage ? house.garages >= parseInt(garage) : true;
     const precioMin = minPrice ? house.price >= Number(minPrice) : true;
     const precioMax = maxPrice ? house.price <= Number(maxPrice) : true;
-    // Los nombres del modelo difieren de los del estado de checkboxes
+    // Model field names differ from the checkbox state keys
     const equipamiento = (!checkbox.closet || house.closets) &&
       (!checkbox.air_condicioned || house.airConditioned) &&
       (!checkbox.heating || house.heating) &&
@@ -29,20 +32,24 @@ export function filtraViviendas(housing, filtros) {
     const barrio = neighborhood ? (house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50) : true;
     const poblacion = population ? (house.population?.CUN === population.CUN) : true;
 
-    return habitaciones && metros && banos && garaje && precioMin && precioMax &&
+    return operacion && habitaciones && metros && banos && garaje && precioMin && precioMax &&
       equipamiento && prov && muni && barrio && poblacion;
   });
 }
 
-// % de criterios activos que cumple una vivienda (100 si no hay criterios).
-// Para el orden por "mayor relevancia": no excluye, puntúa.
+/**
+ * Percentage of the active criteria satisfied by a property
+ * (100 when no criteria are set). Used by the relevance sort,
+ * which scores every listing instead of excluding them.
+ */
 export function puntuaRelevancia(house, filtros) {
   const {
-    meter, room, baths, garage, minPrice, maxPrice, checkbox,
+    transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox,
     province, municipality, neighborhood, population,
   } = filtros;
 
   const criterios = [];
+  if (transaction) criterios.push(house.transaction === transaction);
   if (room) criterios.push(house.rooms >= parseInt(room));
   if (Number(meter) > 0) criterios.push(house.squareMeters >= meter);
   if (baths) criterios.push(house.baths >= parseInt(baths));

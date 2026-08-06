@@ -1,4 +1,5 @@
 import axios from "axios";
+import { GEOAPI_KEY } from '../../config';
 // import BackendUrl from "../../configGlobal";
 
 // Vite inyecta las variables VITE_* en build; dotenv no funciona en navegador
@@ -51,10 +52,8 @@ export const resetPassword = async (userId, body) => {
 };
 
 export const findUserByEmail = async (email) => {
-  console.log("ejecutando findUserByEmail")
   const encodedEmail = encodeURIComponent(email); // reemplaza el @ por %40
   const { data } = await axios.get(`${BackendUrl}/user?email=${encodedEmail}`);
-  console.log(data);
   return data;
 }
 
@@ -93,12 +92,12 @@ export const updateRequest = async (_id, body) => {
 //GEOAPI
 
 export const getCommunities = async () => { 
-  const { data } = await axios.get('https://apiv1.geoapi.es/comunidades?type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0');
+  const { data } = await axios.get(`https://apiv1.geoapi.es/comunidades?type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
   return data;
 } 
 
 export const getProvinces = async () => { 
-  const { data } = await axios.get('https://apiv1.geoapi.es/provincias?type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0'); 
+  const { data } = await axios.get(`https://apiv1.geoapi.es/provincias?type=JSON&key=${GEOAPI_KEY}&sandbox=0`); 
   return data;
 }
 

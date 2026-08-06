@@ -27,12 +27,13 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
   accessible, _id, requestCompleta, alUsarBusqueda }) {
 
   const { t } = useTranslation();
+  const tu = (k) => t(k, { ns: 'ui' });
   const navigate = useNavigate()
   const showThumbsValue = false;
   const { profile } = useContext(AuthContext);
   const filtros = useContext(HousingContextFilter);
 
-  // Vuelca los criterios guardados al panel de filtros y salta a Inmuebles
+  // Applies the saved criteria to the filter panel and jumps to the listings tab
   const usarBusqueda = () => {
     const r = requestCompleta || {};
     filtros.setProvince(r.province?.CPRO ? r.province : undefined);
@@ -125,7 +126,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
 
   return (
     <Card sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Cabecera: chips a la izquierda, acciones arriba a la derecha */}
+      {/* Header row: chips on the left, actions on the top-right corner */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
           {transaction && <Chip label={t(`transaction.${transaction}`, { ns: "housing" })} color="primary" variant="contained" size="small" />}
@@ -133,13 +134,13 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
           {furnished && <Chip label={t(`furnished.${furnished}`, { ns: "housing" })} color="primary" variant="outlined" size="small" />}
         </Box>
         <Box sx={{ display: 'flex', gap: 0.5, ml: 1 }}>
-          <Tooltip title="Usar búsqueda" arrow>
+          <Tooltip title={tu('useSearch')} arrow>
             <IconButton size="small" color="primary" onClick={usarBusqueda}>
               <ManageSearchIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           {user?._id && user._id === profile?._id && (
-            <Tooltip title="Eliminar búsqueda" arrow>
+            <Tooltip title={tu('deleteSearch')} arrow>
               <IconButton size="small" color="primary" onClick={handleDeleteRequest}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -148,7 +149,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
         </Box>
       </Box>
 
-      <h4 style={{ margin: '0 0 6px 0' }}>{title || 'Búsqueda guardada'}</h4>
+      <h4 style={{ margin: '0 0 6px 0' }}>{title || tu('savedSearch')}</h4>
 
       {locationText && (
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -157,7 +158,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
         </Box>
       )}
 
-      {/* Criterios en una fila repartida (mismo patrón que la card de inmuebles) */}
+      {/* Criteria row, mirroring the listing card layout */}
       <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-start', columnGap: { xs: 3, sm: 4 }, rowGap: 0.5, mb: 1 }}>
         {minM2 ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -185,7 +186,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
         ) : null}
       </Box>
 
-      {/* Equipamiento pedido, como chips pequeños */}
+      {/* Requested amenities as small chips */}
       {booleanItems.some(Boolean) && (
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
           {booleanItems.filter(Boolean).map((item) => (
@@ -194,14 +195,14 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
         </Box>
       )}
 
-      {/* Precio con su divisor tenue, como en la card de inmuebles */}
+      {/* Price strip with its subtle divider, as in the listing card */}
       <Divider sx={{ mx: '-8px', mt: 'auto' }} />
       <Box sx={{ pt: '6px' }}>
         <h4 style={{ margin: 0, color: '#31AFB4' }}>
-          {minPrice ? `Desde ${formattedMinPrice} ${currencySymbol}` : ''}
+          {minPrice ? `${tu('fromPrice')} ${formattedMinPrice} ${currencySymbol}` : ''}
           {minPrice && maxPrice ? ' · ' : ''}
-          {maxPrice ? `Hasta ${formattedMaxPrice} ${currencySymbol}` : ''}
-          {!minPrice && !maxPrice ? 'Sin límite de precio' : ''}
+          {maxPrice ? `${tu('toPrice')} ${formattedMaxPrice} ${currencySymbol}` : ''}
+          {!minPrice && !maxPrice ? tu('noPriceLimit') : ''}
         </h4>
       </Box>
     </Card>

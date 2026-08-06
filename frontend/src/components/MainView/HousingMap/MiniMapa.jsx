@@ -11,14 +11,14 @@ const pinDomus = L.divIcon({
   iconAnchor: [13, 26],
 });
 
-// Leaflet calcula mal el tamaño si el contenedor estaba oculto (diálogos,
-// carruseles): reintentar invalidateSize unos instantes tras montar
+// Leaflet miscalculates its size when the container starts hidden (dialogs,
+// carousels), so the size is re-checked shortly after mounting
 function AjustarTamano() {
   const map = useMap();
   useEffect(() => {
     const timers = [100, 400, 900, 1800].map((ms) => setTimeout(() => map.invalidateSize(), ms));
-    // recalcular cuando el contenedor se hace visible (diálogos, carrusel)
-    // o cambia de tamaño: si no, el mapa se pinta parcialmente
+    // Recalculate when the container becomes visible or is resized;
+    // otherwise the map tiles render only partially
     const el = map.getContainer();
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) map.invalidateSize();

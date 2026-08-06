@@ -9,7 +9,7 @@ import HousingContextFilter from '../../FilterHousing/HousingContextFilter';
 import { filtraViviendas } from '../../../utils/filtraViviendas';
 import { DOMUS_GREEN } from '../../../theme';
 
-// Pin propio en el verde corporativo (evita depender de los assets de Leaflet)
+// Custom marker in the brand colour (avoids bundling Leaflet's default image assets)
 const pinDomus = L.divIcon({
   className: '',
   html: `<div style="width:26px;height:26px;border-radius:50% 50% 50% 0;background:${DOMUS_GREEN};transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>`,

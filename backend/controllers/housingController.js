@@ -5,29 +5,29 @@ const User = require('../models/userModel');
 const { ObjectId } = require('mongodb');
 const housingId = new ObjectId()
 
+/** Creates a listing and returns it populated with its owner. */
 const addHouse = async (req, res) => {
-  const { userId, ...houseFields } = req.body; // Obtener los campos relacionados y los demás campos de la vivienda
-  console.log('el body es', req.body);
+  const { userId, ...houseFields } = req.body;
   try {
     const newHouse = new Housing({
       user: userId, 
-      ...houseFields, // Agregar los demás campos de la vivienda utilizando la desestructuración
-    }); // Crear una nueva instancia del modelo de vivienda
-    await newHouse.save(); // Guardar la vivienda en la base de datos
-    const populatedHouse = await Housing.findById(newHouse._id)// Buscar la vivienda por su ID y por los campos relacionados
+      ...houseFields,
+    });
+    await newHouse.save();
+    const populatedHouse = await Housing.findById(newHouse._id)
       .populate('user')
       .exec();
     res.status(200).json({ msg: 'Vivienda agregada con éxito', house: populatedHouse });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: 'Error al agregar la vivienda' });
   }
 };
 
+/** Returns one listing by id, or every listing optionally filtered by status. */
 const getHouse = async (req, res) => {
   try {
     if (req.params.houseId) {
-      // Si se proporciona un ID de casa en la ruta, buscar una casa por ID
+
       const house = await Housing.findById(req.params.houseId)
         .populate("user");
 
@@ -37,13 +37,12 @@ const getHouse = async (req, res) => {
 
       return res.status(200).json(house);
     } else {
-      // Si no se proporciona un ID de casa en la ruta, buscar todas las casas
+
       const filter = req.query.status ? { status: req.query.status } : {};
       const houses = await Housing.find(filter)
         .populate("user");
 
-      // Lista vacía no es un error: devolver [] para que el frontend
-      // pueda iterar sin romperse cuando todavía no hay viviendas
+      // An empty list is a valid result, not an error
       return res.status(200).json(houses);
     }
   } catch (error) {
@@ -82,9 +81,10 @@ const permanentDeleteHouse = async (req, res) => {
   }
 }
 
+/** Updates a listing; supports explicit createdAt for demo data. */
 const updateHouse = async (req,res) => {
-  // Datos de demo: para fijar createdAt hay que saltarse a Mongoose
-  // (lo trata como inmutable) y usar el driver nativo
+  // Demo data helper: createdAt is immutable for Mongoose, so explicit
+  // values go through the native driver instead
   if (req.body.createdAt) {
     try {
       const { createdAt, ...resto } = req.body;

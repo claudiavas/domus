@@ -10,17 +10,14 @@ const { objectId } = require ('mongodb');
 const meUser = (req, res) => {
     const authHeader = req.headers.authorization;
     const token = authHeader ? authHeader.replace("Bearer ", "") : null;
-    console.log('token', token);
     // verifico si el token es correcto si error captura el catch
     try {
         if (!token) {
             throw new Error("Token no proporcionado");
           }
         const decodedToken = jwt.verify(token, mySecret);
-        console.log('decoded token es',decodedToken);
         res.json({result: 'success', data: decodedToken})
     } catch (error) {
-        console.log('este es el error al verificar el token');
         res.status(400).json({ result: 'No es un token válido'});
     }
 }
@@ -35,7 +32,6 @@ const addUser = async (req, res) => {
       const user = await newUser.save();
       res.status(200).send(user);
     } catch (error) {
-      console.log(error.code);
   
       switch (error.code) {
         case 11000:
@@ -61,7 +57,6 @@ const getUser = (req, res) => {
           }
         })
         .catch((error) => {
-          console.log(error);
           switch (error.name) {
             case 'CastError':
               res.status(400).send('Formato de ID de usuario inválido');
@@ -87,14 +82,14 @@ const getUser = (req, res) => {
           if (user.length === 0) {
             res.status(404).send({ msg: 'No se han encontrado usuarios' });
           } else {
-            console.log(user);
             res.status(200).send(user);
           }
         })
         .catch((error) => res.status(400).send(error));
     }
   };
-  const updateUser = (req, res) => {
+  /** Updates a user profile by id. */
+const updateUser = (req, res) => {
     if (req.params.userId) {
       const { userId } = req.params;
       const updatedUser = req.body;
@@ -108,7 +103,6 @@ const getUser = (req, res) => {
           }
         })
         .catch((error) => {
-          console.log(error);
           switch (error.name) { 
             case 'CastError':// error de formato de ID de usuario
               res.status(400).send('Formato de ID de usuario inválido');

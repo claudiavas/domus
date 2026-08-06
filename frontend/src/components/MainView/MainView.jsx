@@ -20,6 +20,7 @@ import { HousingMap } from './HousingMap/HousingMap';
 import { Header } from '../HomePage/Header/Header';
 import { AuthContext } from '../Contexts/AuthContext';
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import { InmueblesProvider } from '../FilterHousing/HousingContextFilter.jsx';
 
 
@@ -27,6 +28,7 @@ const drawerWidth = 330;
 
 export function MainView(props) {
 
+  const { t } = useTranslation('ui');
   const navigate = useNavigate()
   const { profile } = useContext(AuthContext);
   const [myHousingSwitch, setMyHousingSwitch] = useState(false);
@@ -92,7 +94,6 @@ export function MainView(props) {
     );
   }
 
-  // Lógica para cerrar sesión...
 
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
@@ -100,19 +101,15 @@ export function MainView(props) {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     navigate("/login")
-    console.log("isLoggedIn en MainView:", isLoggedIn)
-    console.log("logout ejecutándose")
   };
 
 
-  // El listado es público: sin token se puede navegar, pero las acciones
-  // (publicar, guardar requerimientos, ver solo lo mío) requieren sesión
+  // Browsing is public; publishing, saving searches and the personal
+  // toggles require an authenticated session
   const haySesion = Boolean(localStorage.getItem('token'));
 
-// Lógica para filtrar las viviendas del usuario logueado
   const handleMyHousingSwitch = () => {
     setMyHousingSwitch((prevValue) => !prevValue);
-    // console.log("myHousingSwitch:", myHousingSwitch)
   };
 
   const handleMyRequestsSwitch = () => {
@@ -125,7 +122,7 @@ export function MainView(props) {
 
       <AppBar
         position="fixed"
-        // A ancho completo, por encima del drawer (patrón estándar de MUI)
+        // Full-width app bar layered above the drawer (standard MUI pattern)
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
@@ -157,7 +154,7 @@ export function MainView(props) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            // El AppBar va por encima: el drawer móvil empieza justo debajo
+            // The app bar sits on top, so the mobile drawer starts right below it
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
@@ -172,8 +169,8 @@ export function MainView(props) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block'  },
-            // Restar el alto del AppBar: si no, el pie del panel (botón de
-            // guardar búsqueda) queda por debajo del área visible
+            // Subtract the app bar height; otherwise the panel footer
+            // would fall below the visible area
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, marginTop: "60px", height: 'calc(100% - 60px)' },
           }}
           open
@@ -185,8 +182,8 @@ export function MainView(props) {
         component="main"
         sx={{
           flexGrow: 1,
-          // minWidth 0 evita que el contenido fuerce al flex-item a desbordar
-          // el viewport en móvil; el padding se reduce en pantallas pequeñas
+          // minWidth 0 stops the content from forcing this flex item beyond
+          // the mobile viewport; padding shrinks on small screens
           minWidth: 0,
           p: { xs: 1.5, sm: 3 },
           width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` },
@@ -196,11 +193,11 @@ export function MainView(props) {
 
 
         <Box sx={{
-          // Siempre visible al hacer scroll, pegada bajo el AppBar
+          // Stays visible while scrolling, pinned below the app bar
           position: 'sticky',
           top: { xs: 56, sm: 64 },
           zIndex: 10,
-          backgroundColor: '#fff',
+          backgroundColor: 'background.default',
           borderBottom: 1,
           borderColor: 'divider',
           display: 'flex',
@@ -209,17 +206,17 @@ export function MainView(props) {
           alignItems: 'center',
         }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
-            <Tab label="Inmuebles" {...a11yProps(0)} />
-            <Tab label="Mapa" {...a11yProps(1)} />
-            {/* Las búsquedas guardadas son personales: solo con sesión */}
-            {haySesion && <Tab label="Mis búsquedas" {...a11yProps(2)} />}
+            <Tab label={t('tabs.listings')} {...a11yProps(0)} />
+            <Tab label={t('tabs.map')} {...a11yProps(1)} />
+            {/* Saved searches are personal, so the tab needs a session */}
+            {haySesion && <Tab label={t('tabs.mySearches')} {...a11yProps(2)} />}
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
           <HousingList myHousingSwitch={myHousingSwitch} onToggleMias={handleMyHousingSwitch}/>
 
           {/* En móvil: más pequeño y por encima de la paginación fija */}
-          {/* En móvil: pequeño y por encima de la línea de paginación */}
+          {/* Smaller on mobile and raised above the pagination row */}
           <Box sx={{ position: 'fixed', right: { xs: '12px', sm: '20px' }, bottom: { xs: '68px', sm: '20px' }, zIndex: '9999', display: mobileOpen ? 'none' : 'block' }}>
             <Fab
               color="primary"
@@ -238,7 +235,7 @@ export function MainView(props) {
         {haySesion && <TabPanel value={tabValue} index={2}>
           <RequestList alUsarBusqueda={() => {
             setTabValue(0);
-            // En móvil, abrir el panel para que se vean los filtros aplicados
+            // On mobile, open the panel so the applied filters are visible
             if (window.innerWidth < 600) setMobileOpen(true);
           }}/>
         </TabPanel>}
