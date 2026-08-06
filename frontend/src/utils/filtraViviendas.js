@@ -9,7 +9,7 @@ export function filtraViviendas(housing, filtros) {
   } = filtros;
 
   return (housing || []).filter((house) => {
-    const operacion = transaction ? house.transaction === transaction : true;
+    const operacion = transaction?.length ? transaction.includes(house.transaction) : true;
     const habitaciones = room ? house.rooms >= parseInt(room) : true;
     const metros = house.squareMeters >= meter;
     const banos = baths ? house.baths >= parseInt(baths) : true;
@@ -44,12 +44,13 @@ export function filtraViviendas(housing, filtros) {
  */
 export function puntuaRelevancia(house, filtros) {
   const {
-    transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox,
+    meter, room, baths, garage, minPrice, maxPrice, checkbox,
     province, municipality, neighborhood, population,
   } = filtros;
 
+  // The operation filter is exclusive by nature (a sale listing can never
+  // satisfy a rent search), so it never takes part in the score
   const criterios = [];
-  if (transaction) criterios.push(house.transaction === transaction);
   if (room) criterios.push(house.rooms >= parseInt(room));
   if (Number(meter) > 0) criterios.push(house.squareMeters >= meter);
   if (baths) criterios.push(house.baths >= parseInt(baths));
