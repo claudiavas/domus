@@ -27,7 +27,11 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   // Relevance mode scores every listing instead of excluding them
   const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
   const esRelevancia = orden === 'relevancia';
-  const base = esRelevancia ? (housing || []) : filtraViviendas(housing, filtros);
+  // Relevance mode relaxes every criterion except the operation filter,
+  // which is exclusive and always applies
+  const base = esRelevancia
+    ? filtraViviendas(housing, { ...filtros, meter: 0, room: '', baths: '', garage: '', minPrice: '', maxPrice: '', checkbox: {}, province: undefined, municipality: undefined, population: undefined, neighborhood: undefined })
+    : filtraViviendas(housing, filtros);
   const housingFiltrado = base
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
   // The signed-in user's own listings sink to the end: browsing is about
@@ -72,8 +76,9 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
 
   // With active criteria every card shows its match percentage
   // (hard-filter modes always yield 100%: they satisfy everything)
+  // The operation toggle alone does not produce a match percentage
   const hayCriterios = Boolean(
-    transaction || room || baths || garage || minPrice || maxPrice || Number(meter) > 0 ||
+    room || baths || garage || minPrice || maxPrice || Number(meter) > 0 ||
     province || municipality || population || neighborhood ||
     Object.values(checkbox).some(Boolean)
   );

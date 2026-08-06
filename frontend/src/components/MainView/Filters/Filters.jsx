@@ -27,7 +27,7 @@ function Filters(props) {
   };
 
   const hayFiltros = () =>
-    transaction || province || municipality || population || neighborhood ||
+    transaction?.length || province || municipality || population || neighborhood ||
     minPrice || maxPrice || room || baths || garage || Number(meter) > 0 ||
     Object.values(checkbox).some(Boolean);
 
@@ -45,7 +45,7 @@ function Filters(props) {
     try {
       await addRequest({
         userId,
-        transaction: transaction || "sale",
+        transaction: transaction?.[0] || "sale",
         community: province?.CCOM ? { CCOM: province.CCOM } : {},
         province: province || {},
         municipality: municipality || {},

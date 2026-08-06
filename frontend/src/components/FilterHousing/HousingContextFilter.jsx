@@ -3,7 +3,7 @@ import React, { createContext, useState } from 'react';
 const HousingContextFilter = createContext();
 
 export function InmueblesProvider({ children }) {
-  const [transaction, setTransaction] = useState('');
+  const [transaction, setTransaction] = useState([]);
   const [room, setRoom] = useState('');
   const [baths, setBaths] = useState('');
   const [meter, setMeter] = useState(0); // no minimum by default
@@ -28,7 +28,7 @@ export function InmueblesProvider({ children }) {
   const [population, setPopulation] = useState();
 
   const resetFilters = () => {
-    setTransaction('');
+    setTransaction([]);
     setMeter(0);
     setRoom('');
     setBaths('');
