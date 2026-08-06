@@ -6,7 +6,7 @@ export const LocationContext = createContext();
 export const LocationProvider = ({ children }) => {
   const [communities, setCommunities] = useState([]);
   const [provinces, setProvinces] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Variable de estado para indicar si los datos están cargando
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchProvinces = async () => {
     try {
@@ -29,7 +29,7 @@ export const LocationProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([fetchProvinces(), fetchCommunities()]);
-      setIsLoading(false); // Los datos han terminado de cargarse
+      setIsLoading(false);
     };
 
     fetchData();
@@ -40,8 +40,8 @@ export const LocationProvider = ({ children }) => {
     communities,
   };
 
-  // Siempre renderizar la app: los desplegables simplemente se rellenan
-  // cuando llegan las provincias (los skeletons cubren la espera visual)
+  // Always render the app; the dropdowns simply populate once the
+  // provinces arrive (skeletons cover the visual wait)
   return (
     <LocationContext.Provider value={contextValue}>
       {children}

@@ -57,7 +57,6 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    // console.log("imageUrls:", imageUrls);
   }, [imageUrls]);
 
   const handleFileChange = (event) => {

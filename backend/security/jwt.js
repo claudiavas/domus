@@ -14,7 +14,6 @@ authRouter.post("/register", async (req, res) => {
   const subscription = req.body.suscription;
   const data = req.body;
 
-  console.log(req.body);
 
   // * Make sure request has the email
   if (!email) {
@@ -78,7 +77,6 @@ authRouter.post("/register", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("req body de login en auth router", req.body);
   // * Validate, email and password were provided in the request
   if (!email) {
     return res
@@ -88,7 +86,6 @@ authRouter.post("/login", async (req, res) => {
   
   try {
     const foundUser = await User.findOne({ email });
-    console.log('foundUser',foundUser);
     if (!foundUser) {
       return res
         .status(400)
@@ -102,9 +99,6 @@ authRouter.post("/login", async (req, res) => {
     }
 
     if (!foundUser.comparePassword(password)) { 
-      console.log("Found user in Login", foundUser)
-      console.log("found user Id", foundUser._id)
-      console.log("found user email", foundUser.email)
       return res.status(400).json({ error: { result: "Password inválido" } });
     }
     // * if everything is ok, return the new token and user data
@@ -130,19 +124,18 @@ authRouter.put("/resetpassword/:userId", async (req, res) => {
   const newPassword = req.body.password;
 
   try {
-    // Buscar al usuario por su ID
+
     const user = await User.findById(userId);
     // Verificar si el usuario existe
     if (!user) {
       return res.status(404).json({ error: { result: "Usuario no encontrado" } });
     }
 
-    // Actualizar la contraseña del usuario
+    // Update the user's password
     user.password = newPassword;
     await user.save();
 
     return res.status(200).json({ message: "Contraseña actualizada correctamente" });
-    console.log('Contraseña actualizada correctamente');
   } catch (error) {
     return res.status(500).json({ error: { result: "Error al actualizar la contraseña", error: error.message } });
     console.error('Error al actualizar la contraseña:', error);
@@ -153,9 +146,8 @@ authRouter.put("/resetpassword/:userId", async (req, res) => {
 
 const jwtMiddleware = (req, res, next) => {
   // Recogemos el header "Authorization". Sabemos que viene en formato "Bearer XXXXX...",
-  // así que nos quedamos solo con el token y obviamos "Bearer "
+  // keep only the token, dropping the "Bearer " prefix
   const authHeader = req.headers["authorization"];
-  console.log('Authheader',authHeader);
   if (!authHeader)
     return res.status(401).json({ error: "Unauthorized MISSING HEADER" });
   const token = authHeader.split(" ")[1];
@@ -165,23 +157,23 @@ const jwtMiddleware = (req, res, next) => {
   let tokenPayload;
 
   try {
-    // Si la función verify() funciona, devolverá el payload del token
+    // verify() returns the token payload when the signature is valid
     tokenPayload = jwt.verify(token, jwtSecret);
   } catch (error) {
-    // Si falla, será porque el token es inválido, por lo que devolvemo error 401
+    // an invalid token ends up here, so answer with 401
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Guardamos los datos del token dentro de req.jwtPayload, para que esté accesible en los próximos objetos req
+  // Expose the token payload as req.jwtPayload for downstream handlers
   req.jwtPayload = tokenPayload;
   next();
 };
 
 User.schema.pre("save", function(next) {
   const user = this;
-  // si no se ha cambiado la contraseña, seguimos
+  // Password unchanged: skip re-hashing
   if (!user.isModified("password")) return next();
-  // bcrypt es una librería que genera "hashes", encriptamos la contraseña
+  // Hash the password with bcrypt before persisting it
   bcrypt.genSalt(10, function (err, salt) {
     if (err) return next(err);
     bcrypt.hash(user.password, salt, function(err, hash) {

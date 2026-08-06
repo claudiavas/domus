@@ -28,15 +28,15 @@ export function PasswordRecovery() {
   const [isError, setIsError] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
 
-  const location = useLocation(); // Obtener la ubicación actual
-  const queryParams = queryString.parse(location.search); // Parsear los parámetros de la consulta
+  const location = useLocation();
+  const queryParams = queryString.parse(location.search);
 
-  const [open, setOpen] = useState(false); // Estado para controlar la apertura del diálogo para cambiar la contraseña
+  const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState(null); // Variable para almacenar el userId
   const [email, setEmail] = useState(null); // Variable para almacenar el email
 
   const handleResetPasswordOpen = () => {
-    setOpen(true); // Abrir el diálogo de cambiar contraseña estableciendo el estado en true
+    setOpen(true);
   };
 
   const handleResetPasswordClose = () => {
@@ -48,13 +48,11 @@ export function PasswordRecovery() {
   }, []);
 
   useEffect(() => {
-    // console.log("userId obtenido delpayload: ", userId);
-    // console.log("email obtenido del payload: ", email);
   }, [userId, email]);
 
   const findUser = async () => {
     try {
-      const mailtoken = queryParams.token; // Obtener el token enviado por mail de los query parameters
+      const mailtoken = queryParams.token;
       const payload = await getPayload(mailtoken);
       const payloaduserId = payload.data.userId;
       const payloademail = payload.data.email;

@@ -22,14 +22,12 @@ export const EditUserProfile = () => {
   const { profile } = useContext(AuthContext);
   const [subscription, setSubscription] = useState(true);
 
-  const [open, setOpen] = useState(false); // Estado para controlar la apertura del diálogo para cambiar la contraseña
+  const [open, setOpen] = useState(false);
 
   const handleResetPasswordOpen = () => {
-    setOpen(true); // Abrir el diálogo de cambiar contraseña estableciendo el estado en true
+    setOpen(true);
   };
 
-  console.log("profile: ", profile);
-  console.log("profileId: ", profile._id);
 
   const handleResetPasswordClose = () => {
     setOpen(false);
@@ -55,7 +53,6 @@ export const EditUserProfile = () => {
     surname: profile.surname,
     mainOfficeProvince: profile.mainOfficeProvince,
     mainOfficeCountry: 'España',
-    //TODO: email no se puede editar
     //email: profile.email,
     telephone1: profile.telephone,
     telephone2: profile.telephone2,
@@ -66,8 +63,8 @@ export const EditUserProfile = () => {
     subscription: profile.subscription,
   });
 
-  // El profile llega de forma asíncrona: cuando aparece (o cambia de usuario)
-  // hay que volcar sus valores al formulario, si no los campos quedan vacíos
+  // The profile loads asynchronously; sync it into the form when it
+  // arrives, otherwise every field would stay empty
   useEffect(() => {
     if (profile && profile._id) {
       setFormData((prev) => ({
@@ -101,20 +98,19 @@ export const EditUserProfile = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData); // Aquí puedes realizar la lógica para enviar los datos actualizados al servidor
+    console.log(formData);
     try {
       const response = await updateUser(profile._id, formData);
-      console.log(formData, formData)
-      // Establece el mensaje de éxito
+
       setSnackbarMessage('Los campos se han guardado exitosamente en la base de datos');
-      // Abre la notificación
+
       setOpenSnackbar(true);
 
     } catch (error) {
       console.error(error);
-      // Establece el mensaje de error en caso de que ocurra algún problema
+
       setSnackbarMessage('Ha ocurrido un error al guardar los campos');
-      // Abre la notificación
+
       setOpenSnackbar(true);
     }
 
@@ -163,8 +159,8 @@ export const EditUserProfile = () => {
               <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'row' }}>
                 <Grid item xs={12} sm={6} md={6} lg={2}>
                   <FormControl style={{ width: '82%' }}>
-                    {/* Sin InputLabel el Select no muestra la etiqueta flotante
-                        y queda inconsistente con el resto de campos */}
+                    {/* The floating label needs an explicit InputLabel to
+                        match the rest of the fields */}
                     <InputLabel id="DocumentType-l">Tipo Documento</InputLabel>
                     <Select
                       name="DocumentType"
@@ -367,12 +363,12 @@ export const EditUserProfile = () => {
       {/*  </Box>*/}
       <Snackbar
           open={openSnackbar}
-          autoHideDuration={6000} // Duración de la notificación en milisegundos (opcional)
-          onClose={() => setOpenSnackbar(false)} // Función para cerrar la notificación
-          message={snackbarMessage} // Mensaje de la notificación
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} // Localización de la notificación
-          key={'bottom' + 'center'} // Key necesaria para que funcione
-          style= {snackbarStyle} // Aplica el estilo personalizado al contenido de la notificación
+          autoHideDuration={6000}
+          onClose={() => setOpenSnackbar(false)}
+          message={snackbarMessage}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          key={'bottom' + 'center'}
+          style= {snackbarStyle}
         />
     </div >
 

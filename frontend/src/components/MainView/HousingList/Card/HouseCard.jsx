@@ -21,8 +21,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
   const showThumbsValue = false;
-  const {t} = useTranslation();
-  console.log(`Translation key en housecard: housing.transaction.${transaction}`);
+  const { t, i18n } = useTranslation();
 
   const precioxm2 = (price / squareMeters).toFixed(0);
   let currencySymbol = '';
@@ -33,7 +32,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
   }
 
   const fechaPublicacion = createdAt
-    ? new Date(createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+    ? new Date(createdAt).toLocaleDateString(i18n.language?.startsWith('es') ? 'es-ES' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : null;
 
   const formattedPrice = (new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 }))
@@ -45,7 +44,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
     return text.replace(/\([^()]*\)/g, "").trim()
   };
 
-  // Mongoose elimina los objetos vacíos al guardar: estos campos pueden faltar
+  // Mongoose strips empty objects on save, so these fields may be missing
   const locationText = [
     province?.PRO,
     municipality?.DMUN50,
@@ -65,7 +64,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
         cursor: 'pointer',
         flexGrow: 3,
         display: 'flex',
-        // En móvil la tarjeta se apila en columna; en escritorio, en fila
+        // Stacks vertically on mobile, lays out as a row on desktop
         flexDirection: { xs: 'column', md: 'row' },
         gap: { xs: '10px', md: 0 },
         padding: 0,
@@ -105,7 +104,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {relevancia != null && (
                   <Chip
-                    label={`${relevancia}% coincide`}
+                    label={`${relevancia}% ${t('match', { ns: 'ui' })}`}
                     size="small"
                     color={relevancia >= 75 ? 'primary' : 'default'}
                     variant={relevancia >= 75 ? 'contained' : 'outlined'}
@@ -120,7 +119,7 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
             </div>
             <h4 style={{ margin: '5px 5px 5px 5px', marginBottom: '5px', flexGrow: 1 }}>{title}</h4>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', flexGrow: 1 }}>
-              <Tooltip title="Ver en el mapa" arrow>
+              <Tooltip title={t('viewOnMap', { ns: 'ui' })} arrow>
                 <IconButton
                   size="small"
                   color="primary"
@@ -133,14 +132,14 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               <h6 style={{ margin: '0px' }}>{locationText}</h6>
             </div>
 
-            {/* Popup con la ubicación del inmueble */}
+            {/* Dialog with the property location */}
             <Dialog open={mapaAbierto} onClose={(e) => setMapaAbierto(false)} maxWidth="sm" fullWidth onClick={(e) => e.stopPropagation()}>
               <DialogTitle sx={{ py: 1.5, fontSize: 16 }}>{locationText}</DialogTitle>
               <Box sx={{ height: 380 }}>
                 {mapaAbierto && coordinates?.lat && <MiniMapa lat={coordinates.lat} lng={coordinates.lng} />}
               </Box>
             </Dialog>
-            {/* Separación uniforme entre datos a cualquier ancho (sin márgenes fijos) */}
+            {/* Even spacing between facts at any width */}
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: { xs: 'space-between', sm: 'flex-start' }, columnGap: { sm: 4 }, rowGap: 0.5, mb: '5px', px: '5px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <FullscreenOutlinedIcon sx={{ color: 'primary.main' }} />
@@ -164,14 +163,14 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               ) : null}
             </Box>
 
-            {/* Asesor integrado: avatar pequeño + nombre + contacto, sin card aparte */}
+            {/* Publisher strip: small avatar, name and contact actions */}
             <Divider sx={{ mx: '5px' }} />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: '8px', py: '4px' }}>
               <Avatar alt={`${user.name} ${user.surname}`} src={user.profilePicture} sx={{ width: 28, height: 28 }} />
               <Box component="span" sx={{ fontSize: 13, fontWeight: 500, flexGrow: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {user.name} {user.surname}
               </Box>
-              {/* Los botones de contacto no deben navegar al detalle */}
+              {/* Contact actions must not trigger the card navigation */}
               <Box onClick={(e) => e.stopPropagation()} sx={{ display: 'flex', alignItems: 'center' }}>
                 {user.telephone1 && <WhatsAppButton phoneNumber={user.telephone1} />}
                 {user.telephone2 && <PhoneNumber phoneNumber={user.telephone2} />}
@@ -183,20 +182,20 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
               </Box>
             </Box>
 
-            {/* Precio integrado, con el mismo patrón de divisor que el asesor */}
+            {/* Price strip, following the same divider pattern */}
             <Divider sx={{ mx: '5px' }} />
             <Box sx={{ px: '8px', py: '6px' }}>
               <h4 style={{ margin: '0px', padding: 0, color: "#31AFB4", display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
-                {/* En venta: precio total + €/m². En alquiler: €/mes. Vacacional: €/semana */}
+                {/* Sale: total price and €/m². Rent: €/month. Vacation: €/week */}
                 {transaction === 'sale' ? (
                   <>
                     {formattedPrice} {currencySymbol}
                     <div>{precioxm2} {currencySymbol}/m²</div>
                   </>
                 ) : (
-                  <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? 'mes' : 'semana'}</span>
+                  <span>{formattedPrice} {currencySymbol}/{transaction === 'rent' ? t('perMonth', { ns: 'ui' }) : t('perWeek', { ns: 'ui' })}</span>
                 )}
-                <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>Ver más</Box>
+                <Box component="span" sx={{ color: 'primary.main', textDecoration: 'underline', fontWeight: 500, fontSize: 14 }}>{t('seeMore', { ns: 'ui' })}</Box>
               </h4>
             </Box>
           </Card>

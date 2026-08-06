@@ -3,12 +3,11 @@ const RealEstate = require('../models/realEstateModel');
 const { ObjectId } = require('mongodb');
 const provinceId = new ObjectId()
 
-// Función para agregar una inmobiliaria
 const addRealEstate = async (req, res) => {
-  const RealEstateData = req.body; // Obtener los datos de la inmobiliaria del cuerpo de la solicitud
+  const RealEstateData = req.body;
 
   try {
-    const newrealEstate = new RealEstate(RealEstateData); // Crear una nueva instancia de RealEstate
+    const newrealEstate = new RealEstate(RealEstateData);
 
     await newrealEstate.save(); // Guardar la nueva inmobiliaria en la base de datos
 
@@ -18,13 +17,12 @@ const addRealEstate = async (req, res) => {
   }
 };
 
-// Función para obtener una inmobiliaria por su ID
 const getRealEstate = async (req, res) => {
 
-  const { realEstateId} = req.params; // Obtener el ID de la inmobiliaria de los parámetros de la solicitud
+  const { realEstateId} = req.params;
 
   try {
-    const realEstate = await RealEstate.findById(realEstateId); // Buscar la inmobiliaria por su ID
+    const realEstate = await RealEstate.findById(realEstateId);
 
     if (!realEstate) {
       return res.status(404).json({ error: 'Inmobiliaria no encontrada' });
@@ -36,16 +34,15 @@ const getRealEstate = async (req, res) => {
   }
 };
 
-// Función para eliminar una inmobiliaria (soft delete)
 const deleteRealEstate = async (req, res) => {
-  const { realEstateId } = req.params; // Obtener el ID de la inmobiliaria de los parámetros de la solicitud
+  const { realEstateId } = req.params;
 
   try {
     const deletedRealEstate = await RealEstate.findByIdAndUpdate(
       realEstateId,
       { deletedAt: new Date() },
       { new: true }
-    ); // Buscar y marcar como eliminada la inmobiliaria por su ID
+    );
 
     if (!deletedRealEstate) {
       return res.status(404).json({ error: 'Inmobiliaria no encontrada' });
@@ -57,19 +54,16 @@ const deleteRealEstate = async (req, res) => {
   }
 };
 
-// Función para actualizar una inmobiliaria
 const updateRealEstate = async (req, res) => {
-  const realEstateId  = req.params.realEstateId; // Obtener el ID de la inmobiliaria de los parámetros de la solicitud
-  console.log('params', req.params);
-  const updateData = req.body; // Obtener los nuevos datos de la inmobiliaria del cuerpo de la solicitud
+  const realEstateId  = req.params.realEstateId;
+  const updateData = req.body;
 
   try {
     const updatedRealEstate = await RealEstate.findByIdAndUpdate(
       realEstateId,
       updateData,
       { new: true }
-    ); // Buscar y actualizar la inmobiliaria por su ID
-    console.log('id', realEstateId);
+    );
     if (!updatedRealEstate) {
       return res.status(404).json({ error: 'Inmobiliaria no encontrada' });
     }
@@ -80,12 +74,11 @@ const updateRealEstate = async (req, res) => {
   }
 };
 
-// Función para eliminar permanentemente una inmobiliaria
 const permanentDeleteRealEstate = async (req, res) => {
-  const { realEstateId } = req.params; // Obtener el ID de la inmobiliaria de los parámetros de la solicitud
+  const { realEstateId } = req.params;
 
   try {
-    const deletedRealEstate = await RealEstate.findByIdAndDelete(realEstateId); // Buscar y eliminar permanentemente la inmobiliaria por su ID
+    const deletedRealEstate = await RealEstate.findByIdAndDelete(realEstateId);
 
     if (!deletedRealEstate) {
       return res.status(404).json({ error: 'Inmobiliaria no encontrada' });

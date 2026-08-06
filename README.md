@@ -4,13 +4,21 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 
 **Demo en producción:** [domus-frontend-production-f950.up.railway.app](https://domus-frontend-production-f950.up.railway.app)
 
-| Escritorio | Móvil |
+| Escritorio | Mapa interactivo |
 |---|---|
-| ![Listado en escritorio](docs/screenshot-desktop.png) | ![Listado en móvil](docs/screenshot-mobile.png) |
+| ![Listado en escritorio](docs/screenshot-desktop.png) | ![Mapa con las viviendas](docs/screenshot-map.png) |
+
+| Modo oscuro | Móvil |
+|---|---|
+| ![Modo oscuro](docs/screenshot-dark.png) | ![Listado en móvil](docs/screenshot-mobile.png) |
 
 ## Qué hace
 
-- **Listado público de viviendas** con fotos, precio (€/m² en venta, €/mes en alquiler) y datos del anunciante — sin necesidad de registrarse
+- **Listado público de viviendas** con fotos, precio (€/m² en venta, €/mes en alquiler), fecha de publicación y datos del anunciante — sin necesidad de registrarse
+- **Mapa interactivo** (Leaflet + OpenStreetMap) con cada vivienda geolocalizada, popup con foto y precio, y los mismos filtros que el listado
+- **Modo claro/oscuro** con persistencia y **interfaz en español e inglés** conmutables desde la barra superior
+- **Ordenación** por recientes, precio o **relevancia**: con criterios activos cada vivienda muestra su % de coincidencia
+- **Paginación** de resultados y tipo de operación (comprar / alquilar / vacacional) como primer filtro
 - **Búsqueda con filtros combinables**: ubicación real de España (provincia → municipio → población → barrio vía [geoapi.es](https://geoapi.es)), precio, superficie, habitaciones, baños, garajes y 10 características de equipamiento
 - **Requerimientos guardados**: un comprador guarda su búsqueda como "requerimiento" y los agentes pueden verlos para ofrecerle inmuebles
 - **Publicación de inmuebles** con subida de imágenes a Cloudinary
@@ -22,7 +30,7 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | React 18 + Vite, Material UI, React Router, i18next |
+| Frontend | React 18 + Vite, Material UI, React Router, i18next, React-Leaflet |
 | Backend | Node.js, Express, Mongoose |
 | Base de datos | MongoDB |
 | Imágenes | Cloudinary |
@@ -48,13 +56,13 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 # Backend (puerto 8080)
 cd backend
 npm install
-# crea un .env con: MONGO_URL, JWT_SECRET, FRONTEND_URL, BREVO_APIKEY
+# crea un .env con: MONGO_URL, JWT_SECRET, FRONTEND_URL, BREVO_APIKEY, EMAIL_FROM
 npm run nodemon
 
 # Frontend (puerto 5173)
 cd frontend
 npm install
-# crea un .env con: VITE_BACKEND_URL=http://localhost:8080
+# copia .env.example a .env y completa VITE_BACKEND_URL y VITE_GEOAPI_KEY
 npm run dev
 ```
 
@@ -67,7 +75,7 @@ cd backend && railway up --ci    # servicio domus-backend
 cd frontend && railway up --ci   # servicio domus-frontend
 ```
 
-Variables de entorno en Railway: `MONGO_URL` (referencia al servicio MongoDB), `JWT_SECRET`, `FRONTEND_URL` y `BREVO_APIKEY` en el backend; `VITE_BACKEND_URL` en el frontend.
+Variables de entorno en Railway: `MONGO_URL` (referencia al servicio MongoDB), `JWT_SECRET`, `FRONTEND_URL`, `BREVO_APIKEY` y `EMAIL_FROM` en el backend; `VITE_BACKEND_URL` y `VITE_GEOAPI_KEY` en el frontend.
 
 ## Tests
 
@@ -97,10 +105,10 @@ Tests: 9 passed, 9 total
 
 ## Datos de demostración
 
-`backend/scripts/seed-housing.mjs` genera 60 viviendas realistas en 12 municipios españoles (con los códigos INE exactos que usan los filtros) y 10 usuarios ficticios con avatar:
+`backend/scripts/seed-housing.mjs` genera 120 viviendas realistas con al menos una por provincia (57 municipios con los códigos INE exactos que usan los filtros), coordenadas para el mapa y 10 usuarios ficticios con avatar:
 
 ```bash
-node backend/scripts/seed-housing.mjs
+SEED_API_URL=http://localhost:8080 GEOAPI_KEY=tu-clave node backend/scripts/seed-housing.mjs
 ```
 
 ---

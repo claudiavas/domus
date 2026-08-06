@@ -4,7 +4,7 @@ var router = express.Router();
 userController = require('../controllers/userController');
 const { jwtMiddleware, authRouter} = require("../security/jwt")
 
-//A continuación van las rutas que permiten controlar los usuarios
+// User management routes
 
 /* register */
   router.post('/register', authRouter);
@@ -20,9 +20,9 @@ const { jwtMiddleware, authRouter} = require("../security/jwt")
 
 /* Obtener un usuario por su userId*/
   
-  router.get("/:userId", userController.getUser) // Obtener un usuario por su userId
+  router.get("/:userId", userController.getUser)
 
-  router.get("/", userController.getUser) // Obtener un usuario de acuerdo a los filtros que se le pasen
+  router.get("/", userController.getUser)
 
   router.put("/:userId", userController.updateUser) // Actualizar un usuario por su userId
 

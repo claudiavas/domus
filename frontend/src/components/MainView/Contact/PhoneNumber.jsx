@@ -14,13 +14,13 @@ export const PhoneNumber = ({ phoneNumber }) => {
   };
 
   const handleClick = () => {
-    // Verificar si el dispositivo es móvil
+    // Detect whether the visitor is on a mobile device
     const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     );
 
     if (isMobileDevice) {
-      // Copiar el número en la aplicación del teléfono
+      // Hand the number over to the phone dialer
       window.location.href = `tel:${phoneNumber}`;
     }
   };

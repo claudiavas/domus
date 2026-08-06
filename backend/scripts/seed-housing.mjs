@@ -1,8 +1,9 @@
 // Seed v2 de Domus: geo real de geoapi.es, ~60 viviendas variadas,
 // 10 usuarios ficticios con avatar, fotos reales de casas e interiores.
-const API = 'https://domus-backend-production-fb5e.up.railway.app';
-const GEOKEY = 'eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760';
-const CLAUDIA_ID = '6a725a0469d5e51b52436bba'; // perfil real claudia.vasquez.as@gmail.com
+// Target API and demo owner are provided via environment variables
+const API = process.env.SEED_API_URL || 'http://localhost:8000';
+const GEOKEY = process.env.GEOAPI_KEY || '';
+const OWNER_ID = process.env.SEED_OWNER_ID || null; // optional: existing user that also publishes listings
 
 // RNG determinista para poder re-ejecutar con los mismos resultados
 function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -268,12 +269,13 @@ const cities = await loadGeo();
 
 console.log('3/5 Creando usuarios...');
 const userIds = await createUsers();
-await fetch(`${API}/user/${CLAUDIA_ID}`, {
-  method: 'PUT', headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ profilePicture: 'https://claudiavasquez.dev/images/profile.jpg', userType: 'Agent' }),
-});
-console.log('  avatar de Claudia actualizado');
-userIds.push(CLAUDIA_ID); // Claudia también publica alguna
+if (OWNER_ID) {
+  await fetch(`${API}/user/${OWNER_ID}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userType: 'Agent' }),
+  });
+}
+if (OWNER_ID) userIds.push(OWNER_ID);
 
 console.log('4/5 Borrando viviendas anteriores...');
 await wipeHousing();

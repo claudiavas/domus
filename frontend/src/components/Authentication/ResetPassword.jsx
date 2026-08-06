@@ -28,7 +28,6 @@ export const ResetPassword = ({ open, onClose, userId, email }) => {
       window.localStorage.setItem("token", token);
       navigate("/MainView");
     } catch (error) {
-      console.log("este es el error", error);
       setErrorMessage(error);
       setErrorSnackbarOpen(true);
       setTimeout(() => {

@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { GEOAPI_KEY } from '../../../config';
 import axios from 'axios';
 import { LocationContext } from '../../Contexts/LocationContext';
 import { HousingContext } from '../../Contexts/HousingContext';
@@ -11,9 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { Header } from '../../HomePage/Header/Header';
 import { Box } from '@mui/system';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-//import { useForm } from 'react-hook-form';
-//import { yupResolver } from '@hookform/resolvers/yup';
-//import * as Yup from 'yup';
 
 export const AddHousing = () => {
 
@@ -53,35 +51,10 @@ export const AddHousing = () => {
 
   // VALIDACIONES
 
-  // const validationSchema = Yup.object().shape({
-  //   type: Yup.string().required('Por favor, selecciona un tipo de inmueble'),
-  //   transaction: Yup.string().required('Por favor, selecciona un tipo de transacción'),
-  //   currency: Yup.string().required('Por favor, selecciona una moneda'),
-  //   price: Yup.number().required('Por favor, ingresa un precio').positive('El precio debe ser un valor positivo'),
-  //   squareMeters: Yup.number().required('Por favor, ingresa los metros cuadrados').positive('Los metros cuadrados deben ser un valor positivo'),
-  //   description: Yup.string().optional(),
-  //   country: Yup.string().required('Por favor, ingresa el país'),
-  //   province: Yup.mixed().required('Por favor, selecciona una provincia'),
-  //   municipality: Yup.mixed().required('Por favor, selecciona un municipio'),
-  //   neighborhood: Yup.mixed().required('Por favor, ingresa el barrio'),
-  //   rooms: Yup.number().required('Por favor, ingresa el número de habitaciones').integer('El número de habitaciones debe ser un valor entero').positive('El número de habitaciones debe ser un valor positivo'),
-  //   baths: Yup.number()
-  //   .integer('El número de baños debe ser un valor entero')
-  //   .min(0, 'El número de baños debe ser un valor positivo')
-  //   .nullable()
-  //   .default(null)
-  //   .optional(),
-  //   garages: Yup.number()
-  //   .integer('El número de baños debe ser un valor entero')
-  //   .min(0, 'El número de baños debe ser un valor positivo')
-  //   .nullable()
-  //   .default(null)
-  //   .optional(),
   //   });
 
 
   // const { handleSubmit, setError, formState: { errors } } = useForm({
-  //     resolver: yupResolver(validationSchema)
   //   });
 
   const createHousing = async () => {
@@ -98,12 +71,11 @@ export const AddHousing = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await createHousing();
-    // Borrar los errores previos antes de la validación
+
     // clearErrors();   
   };
 
   useEffect(() => {
-    console.log("housingId", housingId)
     if (housingId && typeof housingId === 'string' && housingId.trim() !== '') {
       navigate(`/housingdetails/${housingId}`);
     }
@@ -151,7 +123,7 @@ export const AddHousing = () => {
 
   const fetchMunicipalities = async () => {
     try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/municipios?CPRO=${selectedProvince.CPRO}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
+      const { data } = await axios.get(`https://apiv1.geoapi.es/municipios?CPRO=${selectedProvince.CPRO}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
       setMunicipalities(data.data);
     } catch (error) {
       console.error(error);
@@ -160,7 +132,7 @@ export const AddHousing = () => {
 
   const fetchPopulations = async () => {
     try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/poblaciones?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
+      const { data } = await axios.get(`https://apiv1.geoapi.es/poblaciones?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
       setPopulations(data.data);
     } catch (error) {
       console.error(error);
@@ -170,8 +142,7 @@ export const AddHousing = () => {
   const fetchNeighborhoods = async () => {
     try {
       const encodedNENTS150 = selectedPopulation.NENTSI50.replace(/\s/g, '%20');
-      console.log("encodedNENTS150", encodedNENTS150);
-      const { data } = await axios.get(`https://apiv1.geoapi.es/nucleos?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&NENTSI50=${encodedNENTS150}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
+      const { data } = await axios.get(`https://apiv1.geoapi.es/nucleos?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&NENTSI50=${encodedNENTS150}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
       setNeighborhoods(data.data);
     } catch (error) {
       console.error(error);
@@ -180,7 +151,7 @@ export const AddHousing = () => {
 
   const fetchZipCodes = async () => {
     try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/cps?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
+      const { data } = await axios.get(`https://apiv1.geoapi.es/cps?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
       setZipCodes(data.data);
     } catch (error) {
       console.error(error);
@@ -189,7 +160,7 @@ export const AddHousing = () => {
 
   const fetchRoads = async () => {
     try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/calles?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&CPOS=${selectedZipCode.CPOS}&type=JSON&key=eb280e481fbc76bc3be11e0e4b108687b76439c4d70beb2fbab3d7e56d772760&sandbox=0`);
+      const { data } = await axios.get(`https://apiv1.geoapi.es/calles?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&CPOS=${selectedZipCode.CPOS}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
       setRoads(data.data);
     } catch (error) {
       console.error(error);

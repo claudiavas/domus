@@ -10,17 +10,17 @@ i18n
   .use(LanguageDetector)
   .init({
     resources: {
- //     en: Enus,
+      en: Enus,
       es: Eses,
-   //   "es-419": Es419
     },
     fallbackLng: "es",
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false
     }
   });
 
-  i18n.changeLanguage("es");
+// Restore the language chosen on a previous visit
+i18n.changeLanguage(localStorage.getItem('lang') || 'es');
 
 export default i18n;

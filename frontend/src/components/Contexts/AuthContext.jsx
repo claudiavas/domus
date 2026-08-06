@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       const response = await getPayload(token)
       setPayload(response.data)
     } catch (error) {
-      console.log("error", error)
+      console.error(error);
     }
   }
 
@@ -28,14 +28,13 @@ export const AuthProvider = ({ children }) => {
         setProfile(response);
       }
     } catch (error) {
-      console.log("error", error);
+      console.error(error);
     }
   };
    
-   // Verificar si el usuario tiene un token en el localStorage
+   // Restore the session when a token is present in localStorage
    useEffect(() => {
     const token = localStorage.getItem('token');
-    // console.log("token", token);
     if (token) {
       setIsLoggedIn(true);
       fetchPayload(token)
@@ -43,15 +42,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // console.log("payload", payload)
     fetchProfile(payload);
-    console.log("isLoggedIn", isLoggedIn)
   }, [payload]);
 
-  // Al cerrar sesión hay que vaciar payload y profile: si no, el avatar
-  // y los datos del usuario siguen visibles aunque ya no haya token.
-  // Al iniciar sesión (SPA, sin recargar la página) hay que cargar el
-  // payload: el useEffect de montaje ya corrió sin token
+  // Clearing the session must also reset payload and profile, otherwise
+  // the avatar keeps showing after logout. Logging in happens client-side
+  // (no page reload), so the payload is fetched again when the flag flips
   useEffect(() => {
     if (!isLoggedIn) {
       setPayload({});
@@ -63,7 +59,6 @@ export const AuthProvider = ({ children }) => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    // console.log("profile", profile)
   }, [profile]);
 
 

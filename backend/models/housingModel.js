@@ -58,7 +58,7 @@ const housingSchema = new Schema({
       type: Object,
       },
 
-    // Coordenadas para el mapa (aprox. por municipio, con dispersión)
+    // Map coordinates (approximate, per municipality)
     coordinates: {
       lat: { type: Number },
       lng: { type: Number },
