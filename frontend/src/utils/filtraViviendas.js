@@ -38,9 +38,17 @@ export function filtraViviendas(housing, filtros) {
 }
 
 /**
- * Percentage of the active criteria satisfied by a property
- * (100 when no criteria are set). Used by the relevance sort,
- * which scores every listing instead of excluding them.
+ * Match percentage between a property and the active criteria
+ * (100 when no criteria are set). Used by the relevance sort, which scores
+ * every listing instead of excluding them.
+ *
+ * Numeric criteria award partial credit the closer the property gets to the
+ * requested value: asking for 2 bathrooms and finding 1 scores 0.5 for that
+ * criterion instead of failing it outright. Location is scored by hierarchy
+ * (province → municipality → town → neighbourhood), so a property in the same
+ * province but a different town still earns part of the location credit.
+ * The operation filter (buy/rent/vacation) is exclusive by nature and never
+ * takes part in the score.
  */
 export function puntuaRelevancia(house, filtros) {
   const {
@@ -48,28 +56,44 @@ export function puntuaRelevancia(house, filtros) {
     province, municipality, neighborhood, population,
   } = filtros;
 
-  // The operation filter is exclusive by nature (a sale listing can never
-  // satisfy a rent search), so it never takes part in the score
-  const criterios = [];
-  if (room) criterios.push(house.rooms >= parseInt(room));
-  if (Number(meter) > 0) criterios.push(house.squareMeters >= meter);
-  if (baths) criterios.push(house.baths >= parseInt(baths));
-  if (garage) criterios.push(house.garages >= parseInt(garage));
-  if (minPrice) criterios.push(house.price >= Number(minPrice));
-  if (maxPrice) criterios.push(house.price <= Number(maxPrice));
-  if (province) criterios.push(house.province?.CPRO === province.CPRO);
-  if (municipality) criterios.push(house.municipality?.CMUM === municipality.CMUM);
-  if (population) criterios.push(house.population?.CUN === population.CUN);
-  if (neighborhood) criterios.push(house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50);
+  const puntos = [];
+  const ratio = (real, pedido) => Math.max(0, Math.min(1, (real || 0) / pedido));
+
+  if (room) puntos.push(ratio(house.rooms, parseInt(room)));
+  if (baths) puntos.push(ratio(house.baths, parseInt(baths)));
+  if (garage) puntos.push(ratio(house.garages, parseInt(garage)));
+  if (Number(meter) > 0) puntos.push(ratio(house.squareMeters, Number(meter)));
+  if (minPrice) puntos.push(house.price >= Number(minPrice) ? 1 : house.price / Number(minPrice));
+  if (maxPrice) puntos.push(house.price <= Number(maxPrice) ? 1 : Number(maxPrice) / house.price);
+
+  // Hierarchical location credit: deeper levels only count while their
+  // parents match, so a same-named town in another province earns nothing
+  const niveles = [
+    [province, () => house.province?.CPRO === province.CPRO],
+    [municipality, () => house.municipality?.CMUM === municipality.CMUM],
+    [population, () => house.population?.CUN === population.CUN],
+    [neighborhood, () => house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50],
+  ].filter(([sel]) => Boolean(sel));
+  if (niveles.length) {
+    let acertados = 0;
+    for (const [, coincide] of niveles) {
+      if (coincide()) acertados++;
+      else break;
+    }
+    puntos.push(acertados / niveles.length);
+  }
+
+  // Amenities stay binary: a pool is either there or it is not
   const equipos = [
     ['closet', 'closets'], ['air_condicioned', 'airConditioned'], ['heating', 'heating'],
     ['elevator', 'elevator'], ['outside_view', 'outsideView'], ['garden', 'garden'],
     ['pool', 'pool'], ['terrace', 'terrace'], ['storage', 'storage'], ['accessible', 'accessible'],
   ];
   for (const [filtro, campo] of equipos) {
-    if (checkbox[filtro]) criterios.push(Boolean(house[campo]));
+    if (checkbox[filtro]) puntos.push(house[campo] ? 1 : 0);
   }
 
-  if (!criterios.length) return 100;
-  return Math.round((criterios.filter(Boolean).length / criterios.length) * 100);
+  if (!puntos.length) return 100;
+  const media = puntos.reduce((a, b) => a + b, 0) / puntos.length;
+  return Math.round(media * 100);
 }
