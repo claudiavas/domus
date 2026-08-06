@@ -217,10 +217,10 @@ export function MainView(props) {
 
           {/* En móvil: más pequeño y por encima de la paginación fija */}
           {/* Smaller on mobile and raised above the pagination row */}
-          <Box sx={{ position: 'fixed', right: { xs: '12px', sm: '20px' }, bottom: { xs: '68px', sm: '20px' }, zIndex: '9999', display: mobileOpen ? 'none' : 'block' }}>
+          <Box sx={{ position: 'fixed', right: { xs: '12px', sm: '20px' }, bottom: { xs: '68px', sm: '20px' }, zIndex: '9999', display: haySesion && !mobileOpen ? 'block' : 'none' }}>
             <Fab
               color="primary"
-              onClick={() => navigate(haySesion ? "/addhousing" : "/login")}
+              onClick={() => navigate("/addhousing")}
               aria-label="add"
               sx={{ width: { xs: 44, sm: 56 }, height: { xs: 44, sm: 56 } }}
             >

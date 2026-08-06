@@ -104,7 +104,9 @@ export function LocationFilter() {
   const valorEnLista = (lista, sel, campo) => lista.find(x => x[campo] === sel?.[campo]) || '';
 
   return (
-    <div>
+    // Flex column so vertical margins between the selects do not collapse
+    // and the rhythm matches the rest of the panel
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
         <InputLabel id="province-label">{t('province')}*</InputLabel>
         <Select labelId="province-label" label={`${t('province')}*`} name="province" value={valorEnLista(provinces, province, 'CPRO')} onChange={elegirProvincia}>
@@ -140,7 +142,7 @@ export function LocationFilter() {
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }
 
