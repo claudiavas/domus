@@ -12,8 +12,8 @@ const databaseName = process.env.DATABASE_NAME || '27017';
 const databaseUser = process.env.DATABASE_USER;
 const databasePassword = process.env.DATABASE_PASSWORD;
 
-// Si hay una MONGO_URL completa (p. ej. la que inyecta Railway), se usa directamente;
-// si no, se construye la URL de Atlas con las variables DB_*
+// Prefer a full MONGO_URL (e.g. the one injected by the hosting platform);
+// otherwise build an Atlas-style URL from the individual DB_* variables
 const databaseURL = mongoUrl || ("mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@" + process.env.DB_SERVER + "/" + process.env.DB_NAME + "?retryWrites=true&w=majority");
 
     mongoose.connect(databaseURL, { useNewUrlParser: true, useUnifiedTopology: true,  });
@@ -33,7 +33,6 @@ mongoose.set("strictQuery", false);
 const mongo = mongoose.connection;
 mongo.on("error", (error) => console.error(error));
 mongo.once("open", () => {
-  console.log("connected to database 🖲️🖲️");
 });
 
 module.exports = { mongo };

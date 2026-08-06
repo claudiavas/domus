@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import { InmueblesProvider } from './components/FilterHousing/HousingContextFilter.jsx';
@@ -13,29 +13,54 @@ import './index.css'
 
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from './theme';
+import { buildTheme, ColorModeContext } from './theme';
 import { AuthProvider } from './components/Contexts/AuthContext.jsx';
 import { LocationProvider } from './components/Contexts/LocationContext.jsx';
 import { HousingProvider } from './components/Contexts/HousingContext.jsx';
 import { ImagesProvider } from './components/Contexts/ImagesContext.jsx';
 
+/**
+ * Application root. Owns the light/dark mode preference (persisted in
+ * localStorage) and wires every context provider around the router.
+ */
+function Root() {
+  const [mode, setMode] = useState(() => localStorage.getItem('colorMode') || 'light');
+
+  const colorMode = useMemo(() => ({
+    mode,
+    toggleColorMode: () => {
+      setMode((prev) => {
+        const next = prev === 'light' ? 'dark' : 'light';
+        localStorage.setItem('colorMode', next);
+        return next;
+      });
+    },
+  }), [mode]);
+
+  const theme = useMemo(() => buildTheme(mode), [mode]);
+
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <LocationProvider>
+            <HousingProvider>
+              <ImagesProvider>
+                <InmueblesProvider>
+                  <App />
+                </InmueblesProvider>
+              </ImagesProvider>
+            </HousingProvider>
+          </LocationProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
+  );
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <AuthProvider>
-      <LocationProvider>
-        <HousingProvider>
-            <ImagesProvider>
-              <InmueblesProvider>
-                <App />
-              </InmueblesProvider>
-            </ImagesProvider>
-        </HousingProvider>
-      </LocationProvider>
-    </AuthProvider>
-    </ThemeProvider>
-
+    <Root />
   </React.StrictMode>,
 )

@@ -1,9 +1,9 @@
-// Tests de integración de la API de Domus.
-// Usan una MongoDB en memoria: no tocan la base de datos real.
+// Integration tests for the Domus REST API.
+// They run against an in-memory MongoDB and never touch real data.
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 
-jest.setTimeout(120000); // la primera ejecución descarga el binario de MongoDB
+jest.setTimeout(120000); // first run downloads the MongoDB binary
 
 let mongod;
 let app;

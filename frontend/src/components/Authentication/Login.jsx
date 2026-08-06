@@ -40,7 +40,6 @@ export function Login() {
       window.localStorage.setItem("token", token);
       navigate("/MainView");
     } catch (error) {
-      console.log("este es el error", error);
       setError(error.response.data.error.result);
       setIsError(true);
       setTimeout(() => {

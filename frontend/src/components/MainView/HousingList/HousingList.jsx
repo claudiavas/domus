@@ -12,28 +12,26 @@ import { useTranslation } from 'react-i18next';
 
 export function HousingList({ myHousingSwitch, onToggleMias }) {
 
-  const {t} = useTranslation(['translation', 'filters']);
+  const { t } = useTranslation('ui');
   
-  console.log("myHousingSwitch", myHousingSwitch);
   const { housing, isLoading } = useContext(HousingContext);
-  console.log("Los datos de Housing son:", housing)
   const { profile } = useContext(AuthContext);
-  const { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter)
-  // Paginación en cliente: 12 viviendas por página
+  const { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter)
+  // Client-side pagination, twelve listings per page
   const POR_PAGINA = 12;
   const [pagina, setPagina] = useState(1);
   const [orden, setOrden] = useState('recientes');
   const esMovil = useMediaQuery('(max-width:600px)');
 
-  // Filtro compartido con el mapa + switch de "solo las mías".
-  // En modo relevancia no se excluye: se puntúa cada vivienda
-  const filtros = { meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
+  // Filters shared with the map view plus the "mine only" toggle.
+  // Relevance mode scores every listing instead of excluding them
+  const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
   const esRelevancia = orden === 'relevancia';
   const base = esRelevancia ? (housing || []) : filtraViviendas(housing, filtros);
   const housingFiltrado = base
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
-  // Las viviendas del usuario logueado se muestran al final: al navegar
-  // interesa ver primero la oferta de otros (las propias tienen su switch)
+  // The signed-in user's own listings sink to the end: browsing is about
+  // other people's offers (there is a dedicated toggle for one's own)
   .sort((a, b) => {
     const aMia = a.user?._id === profile?._id ? 1 : 0;
     const bMia = b.user?._id === profile?._id ? 1 : 0;
@@ -41,7 +39,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   });
 
 
-  // Esqueletos con la silueta de la tarjeta mientras llegan los datos
+  // Card-shaped skeletons while the data loads
   if (isLoading) {
     return (
       <div>
@@ -69,17 +67,23 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   }
 
   if (!housing || housing.length === 0) {
-    return <h1>No hay datos de viviendas disponibles.</h1>;
+    return <h1>{t('noListings')}</h1>;
   }
 
-  // Ordenación
-  const conRelevancia = esRelevancia
+  // With active criteria every card shows its match percentage
+  // (hard-filter modes always yield 100%: they satisfy everything)
+  const hayCriterios = Boolean(
+    transaction || room || baths || garage || minPrice || maxPrice || Number(meter) > 0 ||
+    province || municipality || population || neighborhood ||
+    Object.values(checkbox).some(Boolean)
+  );
+  const conRelevancia = hayCriterios
     ? housingFiltrado.map((h) => ({ ...h, _relevancia: puntuaRelevancia(h, filtros) }))
     : housingFiltrado;
   const ordenadas = [...conRelevancia].sort((a, b) => {
     if (orden === 'precio') return a.price - b.price;
     if (esRelevancia) return b._relevancia - a._relevancia;
-    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // más recientes
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // newest first
   });
 
   const totalPaginas = Math.max(1, Math.ceil(ordenadas.length / POR_PAGINA));
@@ -94,13 +98,13 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   return (
     <div>
       {/* Mis propiedades + ordenación, en la misma línea */}
-      {/* Una sola línea también en móvil, con controles compactos */}
+      {/* Single row on every breakpoint, with compact controls */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: 1, mb: 2, ml: { md: '-20px' }, mr: { md: '15px' } }}>
         {Boolean(localStorage.getItem('token')) && onToggleMias ? (
           <FormControlLabel
             sx={{ ml: 0, mr: 0, '& .MuiFormControlLabel-label': { fontSize: { xs: 13, sm: 14 }, whiteSpace: 'nowrap' } }}
             control={<Switch size="small" checked={myHousingSwitch} onChange={onToggleMias} color="primary" />}
-            label="Mis propiedades"
+            label={t('myProperties')}
           />
         ) : <span />}
         <FormControl size="small" sx={{
@@ -108,11 +112,11 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
           '& .MuiInputBase-root': { fontSize: { xs: 13, sm: 14 } },
           '& .MuiInputLabel-root': { fontSize: { xs: 13, sm: 14 } },
         }}>
-          <InputLabel id="orden-label">Ordenar por</InputLabel>
-          <Select labelId="orden-label" label="Ordenar por" value={orden} onChange={(e) => { setOrden(e.target.value); setPagina(1); }}>
-            <MenuItem value="recientes">Más recientes</MenuItem>
-            <MenuItem value="precio">Menor precio</MenuItem>
-            <MenuItem value="relevancia">Mayor relevancia</MenuItem>
+          <InputLabel id="orden-label">{t('sortBy')}</InputLabel>
+          <Select labelId="orden-label" label={t('sortBy')} value={orden} onChange={(e) => { setOrden(e.target.value); setPagina(1); }}>
+            <MenuItem value="recientes">{t('sortRecent')}</MenuItem>
+            <MenuItem value="precio">{t('sortPrice')}</MenuItem>
+            <MenuItem value="relevancia">{t('sortRelevance')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -139,7 +143,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
           images={house.images}
           coordinates={house.coordinates}
           createdAt={house.createdAt}
-          relevancia={esRelevancia ? house._relevancia : null}
+          relevancia={hayCriterios ? house._relevancia : null}
           pool={house.pool}
           terrace={house.terrace}
           garden={house.garden}
@@ -155,7 +159,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
             page={paginaActual}
             onChange={cambiarPagina}
             color="primary"
-            // En móvil, compacto para que quepa en una sola línea
+            // Compact variant so every page number fits one row on mobile
             size={esMovil ? 'small' : 'medium'}
             siblingCount={esMovil ? 0 : 1}
             boundaryCount={1}
@@ -170,36 +174,6 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
 
 
 
-    // <>
-    // <div>
-
-    //   {housing
-    //     .filter((house) => {
-    //       if (room && room !== '') {
-    //         return house.rooms === parseInt(room);
-    //       }
-    //       return true;
-    //     })
-    //     .map((house) => (
-    //       <HouseCard
-    //         key={house._id}
-    //         _id={house._id}
-    //         house={house.description}
-    //         province={house.province}
-    //         municipality={house.municipality}
-    //         population={house.population}
-    //         neighborhood={house.neighborhood}
-    //         currency={house.currency}
-    //         price={house.price}
-    //         squareMeters={house.squareMeters}
-    //         description={house.description}
-    //         rooms={house.rooms}
-    //         baths={house.baths}
-    //       />
-    //       // </Link>
-    //     ))}
-    // </div>
-    // </>
   );
 
 }

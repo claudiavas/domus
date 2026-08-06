@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Fab, IconButton, Snackbar, Alert, Toolbar, Tooltip } from "@mui/material";
-import { BathFilter, LocationFilter, PriceFilterMin, SquareMeters, RoomFilter, GaragesFilter, CheckboxesFilters, PriceFilterMax } from "../../FilterHousing";
+import { BathFilter, LocationFilter, PriceFilterMin, SquareMeters, RoomFilter, GaragesFilter, CheckboxesFilters, PriceFilterMax, TransactionFilter } from "../../FilterHousing";
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import CloseIcon from '@mui/icons-material/Close';
 import HousingContextFilter from "../../FilterHousing/HousingContextFilter";
@@ -7,16 +7,18 @@ import { AuthContext } from "../../Contexts/AuthContext";
 import { addRequest } from "../../apiService/apiService";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 function Filters(props) {
+  const { t } = useTranslation('ui');
 
-  const { resetFilters, room, baths, meter, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter);
+  const { resetFilters, transaction, room, baths, meter, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter);
   const { payload, profile } = useContext(AuthContext);
   const [feedback, setFeedback] = useState(null); // { tipo, mensaje }
   const navigate = useNavigate();
 
-  // El _id puede venir del payload, del profile, o del propio token si los
-  // contextos aún no cargaron (p. ej. justo después de iniciar sesión)
+  // The user id may come from the payload, the profile, or the raw token
+  // when contexts have not loaded yet (e.g. right after logging in)
   const idDesdeToken = () => {
     try {
       const token = localStorage.getItem('token');
@@ -25,25 +27,25 @@ function Filters(props) {
   };
 
   const hayFiltros = () =>
-    province || municipality || population || neighborhood ||
+    transaction || province || municipality || population || neighborhood ||
     minPrice || maxPrice || room || baths || garage || Number(meter) > 0 ||
     Object.values(checkbox).some(Boolean);
 
   const guardarRequerimiento = async () => {
-    // Guardar búsquedas requiere sesión: el listado es público
+    // Saving searches requires a session; browsing stays public
     const userId = payload?._id || profile?._id || idDesdeToken();
     if (!userId) {
       navigate("/login");
       return;
     }
     if (!hayFiltros()) {
-      setFeedback({ tipo: "warning", mensaje: "Ingresa tus preferencias de búsqueda antes de guardar." });
+      setFeedback({ tipo: "warning", mensaje: t('searchEmpty') });
       return;
     }
     try {
       await addRequest({
         userId,
-        transaction: "sale",
+        transaction: transaction || "sale",
         community: province?.CCOM ? { CCOM: province.CCOM } : {},
         province: province || {},
         municipality: municipality || {},
@@ -56,7 +58,7 @@ function Filters(props) {
         baths: Number(baths) || undefined,
         garages: Number(garage) || undefined,
         currency: "EUR",
-        // los nombres del modelo difieren de los del estado de checkboxes
+        // Model field names differ from the checkbox state keys
         closets: checkbox.closet || undefined,
         airConditioned: checkbox.air_condicioned || undefined,
         heating: checkbox.heating || undefined,
@@ -69,44 +71,43 @@ function Filters(props) {
         accessible: checkbox.accessible || undefined,
         title: `Búsqueda${province?.PRO ? ` en ${province.PRO}` : ""}${municipality?.DMUN50 ? ` - ${municipality.DMUN50}` : ""}`,
       });
-      setFeedback({ tipo: "success", mensaje: "Búsqueda guardada. La verás en la pestaña Mis búsquedas." });
+      setFeedback({ tipo: "success", mensaje: t('searchSaved') });
     } catch (error) {
       console.error(error);
-      setFeedback({ tipo: "error", mensaje: "No se pudo guardar la búsqueda." });
+      setFeedback({ tipo: "error", mensaje: t('searchSaveError') });
     }
   };
 
   return (
 
     <Box sx={{
-      // Panel compacto: controles más pequeños y menos aire vertical para
-      // que todos los filtros quepan de un vistazo
+      // Compact panel: smaller controls so every filter fits at a glance
       display: 'flex',
       flexDirection: 'column',
-      // minHeight (no height): el contenido puede crecer y el pie sticky
-      // se mantiene visible mientras se hace scroll
+      // minHeight (not height) lets the content grow while the sticky
+      // footer button stays visible during scroll
       minHeight: '100%',
-      // Espaciado uniforme: mismo margen entre campos y con los divisores.
-      // El padding superior alinea "Ubicación" con los títulos de los tabs
+      // Uniform spacing between fields and section dividers. The top padding
+      // aligns the first heading with the tab titles of the main area
       pt: 3,
       '& h3': { m: '10px 0 6px 16px', fontSize: 15 },
-      '& .MuiFormControl-root': { my: 0.75, display: 'flex' }, // flex (no inline): elimina el hueco de línea entre selects apilados
+      '& .MuiFormControl-root': { my: 0.75, display: 'flex' }, // block-level flex removes the inline line-gap between stacked selects
       '& .MuiDivider-root': { mt: 1.5 },
       '& .MuiInputBase-root': { fontSize: 14 },
       '& .MuiFormControlLabel-root': { my: '-4px' },
       '& .MuiCheckbox-root': { py: '4px' },
     }}>
-      {/* Cerrar el drawer: solo tiene sentido en móvil, donde es deslizable */}
+      {/* Close control only exists on mobile, where the drawer slides in */}
       {props.onClose && (
         <Box sx={{
           position: 'sticky',
           top: 0,
           zIndex: 2,
-          backgroundColor: '#ffffff',
+          backgroundColor: 'background.paper',
           display: { xs: 'flex', sm: 'none' },
           py: 0.5,
           px: 1,
-          borderBottom: '1px solid #eee',
+          borderBottom: 1, borderColor: 'divider',
           justifyContent: 'space-between',
         }}>
           <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" sx={{ color: 'text.secondary' }}>
@@ -118,9 +119,9 @@ function Filters(props) {
         </Box>
       )}
 
-      {/* Limpiar filtros: flotante SOLO en el panel de escritorio. El drawer
-          móvil tiene su botón en la barra; si ambos renderizaran el Fab fijo,
-          el del drawer cerrado (inerte) taparía al visible y robaría los clics */}
+      {/* Floating clear control for the desktop panel only. The mobile drawer
+          has its own button in the top bar; rendering both fixed controls
+          would stack them and swallow clicks from the visible one */}
       {!props.onClose && <Tooltip title="Limpiar filtros" arrow>
         <IconButton
           size="small"
@@ -136,10 +137,13 @@ function Filters(props) {
         <Alert severity={feedback?.tipo || "success"} onClose={() => setFeedback(null)}>{feedback?.mensaje}</Alert>
       </Snackbar>
 
-      <h3>Ubicación</h3>
+      <h3>{t('operation')}</h3>
+      <TransactionFilter />
+      <Divider />
+      <h3>{t('location')}</h3>
       <LocationFilter />
       <Divider />
-      <h3>Precio</h3>
+      <h3>{t('price')}</h3>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <PriceFilterMin />
         <PriceFilterMax />
@@ -148,28 +152,28 @@ function Filters(props) {
       <h3>M²</h3>
       <SquareMeters />
       <Divider />
-      <h3>Caracteristicas</h3>
+      <h3>{t('features')}</h3>
       <RoomFilter />
       <BathFilter />
       <GaragesFilter />
       <Divider />
-      <h3>Equipamiento</h3>
+      <h3>{t('equipment')}</h3>
       <CheckboxesFilters />
 
-      {/* Botón fijo al pie del panel */}
+      {/* Sticky action pinned to the bottom of the panel */}
       <Box sx={{
         position: 'sticky',
         bottom: 0,
         zIndex: 2,
         mt: 'auto',
-        backgroundColor: '#ffffff',
-        borderTop: '1px solid #eee',
+        backgroundColor: 'background.paper',
+        borderTop: 1, borderColor: 'divider',
         p: 1.5,
         display: 'flex',
         justifyContent: 'center',
       }}>
         <Button fullWidth variant="contained" color="primary" onClick={guardarRequerimiento}>
-          Guardar Búsqueda
+          {t('saveSearch')}
         </Button>
       </Box>
     </Box>

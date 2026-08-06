@@ -47,7 +47,6 @@ export function Register() {
       window.localStorage.setItem("token", token);
       navigate("/MainView");
     } catch (error) {
-      console.log("error", error)
       setError(error.response.data.error.result);
       setIsError(true);
       setTimeout(() => {
@@ -144,7 +143,7 @@ export function Register() {
               <span>Registrarme</span>
             </LoadingButton>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            {/* Invitado a la izquierda; a la derecha el enlace a login (en dos líneas) */}
+            {/* Guest link on the left, sign-in link on the right */}
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item xs>
                 <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>

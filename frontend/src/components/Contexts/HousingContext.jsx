@@ -5,17 +5,17 @@ export const HousingContext = createContext();
 
 export const HousingProvider = ({ children }) => {
     const [housing, setHousing] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Variable de estado para indicar si los datos están cargando
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchHousing = async () => {
       try {
         const data = await getActiveHousing();
         // Garantizar array: una respuesta de error del backend no debe romper los .filter()
         setHousing(Array.isArray(data) ? data : []);
-        setIsLoading(false); // Cambiar el estado a "false" una vez que los datos se hayan cargado
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
-        setIsLoading(false); // En caso de error, también cambiar el estado a "false"
+        setIsLoading(false);
       }
     }
 
@@ -24,7 +24,6 @@ export const HousingProvider = ({ children }) => {
   }, [housing]);  
 
   // useEffect(() => {
-  //   console.log("housing", housing)
   // }, [housing]);
   
   
@@ -35,7 +34,7 @@ export const HousingProvider = ({ children }) => {
     isLoading,
   };
 
-  // Siempre renderizar la app: cada vista decide cómo mostrar su carga
+  // Always render the app; each view decides how to present its loading state
   return (
     <HousingContext.Provider value={contextValue}>
       {children}

@@ -22,7 +22,7 @@ export const HomePage = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useContext(AuthContext);
 
-  //Lógica para enviar al usuario al mainview si está autorizado...
+  // Redirect authenticated users straight to the main view
 
   useEffect(() => {
     if (!isLoggedIn || !localStorage.getItem('token')) {

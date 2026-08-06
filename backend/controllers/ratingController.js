@@ -3,19 +3,17 @@ const Rating = require('../models/ratingModel.js');
 const { ObjectId } = require('mongodb');
 const ratingId = new ObjectId()
 
-//Función para añadir una calificación
 
 const addRating = async (req, res) => {
   const ratingData = req.body;
 
   try {
-    const rating = new Rating(ratingData); // Crear una nueva instancia de calificación
+    const rating = new Rating(ratingData);
 
     await Rating.save(); // Guardar la nueva solicitud en la base de datos
 
     res.status(200).send(rating);
   } catch (error) {
-    console.log(error.code);
     switch (error.code) {
       case 11000:
         res.status(400).send({ msg: 'La puntuación ya existe' });
@@ -27,7 +25,6 @@ const addRating = async (req, res) => {
 };
 
 
-//Función para obtener una calificación  
 
   const getRating = (req, res) => {
     if (req.params.ratingId) {
@@ -40,7 +37,6 @@ const addRating = async (req, res) => {
           }
         })
         .catch((error) => {
-            console.log(error);
             switch (error.name) {
               case 'CastError':
                 res.status(400).send('Formato de ID inválido');
@@ -57,7 +53,6 @@ const addRating = async (req, res) => {
             }
 
 
-    console.log(req.query.status, filter);
     Rating.find(filter)
       .then((rating) => {
         if (rating.length === 0) {
@@ -70,17 +65,16 @@ const addRating = async (req, res) => {
   }
 };
 
-// Función para actualizar una calificación
 const updateRating = async (req, res) => {
-  const { ratingId } = req.params; // Obtener el ID de la calificación de los parámetros de la solicitud
-  const { rating, commentBrief, comment } = req.body; // Obtener los nuevos datos de la calificación del cuerpo de la solicitud
+  const { ratingId } = req.params;
+  const { rating, commentBrief, comment } = req.body;
 
   try {
     const updatedRating = await Rating.findByIdAndUpdate(
       ratingId,
       { rating, commentBrief, comment },
       { new: true }
-    ); // Buscar y actualizar la calificación por su ID
+    );
 
     if (!updatedRating) {
       return res.status(404).json({ error: 'Calificación no encontrada' });
@@ -92,16 +86,15 @@ const updateRating = async (req, res) => {
   }
 };
 
-// Función para eliminar una calificación (marcar como eliminada)
 const deleteRating = async (req, res) => {
-  const { ratingId } = req.params; // Obtener el ID de la calificación de los parámetros de la solicitud
+  const { ratingId } = req.params;
 
   try {
     const deletedRating = await Rating.findByIdAndUpdate(
       ratingId,
       { deletedAt: new Date() },
       { new: true }
-    ); // Buscar y marcar como eliminada la calificación por su ID
+    );
 
     if (!deletedRating) {
       return res.status(404).json({ error: 'Calificación no encontrada' });
@@ -113,12 +106,11 @@ const deleteRating = async (req, res) => {
   }
 };
 
-// Función para eliminar permanentemente una calificación
 const permanentDeleteRating = async (req, res) => {
-  const { ratingId } = req.params; // Obtener el ID de la calificación de los parámetros de la solicitud
+  const { ratingId } = req.params;
 
   try {
-    const deletedRating = await Rating.findByIdAndDelete(ratingId); // Buscar y eliminar permanentemente la calificación por su ID
+    const deletedRating = await Rating.findByIdAndDelete(ratingId);
 
     if (!deletedRating) {
       return res.status(404).json({ error: 'Calificación no encontrada' });

@@ -1,66 +1,147 @@
 {
-    "housing": {
-        "type": {
-            "apartment": "piso",
-            "penthouse": "ático",
-            "duplex": "duplex",
-            "house": "casa",
-            "chalet": "chalet",
-            "other": "otro"
-        },
-        "transaction": {
-            "sale": "venta",
-            "rent": "alquiler",
-            "vacation_rentals": "alquiler vacacional"
-        },
-        "floorLevel": {
-            "Top_floor": "último piso",
-            "Intermediate_floor": "piso intermedio",
-            "Ground_floor": "bajo",
-            "top_floor": "último piso",
-            "intermediate_floor": "piso intermedio",
-            "ground_floor": "bajo"
-        },
-        "facing": {
-            "North": "norte",
-            "South": "sur",
-            "East": "este",
-            "West": "oeste",
-            "north": "norte",
-            "south": "sur",
-            "east": "este",
-            "west": "oeste"
-        },
-        "propertyAge": {
-            "New": "nuevo",
-            "Up_to_5 years": "hasta 5 años",
-            "6_to_10 years": "6 a 10 años",
-            "11_to_20 years": "11 a 20 años",
-            "More_than_20 years": "más de 20 años",
-            "new": "nuevo",
-            "up_to_5 years": "hasta 5 años"
-        },
-        "condition": {
-            "new": "nuevo",
-            "good_condition": "buen estado",
-            "to_renovate": "a reformar"
-        },
-        "furnished": {
-            "unfurnished": "sin amueblar",
-            "semifurnished": "semiamueblado",
-            "furnished": "amueblado"
-        },
-        "kitchenEquipment": {
-            "standard_equipment": "equipamiento estandar",
-            "semi_equipped": "semi equipado",
-            "fully_equipped": "totalmente equipado"
-        },
-        "status": {
-            "active": "activo",
-            "selled": "vendido",
-            "rented": "alquilado",
-            "inactive": "inactivo",
-            "deleted": "eliminado"
-        }
+  "housing": {
+    "type": {
+      "apartment": "piso",
+      "penthouse": "ático",
+      "duplex": "duplex",
+      "house": "casa",
+      "chalet": "chalet",
+      "other": "otro"
+    },
+    "transaction": {
+      "sale": "venta",
+      "rent": "alquiler",
+      "vacation_rentals": "alquiler vacacional"
+    },
+    "floorLevel": {
+      "Top_floor": "último piso",
+      "Intermediate_floor": "piso intermedio",
+      "Ground_floor": "bajo",
+      "top_floor": "último piso",
+      "intermediate_floor": "piso intermedio",
+      "ground_floor": "bajo"
+    },
+    "facing": {
+      "North": "norte",
+      "South": "sur",
+      "East": "este",
+      "West": "oeste",
+      "north": "norte",
+      "south": "sur",
+      "east": "este",
+      "west": "oeste"
+    },
+    "propertyAge": {
+      "New": "nuevo",
+      "Up_to_5 years": "hasta 5 años",
+      "6_to_10 years": "6 a 10 años",
+      "11_to_20 years": "11 a 20 años",
+      "More_than_20 years": "más de 20 años",
+      "new": "nuevo",
+      "up_to_5 years": "hasta 5 años"
+    },
+    "condition": {
+      "new": "nuevo",
+      "good_condition": "buen estado",
+      "to_renovate": "a reformar"
+    },
+    "furnished": {
+      "unfurnished": "sin amueblar",
+      "semifurnished": "semiamueblado",
+      "furnished": "amueblado"
+    },
+    "kitchenEquipment": {
+      "standard_equipment": "equipamiento estandar",
+      "semi_equipped": "semi equipado",
+      "fully_equipped": "totalmente equipado"
+    },
+    "status": {
+      "active": "activo",
+      "selled": "vendido",
+      "rented": "alquilado",
+      "inactive": "inactivo",
+      "deleted": "eliminado"
     }
+  },
+  "ui": {
+    "tabs": {
+      "listings": "Inmuebles",
+      "map": "Mapa",
+      "mySearches": "Mis búsquedas"
+    },
+    "myProperties": "Mis propiedades",
+    "sortBy": "Ordenar por",
+    "sortRecent": "Más recientes",
+    "sortPrice": "Menor precio",
+    "sortRelevance": "Mayor relevancia",
+    "match": "coincide",
+    "seeMore": "Ver más",
+    "perMonth": "mes",
+    "perWeek": "semana",
+    "noListings": "No hay datos de viviendas disponibles.",
+    "noSearches": "Aún no has guardado ninguna búsqueda.",
+    "location": "Ubicación",
+    "price": "Precio",
+    "min": "Mínimo",
+    "max": "Máximo",
+    "features": "Características",
+    "equipment": "Equipamiento",
+    "rooms": "Habitaciones",
+    "baths": "Baños",
+    "garage": "Garaje",
+    "province": "Provincia",
+    "municipality": "Municipio",
+    "population": "Población",
+    "neighborhood": "Barrio",
+    "saveSearch": "Guardar Búsqueda",
+    "clearFilters": "Limpiar filtros",
+    "closeFilters": "Cerrar filtros",
+    "searchSaved": "Búsqueda guardada. La verás en la pestaña Mis búsquedas.",
+    "searchSaveError": "No se pudo guardar la búsqueda.",
+    "searchEmpty": "Ingresa tus preferencias de búsqueda antes de guardar.",
+    "useSearch": "Usar búsqueda",
+    "deleteSearch": "Eliminar búsqueda",
+    "fromPrice": "Desde",
+    "toPrice": "Hasta",
+    "noPriceLimit": "Sin límite de precio",
+    "savedSearch": "Búsqueda guardada",
+    "viewOnMap": "Ver en el mapa",
+    "account": "Cuenta",
+    "myProfile": "Mi perfil",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "publishProperty": "Publicar inmueble",
+    "footer": "Proyecto de portfolio",
+    "publishedOn": "Publicado el",
+    "closets": "Armarios",
+    "airConditioning": "Aire acondicionado",
+    "heating": "Calefacción",
+    "elevator": "Ascensor",
+    "outsideView": "Vista exterior",
+    "garden": "Jardín",
+    "pool": "Piscina",
+    "terrace": "Terraza",
+    "storage": "Trastero",
+    "accessible": "Accesible",
+    "floorLevel": "Nivel de piso",
+    "orientation": "Orientación",
+    "propertyAge": "Antigüedad",
+    "condition": "Condición",
+    "furnishedLabel": "Amueblado",
+    "kitchen": "Cocina",
+    "portalNumber": "Número de portal",
+    "floor": "Piso",
+    "door": "Puerta",
+    "stair": "Escalera",
+    "detailTitle": "Detalle del Inmueble",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "operation": "Tipo de operación",
+    "buy": "Comprar",
+    "rent": "Alquilar",
+    "vacation": "Vacacional"
+  }
 }

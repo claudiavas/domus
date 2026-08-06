@@ -113,15 +113,15 @@ const userSchema = new Schema({
   timestamps:true }
 );
 
-// Esta función se ejecuta "antes" de guardar cualquier usuario en Mongo (Trigger)
+// Pre-save hook: runs before any user document is persisted
 
 userSchema.pre('save', function (next) {
   const user = this;
 
-  //Si no se ha cambiado la contraseña, seguimos
+  // Password unchanged: skip re-hashing
   if (!user.isModified('password')) return next();
 
-  // bcrypt es una libreria que genera "hashes", encriptamos la contraseña
+  // Hash the password with bcrypt before persisting it
   bcrypt.genSalt(10, function (err, salt) {
     if (err) return next(err);
 
