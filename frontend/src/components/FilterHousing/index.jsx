@@ -243,12 +243,12 @@ export function RoomFilter() {
 
   return (
     <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
-      <InputLabel id="demo-select-small-label">{t('rooms')}</InputLabel>
+      <InputLabel id="rooms-filter-label">{t('rooms')}</InputLabel>
       <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId="rooms-filter-label"
+        id="rooms-filter"
         value={room}
-        label="Room"
+        label={t('rooms')}
         onChange={handleChangeRooms}
       >
 
@@ -279,12 +279,12 @@ export function BathFilter() {
 
   return (
     <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
-      <InputLabel id="demo-select-small-label">{t('baths')}</InputLabel>
+      <InputLabel id="baths-filter-label">{t('baths')}</InputLabel>
       <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId="baths-filter-label"
+        id="baths-filter"
         value={baths}
-        label="Bath"
+        label={t('baths')}
         onChange={handleChangeBaths}
       >
 
@@ -311,12 +311,12 @@ export function GaragesFilter() {
 
   return (
     <FormControl sx={{ my: 0.75, width: '90%', marginLeft:'1em' }} size="small">
-      <InputLabel id="demo-select-small-label">{t('garage')}</InputLabel>
+      <InputLabel id="garage-filter-label">{t('garage')}</InputLabel>
       <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId="garage-filter-label"
+        id="garage-filter"
         value={garage}
-        label="Garage"
+        label={t('garage')}
         onChange={handleChangeGarage}
       >
 
