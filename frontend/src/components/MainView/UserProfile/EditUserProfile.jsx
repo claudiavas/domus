@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Box, Snackbar, Grid, Paper, TextField, Button, IconButton, Avatar, FormControl, InputLabel, Select, MenuItem, Typography, Checkbox, Fab } from '@mui/material';
 import { Container } from '@mui/material';
 import axios from 'axios';
-import { LocationContext } from '../../Contexts/LocationContext';
 import { Images } from '../Images/Images';
 import { ImagesContext } from '../../Contexts/ImagesContext';
 import { AuthContext } from '../../Contexts/AuthContext';
@@ -16,8 +15,6 @@ export const EditUserProfile = () => {
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { provinces } = useContext(LocationContext);
-  const { communities } = useContext(LocationContext);
   const { imageUrls } = useContext(ImagesContext);
   const { profile } = useContext(AuthContext);
   const [subscription, setSubscription] = useState(true);
@@ -98,7 +95,6 @@ export const EditUserProfile = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
     try {
       const response = await updateUser(profile._id, formData);
 
@@ -201,21 +197,16 @@ export const EditUserProfile = () => {
 
                 <Grid item xs={12} sm={6} md={6} lg={3}>
                   <FormControl style={{ width: '100%' }}>
-                    <InputLabel id="communities-label">Comunidad Autónoma*</InputLabel>
-                    <Select
-                      labelId="communities-label"
-                      id="AgentRegistrationComunidadAutonoma"
-                      label="Comunidad Autónoma"
-                      name="AgentRegistrationComunity"
-                      value={formData.agentRegistrationCommunity}
+                    <TextField
+                      name="agentRegistrationCommunity"
+                      label="Comunidad / Región"
+                      // Legacy profiles stored the INE object; show its name
+                      value={typeof formData.agentRegistrationCommunity === 'object'
+                        ? formData.agentRegistrationCommunity?.COM || ''
+                        : formData.agentRegistrationCommunity || ''}
                       onChange={handleChange}
-                    >
-                      {communities.map((community) => (
-                        <MenuItem key={community.CCOM} value={community}>
-                          {community.COM}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      fullWidth
+                    />
                   </FormControl>
                 </Grid>
               </Grid> {/*Grid container*/}
@@ -265,20 +256,16 @@ export const EditUserProfile = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
                   <FormControl style={{ width: '100%' }}>
-                    <InputLabel id="province-label">Provincia*</InputLabel>
-                    <Select
-                      labelId="province-label"
-                      id="mainOfficeprovince"
-                      name="mainOfficeprovince"
-                      value={formData.mainOfficeProvince}
+                    <TextField
+                      name="mainOfficeProvince"
+                      label="Provincia / Región*"
+                      // Legacy profiles stored the INE object; show its name
+                      value={typeof formData.mainOfficeProvince === 'object'
+                        ? formData.mainOfficeProvince?.PRO || ''
+                        : formData.mainOfficeProvince || ''}
                       onChange={handleChange}
-                    >
-                      {provinces.map((province) => (
-                        <MenuItem key={province.CPRO} value={province}>
-                          {province.PRO}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      fullWidth
+                    />
                   </FormControl>
                 </Grid>
               </Grid> {/*Grid container*/}

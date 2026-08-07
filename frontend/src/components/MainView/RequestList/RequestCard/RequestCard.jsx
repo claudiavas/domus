@@ -36,10 +36,10 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
   // Applies the saved criteria to the filter panel and jumps to the listings tab
   const usarBusqueda = () => {
     const r = requestCompleta || {};
-    filtros.setProvince(r.province?.CPRO ? r.province : undefined);
-    filtros.setMunicipality(r.municipality?.CMUM ? r.municipality : undefined);
-    filtros.setPopulation(r.population?.CPOB || r.population?.NENTSI50 ? r.population : undefined);
-    filtros.setNeighborhood(r.neighborhood?.NNUCLE50 ? r.neighborhood : undefined);
+    // Old searches stored INE-coded areas without coordinates; only geocoded
+    // locations can drive the radius filter
+    filtros.setLocation(r.location?.lat != null && r.location?.lng != null ? r.location : undefined);
+    filtros.setRadius(r.radius || 25);
     filtros.setMinPrice(r.minPrice || '');
     filtros.setMaxPrice(r.maxPrice || '');
     filtros.setRoom(r.rooms > 1 ? String(r.rooms) : '');
@@ -108,6 +108,7 @@ export function RequestCard({ user, title, showRealEstateLogo, type, transaction
 
 
   const locationText = [
+    requestCompleta?.location?.name,
     province?.PRO,
     municipality?.DMUN50,
     population?.NENTSI50,

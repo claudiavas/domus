@@ -16,7 +16,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   
   const { housing, isLoading } = useContext(HousingContext);
   const { profile } = useContext(AuthContext);
-  const { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter)
+  const { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, location, radius } = useContext(HousingContextFilter)
   // Client-side pagination, twelve listings per page
   const POR_PAGINA = 12;
   const [pagina, setPagina] = useState(1);
@@ -25,12 +25,12 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
 
   // Filters shared with the map view plus the "mine only" toggle.
   // Relevance mode scores every listing instead of excluding them
-  const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population };
+  const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, location, radius };
   const esRelevancia = orden === 'relevancia';
   // Relevance mode relaxes every criterion except the operation filter,
   // which is exclusive and always applies
   const base = esRelevancia
-    ? filtraViviendas(housing, { ...filtros, meter: 0, room: '', baths: '', garage: '', minPrice: '', maxPrice: '', checkbox: {}, province: undefined, municipality: undefined, population: undefined, neighborhood: undefined })
+    ? filtraViviendas(housing, { ...filtros, meter: 0, room: '', baths: '', garage: '', minPrice: '', maxPrice: '', checkbox: {}, location: undefined })
     : filtraViviendas(housing, filtros);
   const housingFiltrado = base
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
@@ -79,8 +79,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   // The operation toggle alone does not produce a match percentage
   const hayCriterios = Boolean(
     room || baths || garage || minPrice || maxPrice || Number(meter) > 0 ||
-    province || municipality || population || neighborhood ||
-    Object.values(checkbox).some(Boolean)
+    location || Object.values(checkbox).some(Boolean)
   );
   const conRelevancia = hayCriterios
     ? housingFiltrado.map((h) => ({ ...h, _relevancia: puntuaRelevancia(h, filtros) }))

@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 function Filters(props) {
   const { t } = useTranslation('ui');
 
-  const { resetFilters, transaction, room, baths, meter, garage, minPrice, maxPrice, checkbox, province, municipality, neighborhood, population } = useContext(HousingContextFilter);
+  const { resetFilters, transaction, room, baths, meter, garage, minPrice, maxPrice, checkbox, location, radius } = useContext(HousingContextFilter);
   const { payload, profile } = useContext(AuthContext);
   const [feedback, setFeedback] = useState(null); // { tipo, mensaje }
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ function Filters(props) {
   };
 
   const hayFiltros = () =>
-    transaction?.length || province || municipality || population || neighborhood ||
+    transaction?.length || location ||
     minPrice || maxPrice || room || baths || garage || Number(meter) > 0 ||
     Object.values(checkbox).some(Boolean);
 
@@ -46,11 +46,9 @@ function Filters(props) {
       await addRequest({
         userId,
         transaction: transaction?.[0] || "sale",
-        community: province?.CCOM ? { CCOM: province.CCOM } : {},
-        province: province || {},
-        municipality: municipality || {},
-        population: population || {},
-        neighborhood: neighborhood || {},
+        community: {},
+        location: location ? { name: location.name, lat: location.lat, lng: location.lng } : {},
+        radius: location ? radius : undefined,
         minM2: Number(meter) || 0,
         minPrice: Number(minPrice) || 0,
         maxPrice: Number(maxPrice) || 0,
@@ -69,7 +67,7 @@ function Filters(props) {
         terrace: checkbox.terrace || undefined,
         storage: checkbox.storage || undefined,
         accessible: checkbox.accessible || undefined,
-        title: `Búsqueda${province?.PRO ? ` en ${province.PRO}` : ""}${municipality?.DMUN50 ? ` - ${municipality.DMUN50}` : ""}`,
+        title: `Búsqueda${location?.name ? ` en ${location.name}` : ""}`,
       });
       setFeedback({ tipo: "success", mensaje: t('searchSaved') });
     } catch (error) {

@@ -2,10 +2,25 @@
  * Shared listing filter used by both the list view and the map view.
  * Receives the housing array and the filter context values.
  */
+
+/**
+ * Great-circle distance in kilometres between two {lat, lng} points
+ * (Haversine formula). Good enough for radius search at city scale.
+ */
+export function haversineKm(a, b) {
+  const R = 6371;
+  const rad = (deg) => (deg * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
 export function filtraViviendas(housing, filtros) {
   const {
     transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox,
-    province, municipality, neighborhood, population,
+    location, radius,
   } = filtros;
 
   return (housing || []).filter((house) => {
@@ -27,13 +42,13 @@ export function filtraViviendas(housing, filtros) {
       (!checkbox.terrace || house.terrace) &&
       (!checkbox.storage || house.storage) &&
       (!checkbox.accessible || house.accessible);
-    const prov = province ? (house.province?.CPRO === province.CPRO) : true;
-    const muni = municipality ? (house.municipality?.CMUM === municipality.CMUM) : true;
-    const barrio = neighborhood ? (house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50) : true;
-    const poblacion = population ? (house.population?.CUN === population.CUN) : true;
+    // Radius search: listings without coordinates cannot match a located search
+    const zona = !location ||
+      (house.coordinates?.lat != null && house.coordinates?.lng != null &&
+        haversineKm(location, house.coordinates) <= (radius || 25));
 
     return operacion && habitaciones && metros && banos && garaje && precioMin && precioMax &&
-      equipamiento && prov && muni && barrio && poblacion;
+      equipamiento && zona;
   });
 }
 
@@ -44,16 +59,16 @@ export function filtraViviendas(housing, filtros) {
  *
  * Numeric criteria award partial credit the closer the property gets to the
  * requested value: asking for 2 bathrooms and finding 1 scores 0.5 for that
- * criterion instead of failing it outright. Location is scored by hierarchy
- * (province → municipality → town → neighbourhood), so a property in the same
- * province but a different town still earns part of the location credit.
+ * criterion instead of failing it outright. Location earns full credit inside
+ * the chosen radius and decays with distance beyond it, so a property 40 km
+ * from a 25 km search still gets part of the location credit.
  * The operation filter (buy/rent/vacation) is exclusive by nature and never
  * takes part in the score.
  */
 export function puntuaRelevancia(house, filtros) {
   const {
     meter, room, baths, garage, minPrice, maxPrice, checkbox,
-    province, municipality, neighborhood, population,
+    location, radius,
   } = filtros;
 
   const puntos = [];
@@ -66,21 +81,16 @@ export function puntuaRelevancia(house, filtros) {
   if (minPrice) puntos.push(house.price >= Number(minPrice) ? 1 : house.price / Number(minPrice));
   if (maxPrice) puntos.push(house.price <= Number(maxPrice) ? 1 : Number(maxPrice) / house.price);
 
-  // Hierarchical location credit: deeper levels only count while their
-  // parents match, so a same-named town in another province earns nothing
-  const niveles = [
-    [province, () => house.province?.CPRO === province.CPRO],
-    [municipality, () => house.municipality?.CMUM === municipality.CMUM],
-    [population, () => house.population?.CUN === population.CUN],
-    [neighborhood, () => house.neighborhood?.NNUCLE50 === neighborhood.NNUCLE50],
-  ].filter(([sel]) => Boolean(sel));
-  if (niveles.length) {
-    let acertados = 0;
-    for (const [, coincide] of niveles) {
-      if (coincide()) acertados++;
-      else break;
+  // Distance credit: 1 inside the radius, then inversely proportional to the
+  // distance (twice the radius scores 0.5). No coordinates means no credit.
+  if (location) {
+    const r = radius || 25;
+    if (house.coordinates?.lat != null && house.coordinates?.lng != null) {
+      const d = haversineKm(location, house.coordinates);
+      puntos.push(d <= r ? 1 : Math.min(1, r / d));
+    } else {
+      puntos.push(0);
     }
-    puntos.push(acertados / niveles.length);
   }
 
   // Amenities stay binary: a pool is either there or it is not

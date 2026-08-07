@@ -1,8 +1,8 @@
-// Seed v2 de Domus: geo real de geoapi.es, ~60 viviendas variadas,
+// Seed v3 de Domus: lista estatica de ciudades espanolas, ~120 viviendas variadas,
 // 10 usuarios ficticios con avatar, fotos reales de casas e interiores.
 // Target API and demo owner are provided via environment variables
 const API = process.env.SEED_API_URL || 'http://localhost:8000';
-const GEOKEY = process.env.GEOAPI_KEY || '';
+const DEMO_PASSWORD = process.env.SEED_USER_PASSWORD || 'DomusDemo' + '2026!'; // shared password of the fictional demo users
 const OWNER_ID = process.env.SEED_OWNER_ID || null; // optional: existing user that also publishes listings
 
 // RNG determinista para poder re-ejecutar con los mismos resultados
@@ -45,60 +45,91 @@ async function verifyPool(ids) {
   return ok;
 }
 
-// ---------- 2. GEO desde geoapi.es (los mismos objetos que usa el frontend) ----------
-const CITIES = [
-  { cpro: '28', cmum: '079', peso: 6 }, // Madrid
-  { cpro: '28', cmum: '005', peso: 2 }, // Alcalá de Henares
-  { cpro: '08', cmum: '019', peso: 5 }, // Barcelona
-  { cpro: '08', cmum: '015', peso: 2 }, // Badalona
-  { cpro: '46', cmum: '250', peso: 4 }, // València
-  { cpro: '46', cmum: '131', peso: 2 }, // Gandia
-  { cpro: '03', cmum: '014', peso: 3 }, // Alacant
-  { cpro: '03', cmum: '031', peso: 2 }, // Benidorm
-  { cpro: '41', cmum: '091', peso: 3 }, // Sevilla
-  { cpro: '29', cmum: '067', peso: 3 }, // Málaga
-  { cpro: '29', cmum: '069', peso: 2 }, // Marbella
-  { cpro: '50', cmum: '297', peso: 3 }, // Zaragoza
+// ---------- 2. GEO: lista estatica de ciudades espanolas ----------
+// Cada entrada: [provincia, municipio, lat, lng, peso]. Cubre las 52 capitales
+// (>=1 vivienda por provincia) mas algunas ciudades grandes no capitales.
+const CITY_TABLE = [
+  ['Alava', 'Vitoria-Gasteiz', 42.8467, -2.6716, 1],
+  ['Albacete', 'Albacete', 38.9943, -1.8585, 1],
+  ['Alicante', 'Alicante', 38.3452, -0.4810, 3],
+  ['Almeria', 'Almeria', 36.8340, -2.4637, 1],
+  ['Avila', 'Avila', 40.6565, -4.6818, 1],
+  ['Badajoz', 'Badajoz', 38.8794, -6.9707, 1],
+  ['Baleares', 'Palma', 39.5696, 2.6502, 2],
+  ['Barcelona', 'Barcelona', 41.3874, 2.1686, 5],
+  ['Burgos', 'Burgos', 42.3439, -3.6969, 1],
+  ['Caceres', 'Caceres', 39.4753, -6.3723, 1],
+  ['Cadiz', 'Cadiz', 36.5271, -6.2886, 1],
+  ['Castellon', 'Castello de la Plana', 39.9864, -0.0513, 1],
+  ['Ciudad Real', 'Ciudad Real', 38.9848, -3.9274, 1],
+  ['Cordoba', 'Cordoba', 37.8882, -4.7794, 1],
+  ['A Coruna', 'A Coruna', 43.3623, -8.4115, 1],
+  ['Cuenca', 'Cuenca', 40.0704, -2.1374, 1],
+  ['Girona', 'Girona', 41.9794, 2.8214, 1],
+  ['Granada', 'Granada', 37.1773, -3.5986, 1],
+  ['Guadalajara', 'Guadalajara', 40.6337, -3.1674, 1],
+  ['Guipuzcoa', 'Donostia-San Sebastian', 43.3183, -1.9812, 1],
+  ['Huelva', 'Huelva', 37.2614, -6.9447, 1],
+  ['Huesca', 'Huesca', 42.1401, -0.4089, 1],
+  ['Jaen', 'Jaen', 37.7796, -3.7849, 1],
+  ['Leon', 'Leon', 42.5987, -5.5671, 1],
+  ['Lleida', 'Lleida', 41.6176, 0.6200, 1],
+  ['La Rioja', 'Logrono', 42.4627, -2.4450, 1],
+  ['Lugo', 'Lugo', 43.0121, -7.5559, 1],
+  ['Madrid', 'Madrid', 40.4168, -3.7038, 6],
+  ['Malaga', 'Malaga', 36.7213, -4.4214, 3],
+  ['Murcia', 'Murcia', 37.9922, -1.1307, 1],
+  ['Navarra', 'Pamplona', 42.8125, -1.6458, 1],
+  ['Ourense', 'Ourense', 42.3358, -7.8639, 1],
+  ['Asturias', 'Oviedo', 43.3619, -5.8494, 1],
+  ['Palencia', 'Palencia', 42.0096, -4.5288, 1],
+  ['Las Palmas', 'Las Palmas de Gran Canaria', 28.1235, -15.4363, 1],
+  ['Pontevedra', 'Pontevedra', 42.4310, -8.6444, 1],
+  ['Salamanca', 'Salamanca', 40.9701, -5.6635, 1],
+  ['Santa Cruz de Tenerife', 'Santa Cruz de Tenerife', 28.4636, -16.2518, 1],
+  ['Cantabria', 'Santander', 43.4623, -3.8100, 1],
+  ['Segovia', 'Segovia', 40.9429, -4.1088, 1],
+  ['Sevilla', 'Sevilla', 37.3891, -5.9845, 3],
+  ['Soria', 'Soria', 41.7666, -2.4790, 1],
+  ['Tarragona', 'Tarragona', 41.1189, 1.2445, 1],
+  ['Teruel', 'Teruel', 40.3440, -1.1069, 1],
+  ['Toledo', 'Toledo', 39.8628, -4.0273, 1],
+  ['Valencia', 'Valencia', 39.4699, -0.3763, 4],
+  ['Valladolid', 'Valladolid', 41.6523, -4.7245, 1],
+  ['Vizcaya', 'Bilbao', 43.2630, -2.9350, 1],
+  ['Zamora', 'Zamora', 41.5036, -5.7440, 1],
+  ['Zaragoza', 'Zaragoza', 41.6488, -0.8891, 3],
+  ['Ceuta', 'Ceuta', 35.8894, -5.3213, 1],
+  ['Melilla', 'Melilla', 35.2923, -2.9381, 1],
+  // ciudades grandes que no son capital de provincia
+  ['Madrid', 'Alcala de Henares', 40.4820, -3.3635, 2],
+  ['Barcelona', 'Badalona', 41.4500, 2.2474, 2],
+  ['Valencia', 'Gandia', 38.9680, -0.1800, 2],
+  ['Alicante', 'Benidorm', 38.5342, -0.1314, 2],
+  ['Malaga', 'Marbella', 36.5101, -4.8825, 2],
 ];
 
-async function geo(path) {
-  const r = await fetch(`https://apiv1.geoapi.es/${path}&type=JSON&key=${GEOKEY}&sandbox=0`);
-  const j = await r.json();
-  return j.data || [];
-}
+// Barrios/zonas conocidas para dar variedad a los titulos; el resto usa el municipio.
+const DISTRICTS = {
+  Madrid: ['Chamberi', 'Salamanca', 'Retiro', 'Malasana', 'Chamartin'],
+  Barcelona: ['Eixample', 'Gracia', 'Sarria', 'Poblenou', 'Sants'],
+  Valencia: ['Ruzafa', 'El Carmen', 'Benimaclet', 'Campanar'],
+  Sevilla: ['Triana', 'Nervion', 'Los Remedios', 'Santa Cruz'],
+  Malaga: ['El Perchel', 'Pedregalejo', 'Teatinos'],
+  Zaragoza: ['Delicias', 'Actur', 'Casco Historico'],
+  Bilbao: ['Indautxu', 'Deusto', 'Casco Viejo'],
+};
 
-const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+// Precio medio por m2 (compra) segun provincia; el resto usa el valor por defecto.
+const PRICE_M2 = {
+  Madrid: 4200, Barcelona: 4000, Baleares: 3800, Guipuzcoa: 3600, Vizcaya: 2900,
+  Malaga: 3000, Valencia: 2300, Alicante: 2100, Sevilla: 2400, Zaragoza: 1900,
+};
 
-async function loadGeo() {
-  const provinces = await geo('provincias?');
-  const provByCpro = Object.fromEntries(provinces.map(p => [p.CPRO, p]));
-  // capital de cada provincia: municipio homónimo o, si no, el primero
-  const targets = [...CITIES];
-  for (const prov of provinces) {
-    const munis = await geo(`municipios?CPRO=${prov.CPRO}`);
-    if (!munis.length) continue;
-    const cap = munis.find(m => norm(m.DMUN50) === norm(prov.PRO))
-      || munis.find(m => norm(prov.PRO).includes(norm(m.DMUN50)))
-      || munis[0];
-    if (!targets.some(t => t.cpro === prov.CPRO && t.cmum === cap.CMUM)) {
-      targets.push({ cpro: prov.CPRO, cmum: cap.CMUM, peso: 1, _muni: cap });
-    }
-  }
-  const out = [];
-  for (const c of targets) {
-    const muni = c._muni || (await geo(`municipios?CPRO=${c.cpro}`)).find(m => m.CMUM === c.cmum);
-    if (!muni) { console.log(`⚠️ municipio no encontrado ${c.cpro}/${c.cmum}`); continue; }
-    const pobs = await geo(`poblaciones?CPRO=${c.cpro}&CMUM=${c.cmum}`);
-    const pob = pobs[0] || {};
-    let nucleos = [];
-    if (pob.NENTSI50) {
-      nucleos = (await geo(`nucleos?CPRO=${c.cpro}&CMUM=${c.cmum}&NENTSI50=${encodeURIComponent(pob.NENTSI50)}`)).filter(n => !/DISEMINADO/i.test(n.NNUCLE50 || ""));
-    }
-    out.push({ ...c, province: provByCpro[c.cpro], municipality: muni, population: pob, nucleos });
-    console.log(`  geo ok: ${muni.DMUN} (${nucleos.length} núcleos)`);
-  }
-  return out;
-}
+const CITIES = CITY_TABLE.map(([province, municipality, lat, lng, peso]) => ({
+  province, municipality, lat, lng, peso,
+  districts: DISTRICTS[municipality] || [],
+}));
 
 // ---------- 3. USUARIOS ficticios ----------
 const USERS = [
@@ -123,7 +154,7 @@ async function createUsers() {
       .normalize('NFD').replace(/[̀-ͯ]/g, '');
     const reg = await fetch(`${API}/user/register`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: 'DomusDemo2026!', name: u.name, surname: u.surname }),
+      body: JSON.stringify({ email, password: DEMO_PASSWORD, name: u.name, surname: u.surname }),
     });
     let id;
     if (reg.status === 201) {
@@ -161,34 +192,6 @@ async function wipeHousing() {
 }
 
 
-// Coordenadas aproximadas: capitales por CPRO + ciudades concretas por 'cpro-cmum'
-const COORDS = {
-  '01': [42.8467, -2.6716], '02': [38.9943, -1.8585], '03': [38.3452, -0.4810],
-  '04': [36.8340, -2.4637], '05': [40.6565, -4.6818], '06': [38.8794, -6.9707],
-  '07': [39.5696, 2.6502], '08': [41.3874, 2.1686], '09': [42.3439, -3.6969],
-  '10': [39.4753, -6.3723], '11': [36.5271, -6.2886], '12': [39.9864, -0.0513],
-  '13': [38.9848, -3.9274], '14': [37.8882, -4.7794], '15': [43.3623, -8.4115],
-  '16': [40.0704, -2.1374], '17': [41.9794, 2.8214], '18': [37.1773, -3.5986],
-  '19': [40.6337, -3.1674], '20': [43.3183, -1.9812], '21': [37.2614, -6.9447],
-  '22': [42.1401, -0.4089], '23': [37.7796, -3.7849], '24': [42.5987, -5.5671],
-  '25': [41.6176, 0.6200], '26': [42.4627, -2.4450], '27': [43.0121, -7.5559],
-  '28': [40.4168, -3.7038], '29': [36.7213, -4.4214], '30': [37.9922, -1.1307],
-  '31': [42.8125, -1.6458], '32': [42.3358, -7.8639], '33': [43.3619, -5.8494],
-  '34': [42.0096, -4.5288], '35': [28.1235, -15.4363], '36': [42.4310, -8.6444],
-  '37': [40.9701, -5.6635], '38': [28.4636, -16.2518], '39': [43.4623, -3.8100],
-  '40': [40.9429, -4.1088], '41': [37.3891, -5.9845], '42': [41.7666, -2.4790],
-  '43': [41.1189, 1.2445], '44': [40.3440, -1.1069], '45': [39.8628, -4.0273],
-  '46': [39.4699, -0.3763], '47': [41.6523, -4.7245], '48': [43.2630, -2.9350],
-  '49': [41.5036, -5.7440], '50': [41.6488, -0.8891], '51': [35.8894, -5.3213],
-  '52': [35.2923, -2.9381],
-  // ciudades no capitales del seed
-  '28-005': [40.4820, -3.3635], // Alcalá de Henares
-  '08-015': [41.4500, 2.2474],  // Badalona
-  '46-131': [38.9680, -0.1800], // Gandia
-  '03-031': [38.5342, -0.1314], // Benidorm
-  '29-069': [36.5101, -4.8825], // Marbella
-};
-
 // ---------- 5. Generación de viviendas ----------
 const TIPOS = [
   { v: 'apartment', peso: 50, label: 'Piso', gen: 'm' }, { v: 'house', peso: 15, label: 'Casa', gen: 'f' },
@@ -207,13 +210,13 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
   const m2 = tipo.v === 'chalet' || tipo.v === 'house' ? between(110, 340) : tipo.v === 'other' ? between(38, 60) : between(55, 160);
   const rooms = Math.max(1, Math.min(6, Math.round(m2 / 45) + between(-1, 1)));
   const baths = Math.max(1, Math.min(4, Math.round(rooms / 2) + (chance(0.3) ? 1 : 0)));
-  const priceM2 = { '28': 4200, '08': 4000, '46': 2300, '03': 2100, '41': 2400, '29': 3000, '50': 1900 }[city.cpro] || 2200;
+  const priceM2 = PRICE_M2[city.province] || 2200;
   const price = trans === 'sale'
     ? Math.round(m2 * priceM2 * (0.75 + rnd() * 0.7) / 1000) * 1000
     : trans === 'rent' ? between(550, 3200) : between(400, 2800);
   const esPlanta = !['chalet', 'house'].includes(tipo.v);
-  const nucleo = city.nucleos.length ? pick(city.nucleos) : null;
-  const zona = nucleo?.NNUCLE50 || city.municipality.DMUN;
+  const district = city.districts.length && chance(0.7) ? pick(city.districts) : '';
+  const zona = district || city.municipality;
   const feats = {
     closets: chance(0.6), airConditioned: chance(0.55), heating: chance(0.7),
     elevator: esPlanta ? chance(0.75) : false, outsideView: chance(0.6),
@@ -225,7 +228,7 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
   const extras = Object.entries(EXTRAS_TXT).filter(([k]) => (k === 'garages' ? garages > 0 : feats[k])).map(([, txt]) => txt).slice(0, 3);
   const adj = pick(ADJ)[tipo.gen === 'f' ? 1 : 0];
   const title = `${tipo.label} ${adj} en ${zona}`;
-  const description = `${tipo.label} de ${m2} m² con ${rooms} ${rooms === 1 ? 'dormitorio' : 'dormitorios'} y ${baths} ${baths === 1 ? 'baño' : 'baños'} en ${zona}, ${city.municipality.DMUN50}.` +
+  const description = `${tipo.label} de ${m2} m² con ${rooms} ${rooms === 1 ? 'dormitorio' : 'dormitorios'} y ${baths} ${baths === 1 ? 'baño' : 'baños'} en ${zona}, ${city.municipality}.` +
     (extras.length ? ` Cuenta con ${extras.join(', ')}.` : '') +
     (trans === 'rent' ? ' Disponible para entrar a vivir.' : trans === 'vacation_rentals' ? ' Ideal para tus vacaciones.' : ' Una oportunidad única en la zona.');
   const nImgs = between(3, 5);
@@ -239,13 +242,13 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
   return {
     userId: pick(userIds),
     type: tipo.v, transaction: trans, country: 'Spain', currency: 'EUR', status: 'active',
-    coordinates: (() => {
-      const base = COORDS[`${city.cpro}-${city.cmum}`] || COORDS[city.cpro] || [40.0, -3.7];
-      // dispersión de ~±2km para que no se apilen los pins
-      return { lat: base[0] + (rnd() - 0.5) * 0.04, lng: base[1] + (rnd() - 0.5) * 0.05 };
-    })(),
+    // dispersión de ~±2km para que no se apilen los pins
+    coordinates: {
+      lat: city.lat + (rnd() - 0.5) * 0.04,
+      lng: city.lng + (rnd() - 0.5) * 0.05,
+    },
     province: city.province, municipality: city.municipality,
-    population: city.population, neighborhood: nucleo || {}, zipCode: {},
+    population: city.municipality, neighborhood: district, zipCode: '',
     squareMeters: m2, price, rooms, baths, garages,
     floorLevel: esPlanta ? pick(['top_floor', 'intermediate_floor', 'ground_floor']) : 'ground_floor',
     floorNumber: esPlanta ? between(1, 9) : undefined,
@@ -259,15 +262,14 @@ function buildHouse(cities, userIds, exteriors, interiors, i) {
 }
 
 // ---------- MAIN ----------
-console.log('1/5 Verificando fotos...');
+console.log('1/4 Verificando fotos...');
 const exteriors = await verifyPool(EXTERIOR_IDS);
 const interiors = await verifyPool(INTERIOR_IDS);
 console.log(`  ${exteriors.length} exteriores, ${interiors.length} interiores válidas`);
 
-console.log('2/5 Cargando geografía de geoapi.es...');
-const cities = await loadGeo();
+const cities = CITIES;
 
-console.log('3/5 Creando usuarios...');
+console.log('2/4 Creando usuarios...');
 const userIds = await createUsers();
 if (OWNER_ID) {
   await fetch(`${API}/user/${OWNER_ID}`, {
@@ -277,11 +279,11 @@ if (OWNER_ID) {
 }
 if (OWNER_ID) userIds.push(OWNER_ID);
 
-console.log('4/5 Borrando viviendas anteriores...');
+console.log('3/4 Borrando viviendas anteriores...');
 await wipeHousing();
 
 const TOTAL = Math.max(120, cities.length + 40);
-console.log(`5/5 Creando ${TOTAL} viviendas (≥1 por provincia, ${cities.length} ciudades)...`);
+console.log(`4/4 Creando ${TOTAL} viviendas (≥1 por provincia, ${cities.length} ciudades)...`);
 let ok = 0, fail = 0;
 for (let i = 0; i < TOTAL; i++) {
   // las primeras N garantizan una vivienda en cada ciudad/provincia
