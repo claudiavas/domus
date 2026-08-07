@@ -10,6 +10,7 @@ import { ResetPassword } from '../../Authentication/ResetPassword';
 import { updateUser } from '../../apiService/apiService';
 import { Header } from '../../HomePage/Header/Header';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import { getInitials } from '../../../utils/initials';
 
 export const EditUserProfile = () => {
 
@@ -51,7 +52,7 @@ export const EditUserProfile = () => {
     mainOfficeProvince: profile.mainOfficeProvince,
     mainOfficeCountry: 'España',
     //email: profile.email,
-    telephone1: profile.telephone,
+    telephone1: profile.telephone1,
     telephone2: profile.telephone2,
     profileSummary: profile.profileSummary,
     realEstateLogo: profile.realEstateLogo,
@@ -127,9 +128,12 @@ export const EditUserProfile = () => {
         <div style={{ display: 'grid', gap: '1px', justifyItems: 'center', marginLeft: '14px' }}>
           <Avatar
             style={{ marginBottom: '2px', width: '80px', height: '80px' }}
-            alt="User Avatar"
-            src={imageUrls[0] || profile.profilePicture}
-          />
+            alt={getInitials(profile) || 'Avatar'}
+            src={imageUrls[0] || profile.profilePicture || undefined}
+            sx={{ fontSize: 28 }}
+          >
+            {getInitials(profile) || null}
+          </Avatar>
         </div>
         {/* Upload button */}
         <div style={{ display: 'grid', gap: '2px', justifyItems: 'center', marginLeft: '14px' }}>
@@ -288,9 +292,9 @@ export const EditUserProfile = () => {
                 <Grid item xs={12} sm={6} md={6} lg={3}>
                   <FormControl style={{ width: '100%' }}>
                     <TextField
-                      name="phone"
+                      name="telephone1"
                       label="Teléfono"
-                      value={formData.telephone1}
+                      value={formData.telephone1 || ''}
                       onChange={handleChange}
                       fullWidth
                     />
@@ -299,9 +303,9 @@ export const EditUserProfile = () => {
                 <Grid item xs={12} sm={6} md={6} lg={3}>
                   <FormControl style={{ width: '100%' }}>
                     <TextField
-                      name="mobile"
+                      name="telephone2"
                       label="Móvil"
-                      value={formData.telephone2}
+                      value={formData.telephone2 || ''}
                       onChange={handleChange}
                       fullWidth
                     />
