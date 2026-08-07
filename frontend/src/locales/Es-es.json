@@ -87,6 +87,8 @@
     "max": "Máximo",
     "features": "Características",
     "equipment": "Equipamiento",
+    "minArea": "Superficie mínima",
+    "anyValue": "Indiferente",
     "rooms": "Habitaciones",
     "baths": "Baños",
     "garage": "Garaje",

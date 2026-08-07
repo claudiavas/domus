@@ -20,19 +20,15 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   // Client-side pagination, twelve listings per page
   const POR_PAGINA = 12;
   const [pagina, setPagina] = useState(1);
-  const [orden, setOrden] = useState('recientes');
+  // Relevance by default: with no criteria every listing scores 100 and the
+  // tiebreak falls back to newest first, so the initial view is unchanged
+  const [orden, setOrden] = useState('relevancia');
   const esMovil = useMediaQuery('(max-width:600px)');
 
   // Filters shared with the map view plus the "mine only" toggle.
-  // Relevance mode scores every listing instead of excluding them
+  // Only operation and location exclude; the rest score (see filtraViviendas)
   const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, location, radius };
-  const esRelevancia = orden === 'relevancia';
-  // Relevance mode relaxes every criterion except the operation filter,
-  // which is exclusive and always applies
-  const base = esRelevancia
-    ? filtraViviendas(housing, { ...filtros, meter: 0, room: '', baths: '', garage: '', minPrice: '', maxPrice: '', checkbox: {}, location: undefined })
-    : filtraViviendas(housing, filtros);
-  const housingFiltrado = base
+  const housingFiltrado = filtraViviendas(housing, filtros)
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
   // The signed-in user's own listings sink to the end: browsing is about
   // other people's offers (there is a dedicated toggle for one's own)
@@ -84,10 +80,15 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   const conRelevancia = hayCriterios
     ? housingFiltrado.map((h) => ({ ...h, _relevancia: puntuaRelevancia(h, filtros) }))
     : housingFiltrado;
+  const porFecha = (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // newest first
   const ordenadas = [...conRelevancia].sort((a, b) => {
     if (orden === 'precio') return a.price - b.price;
-    if (esRelevancia) return b._relevancia - a._relevancia;
-    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // newest first
+    if (orden === 'relevancia') {
+      // Equal match (or no criteria at all) falls back to the newest listing
+      const diff = (b._relevancia ?? 100) - (a._relevancia ?? 100);
+      return diff || porFecha(a, b);
+    }
+    return porFecha(a, b);
   });
 
   const totalPaginas = Math.max(1, Math.ceil(ordenadas.length / POR_PAGINA));

@@ -77,6 +77,8 @@
     "max": "Max",
     "features": "Features",
     "equipment": "Amenities",
+    "minArea": "Minimum area",
+    "anyValue": "Any",
     "rooms": "Bedrooms",
     "baths": "Bathrooms",
     "garage": "Garage",
