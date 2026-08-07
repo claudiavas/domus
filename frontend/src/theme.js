@@ -46,6 +46,20 @@ export function buildTheme(mode) {
         },
       }),
     },
+    components: {
+      // MUI already sizes the notch cut into an outlined field from the label
+      // text, but it measures it in the field's own em (0.75em of the input),
+      // while the floating label shrinks from its own font-size. When a
+      // section resizes only one of the two the floating text ends up wider
+      // than its gap and lands on the border.
+      // Making both inherit ties them together: whatever font-size a section
+      // sets on the field (or on any container above it) applies to label and
+      // input alike, so the gap always matches the label. No section needs to
+      // restate it.
+      MuiInputBase: { styleOverrides: { root: { fontSize: 'inherit' } } },
+      MuiInputLabel: { styleOverrides: { root: { fontSize: 'inherit' } } },
+      MuiFormHelperText: { styleOverrides: { root: { fontSize: '0.75em' } } },
+    },
   });
 }
 
