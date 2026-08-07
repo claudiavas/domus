@@ -99,9 +99,9 @@ export const AddHousing = () => {
           <Grid container spacing={1}>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
+              <FormControl size="small" style={{ width: '90%' }}>
                 <InputLabel id="type-label">{t('form:propertyType')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
@@ -119,9 +119,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
+              <FormControl size="small" style={{ width: '90%' }}>
                 <InputLabel id="transaction-label">{t('form:transactionType')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="transaction"
                   value={formData.transaction}
                   onChange={handleChange}
@@ -136,8 +136,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '90%' }}>
+                <TextField size="small"
                   name="squareMeters"
                   label={t('form:squareMeters')}
                   value={formData.squareMeters}
@@ -147,9 +147,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
+              <FormControl size="small" style={{ width: '90%' }}>
                 <InputLabel id="currency-label">{t('form:currency')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
@@ -163,8 +163,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '90%' }}>
+                <TextField size="small"
                   name="price"
                   label={t('form:price')}
                   value={formData.price}
@@ -189,8 +189,8 @@ export const AddHousing = () => {
             )}
 
             <Grid item xs={9}>
-              <FormControl style={{ width: '85%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '85%' }}>
+                <TextField size="small"
                   name="title"
                   label={t('form:listingTitle')}
                   value={formData.title}
@@ -201,8 +201,8 @@ export const AddHousing = () => {
 
             <Grid container item xs={12} spacing={2}>
               <Grid item xs={9}>
-                <FormControl style={{ width: '85%' }}>
-                  <TextField
+                <FormControl size="small" style={{ width: '85%' }}>
+                  <TextField size="small"
                     name="description"
                     label={t('form:description')}
                     value={formData.description}
@@ -241,8 +241,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '90%' }}>
+                <TextField size="small"
                   name="country"
                   label={t('form:country')}
                   value={formData.country}
@@ -252,8 +252,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '90%' }}>
+                <TextField size="small"
                   name="province"
                   label={t('form:province')}
                   value={formData.province || ''}
@@ -263,8 +263,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '90%' }}>
+                <TextField size="small"
                   name="zipCode"
                   label={t('form:zipCode')}
                   value={formData.zipCode || ''}
@@ -274,8 +274,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <FormControl style={{ width: '97%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '97%' }}>
+                <TextField size="small"
                   name="roadName"
                   label={t('form:street')}
                   value={formData.roadName || ''}
@@ -285,8 +285,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={3}>
-              <FormControl style={{ width: '85%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '85%' }}>
+                <TextField size="small"
                   name="houseNumber"
                   label={`${t('form:portalNumber')} (${t('form:optional')})`}
                   value={formData.houseNumber || ''}
@@ -296,8 +296,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={3}>
-              <FormControl style={{ width: '85%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '85%' }}>
+                <TextField size="small"
                   name="floorNumber"
                   label={`${t('form:floorNumber')} (${t('form:optional')})`}
                   value={formData.floorNumber}
@@ -307,8 +307,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={3}>
-              <FormControl style={{ width: '85%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '85%' }}>
+                <TextField size="small"
                   name="door"
                   label={`${t('form:door')} (${t('form:optional')})`}
                   value={formData.door}
@@ -318,8 +318,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={3}>
-              <FormControl style={{ width: '85%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '85%' }}>
+                <TextField size="small"
                   name="stair"
                   label={`${t('form:stair')} (${t('form:optional')})`}
                   value={formData.stair}
@@ -337,8 +337,8 @@ export const AddHousing = () => {
           <Grid container spacing={1}>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '75%' }}>
+                <TextField size="small"
                   name="rooms"
                   label={t('form:rooms')}
                   value={formData.rooms}
@@ -348,8 +348,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '75%' }}>
+                <TextField size="small"
                   name="baths"
                   label={t('form:baths')}
                   value={formData.baths}
@@ -359,8 +359,8 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
-                <TextField
+              <FormControl size="small" style={{ width: '75%' }}>
+                <TextField size="small"
                   name="garages"
                   label={t('form:garages')}
                   value={formData.garages}
@@ -370,9 +370,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="floorLevel-label">{t('form:floorLevel')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="floorLevel"
                   value={formData.floorLevel}
                   onChange={handleChange}
@@ -387,9 +387,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="facing-label">{t('form:facing')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="facing"
                   labelId="facing-label"
                   label={t('form:facing')}
@@ -405,9 +405,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="propertyAge-label">{t('form:propertyAge')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="propertyAge"
                   labelId="propertyAge-label"
                   label={t('form:propertyAge')}
@@ -424,9 +424,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="condition-label">{t('form:condition')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="condition"
                   value={formData.condition}
                   onChange={handleChange}
@@ -441,9 +441,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="furnished-label">{t('form:furnished')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="furnished"
                   value={formData.furnished}
                   onChange={handleChange}
@@ -458,9 +458,9 @@ export const AddHousing = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
-              <FormControl style={{ width: '75%' }}>
+              <FormControl size="small" style={{ width: '75%' }}>
                 <InputLabel id="kitchenEquipment-label">{t('form:kitchenEquipment')}</InputLabel>
-                <Select
+                <Select size="small"
                   name="kitchenEquipment"
                   value={formData.kitchenEquipment}
                   onChange={handleChange}

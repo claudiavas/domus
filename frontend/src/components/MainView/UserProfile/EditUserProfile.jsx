@@ -161,11 +161,11 @@ export const EditUserProfile = () => {
             <div style={{ margin: '0rem 2rem 2rem 2rem' }}>
               <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'row' }}>
                 <Grid item xs={12} sm={6} md={6} lg={2}>
-                  <FormControl style={{ width: '82%' }}>
+                  <FormControl size="small" style={{ width: '82%' }}>
                     {/* The floating label needs an explicit InputLabel to
                         match the rest of the fields */}
                     <InputLabel id="DocumentType-l">{t('documentType')}</InputLabel>
-                    <Select
+                    <Select size="small"
                       name="DocumentType"
                       value={formData.DocumentType}
                       label={t('documentType')}
@@ -180,8 +180,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={3}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="documentNumber"
                       label={t('documentNumber')}
                       value={formData.documentNumber}
@@ -191,8 +191,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={3}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="agentRegistrationNumber"
                       label={t('agentRegistrationNumber')}
                       value={formData.agentRegistrationNumber || ''}
@@ -203,8 +203,8 @@ export const EditUserProfile = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={6} lg={3}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="agentRegistrationCommunity"
                       label={t('agentRegistrationCommunity')}
                       // Legacy profiles stored the INE object; show its name
@@ -223,8 +223,8 @@ export const EditUserProfile = () => {
             <div style={{ margin: '0rem 2rem 2rem 2rem' }}>
               <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'row' }}>
                 <Grid item xs={12} sm={6} md={6} lg={6}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="name"
                       label={t('name')}
                       value={formData.name}
@@ -234,8 +234,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="surname"
                       label={t('surname')}
                       value={formData.surname}
@@ -251,8 +251,8 @@ export const EditUserProfile = () => {
             <div style={{ margin: '0rem 2rem 2rem 2rem' }}>
               <Grid container spacing={2} style={{ display: 'flex', flexDirection: 'row' }}>
                 <Grid item xs={12} sm={6} md={6} lg={6}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="mainOfficeCountry"
                       label={t('officeCountry')}
                       value={formData.mainOfficeCountry || 'España'}
@@ -262,8 +262,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="mainOfficeProvince"
                       label={t('officeProvince')}
                       // Legacy profiles stored the INE object; show its name
@@ -281,8 +281,8 @@ export const EditUserProfile = () => {
             <div style={{ margin: '0rem 2rem 2rem 2rem' }}>
               <Grid container spacing={2} bottom={"2rem"} >
                 <Grid item xs={12} sm={6} md={6} lg={6}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="email"
                       label={t('email')}
                       value={profile.email || ''}
@@ -293,8 +293,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={3}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="telephone1"
                       label={t('phone')}
                       value={formData.telephone1 || ''}
@@ -304,8 +304,8 @@ export const EditUserProfile = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={3}>
-                  <FormControl style={{ width: '100%' }}>
-                    <TextField
+                  <FormControl size="small" style={{ width: '100%' }}>
+                    <TextField size="small"
                       name="telephone2"
                       label={t('mobile')}
                       value={formData.telephone2 || ''}
