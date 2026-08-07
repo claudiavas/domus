@@ -17,38 +17,31 @@ export function haversineKm(a, b) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
+/**
+ * Only two criteria exclude a listing outright, because answering them wrong
+ * makes the result useless rather than merely worse:
+ *
+ * - the operation (buy / rent / vacation): a flat for sale is never an answer
+ *   to a rental search;
+ * - the location radius: someone searching in Valencia is not served by a
+ *   house in Galicia, however well it matches on paper.
+ *
+ * Every other criterion (rooms, baths, garage, m², price, amenities) is a
+ * preference, not a requirement: those listings stay in the results and lose
+ * match percentage instead — see puntuaRelevancia. Asking for 4 bedrooms still
+ * surfaces the 3-bedroom ones, just further down and with a lower score.
+ */
 export function filtraViviendas(housing, filtros) {
-  const {
-    transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox,
-    location, radius,
-  } = filtros;
+  const { transaction, location, radius } = filtros;
 
   return (housing || []).filter((house) => {
     const operacion = transaction?.length ? transaction.includes(house.transaction) : true;
-    const habitaciones = room ? house.rooms >= parseInt(room) : true;
-    const metros = house.squareMeters >= meter;
-    const banos = baths ? house.baths >= parseInt(baths) : true;
-    const garaje = garage ? house.garages >= parseInt(garage) : true;
-    const precioMin = minPrice ? house.price >= Number(minPrice) : true;
-    const precioMax = maxPrice ? house.price <= Number(maxPrice) : true;
-    // Model field names differ from the checkbox state keys
-    const equipamiento = (!checkbox.closet || house.closets) &&
-      (!checkbox.air_condicioned || house.airConditioned) &&
-      (!checkbox.heating || house.heating) &&
-      (!checkbox.elevator || house.elevator) &&
-      (!checkbox.outside_view || house.outsideView) &&
-      (!checkbox.garden || house.garden) &&
-      (!checkbox.pool || house.pool) &&
-      (!checkbox.terrace || house.terrace) &&
-      (!checkbox.storage || house.storage) &&
-      (!checkbox.accessible || house.accessible);
     // Radius search: listings without coordinates cannot match a located search
     const zona = !location ||
       (house.coordinates?.lat != null && house.coordinates?.lng != null &&
         haversineKm(location, house.coordinates) <= (radius || 25));
 
-    return operacion && habitaciones && metros && banos && garaje && precioMin && precioMax &&
-      equipamiento && zona;
+    return operacion && zona;
   });
 }
 
@@ -59,16 +52,14 @@ export function filtraViviendas(housing, filtros) {
  *
  * Numeric criteria award partial credit the closer the property gets to the
  * requested value: asking for 2 bathrooms and finding 1 scores 0.5 for that
- * criterion instead of failing it outright. Location earns full credit inside
- * the chosen radius and decays with distance beyond it, so a property 40 km
- * from a 25 km search still gets part of the location credit.
- * The operation filter (buy/rent/vacation) is exclusive by nature and never
- * takes part in the score.
+ * criterion instead of failing it outright.
+ * Operation and location do not take part in the score: they are exclusive
+ * filters, so every scored listing already satisfies them and adding a
+ * constant 1 would only dilute the average.
  */
 export function puntuaRelevancia(house, filtros) {
   const {
     meter, room, baths, garage, minPrice, maxPrice, checkbox,
-    location, radius,
   } = filtros;
 
   const puntos = [];
@@ -80,18 +71,6 @@ export function puntuaRelevancia(house, filtros) {
   if (Number(meter) > 0) puntos.push(ratio(house.squareMeters, Number(meter)));
   if (minPrice) puntos.push(house.price >= Number(minPrice) ? 1 : house.price / Number(minPrice));
   if (maxPrice) puntos.push(house.price <= Number(maxPrice) ? 1 : Number(maxPrice) / house.price);
-
-  // Distance credit: 1 inside the radius, then inversely proportional to the
-  // distance (twice the radius scores 0.5). No coordinates means no credit.
-  if (location) {
-    const r = radius || 25;
-    if (house.coordinates?.lat != null && house.coordinates?.lng != null) {
-      const d = haversineKm(location, house.coordinates);
-      puntos.push(d <= r ? 1 : Math.min(1, r / d));
-    } else {
-      puntos.push(0);
-    }
-  }
 
   // Amenities stay binary: a pool is either there or it is not
   const equipos = [
