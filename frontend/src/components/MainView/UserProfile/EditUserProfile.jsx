@@ -11,8 +11,11 @@ import { updateUser } from '../../apiService/apiService';
 import { Header } from '../../HomePage/Header/Header';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { getInitials } from '../../../utils/initials';
+import { useTranslation } from 'react-i18next';
 
 export const EditUserProfile = () => {
+
+  const { t } = useTranslation('form');
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -99,14 +102,14 @@ export const EditUserProfile = () => {
     try {
       const response = await updateUser(profile._id, formData);
 
-      setSnackbarMessage('Los campos se han guardado exitosamente en la base de datos');
+      setSnackbarMessage(t('profileSaved'));
 
       setOpenSnackbar(true);
 
     } catch (error) {
       console.error(error);
 
-      setSnackbarMessage('Ha ocurrido un error al guardar los campos');
+      setSnackbarMessage(t('profileSaveError'));
 
       setOpenSnackbar(true);
     }
@@ -119,7 +122,7 @@ export const EditUserProfile = () => {
 
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
       
-      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component="Mi Perfil"/></h1>
+      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component={t('myProfile')}/></h1>
 
 
       {/* Avatar + search icon  */}
@@ -161,11 +164,11 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '82%' }}>
                     {/* The floating label needs an explicit InputLabel to
                         match the rest of the fields */}
-                    <InputLabel id="DocumentType-l">Tipo Documento</InputLabel>
+                    <InputLabel id="DocumentType-l">{t('documentType')}</InputLabel>
                     <Select
                       name="DocumentType"
                       value={formData.DocumentType}
-                      label="Tipo Documento"
+                      label={t('documentType')}
                       onChange={handleChange}
                       labelId="DocumentType-l"
                       fullWidth
@@ -180,7 +183,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="documentNumber"
-                      label="Número Documento"
+                      label={t('documentNumber')}
                       value={formData.documentNumber}
                       onChange={handleChange}
                       fullWidth
@@ -191,7 +194,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="agentRegistrationNumber"
-                      label="Número Registro Agente"
+                      label={t('agentRegistrationNumber')}
                       value={formData.agentRegistrationNumber || ''}
                       onChange={handleChange}
                       fullWidth
@@ -203,7 +206,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="agentRegistrationCommunity"
-                      label="Comunidad / Región"
+                      label={t('agentRegistrationCommunity')}
                       // Legacy profiles stored the INE object; show its name
                       value={typeof formData.agentRegistrationCommunity === 'object'
                         ? formData.agentRegistrationCommunity?.COM || ''
@@ -223,7 +226,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="name"
-                      label="Nombre"
+                      label={t('name')}
                       value={formData.name}
                       onChange={handleChange}
                       fullWidth
@@ -234,7 +237,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="surname"
-                      label="Apellidos"
+                      label={t('surname')}
                       value={formData.surname}
                       onChange={handleChange}
                       fullWidth
@@ -251,7 +254,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="mainOfficeCountry"
-                      label="Pais*"
+                      label={t('officeCountry')}
                       value={formData.mainOfficeCountry || 'España'}
                       onChange={handleChange}
                       fullWidth
@@ -262,7 +265,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="mainOfficeProvince"
-                      label="Provincia / Región*"
+                      label={t('officeProvince')}
                       // Legacy profiles stored the INE object; show its name
                       value={typeof formData.mainOfficeProvince === 'object'
                         ? formData.mainOfficeProvince?.PRO || ''
@@ -281,10 +284,10 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="email"
-                      label="Email"
+                      label={t('email')}
                       value={profile.email || ''}
                       disabled
-                      helperText="El email es tu nombre de usuario y no se puede cambiar"
+                      helperText={t('emailHelper')}
                       fullWidth
                     />
                   </FormControl>
@@ -293,7 +296,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="telephone1"
-                      label="Teléfono"
+                      label={t('phone')}
                       value={formData.telephone1 || ''}
                       onChange={handleChange}
                       fullWidth
@@ -304,7 +307,7 @@ export const EditUserProfile = () => {
                   <FormControl style={{ width: '100%' }}>
                     <TextField
                       name="telephone2"
-                      label="Móvil"
+                      label={t('mobile')}
                       value={formData.telephone2 || ''}
                       onChange={handleChange}
                       fullWidth
@@ -318,11 +321,11 @@ export const EditUserProfile = () => {
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
                 <Checkbox color="primary" checked={subscription} onChange={handleCheckboxChange} />
                 <span style={{ marginLeft: '0.5rem' }}>
-                  Quiero recibir inspiración, promociones de marketing y actualizaciones vía email.
+                  {t('subscription')}
                 </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button color="primary" variant="outlined" onClick={handleResetPasswordOpen}>Cambiar contraseña</Button>
+              <Button color="primary" variant="outlined" onClick={handleResetPasswordOpen}>{t('changePwd')}</Button>
               {open && <ResetPassword open={open} onClose={handleResetPasswordClose} userId={profile._id} email={profile.email}/>}
               </div>
             </div>
@@ -344,7 +347,7 @@ export const EditUserProfile = () => {
             fontWeight: 'bold',
           }}
           onClick={handleSubmit} >
-          Guardar
+          {t('save')}
         </Button >
       </div >
 

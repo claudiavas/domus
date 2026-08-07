@@ -14,11 +14,13 @@ import { useNavigate } from "react-router-dom";
 import { NavBar } from './Header/NavBar';
 import { useEffect, useContext } from 'react';
 import { AuthContext } from '../Contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const defaultTheme = temaDomus;
 
 export const HomePage = () => {
   
+  const { t } = useTranslation('ui');
   const navigate = useNavigate();
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -41,10 +43,10 @@ export const HomePage = () => {
         <img src="\Logo.png" alt="" />
         <br/><br/><br/>
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-          Conecta Oferta, Demanda y Agentes Inmobiliarios, de manera segura y eficiente.
+          {t('homeTagline')}
         </Typography>
         <br/><br/>
-        <Button variant="contained" onClick={()=>(navigate("/register"))}>Regístrate</Button>
+        <Button variant="contained" onClick={()=>(navigate("/register"))}>{t('homeCta')}</Button>
       </Container>
       <Container maxWidth="md" component="footer" sx={{ mt: 8, py: [3, 6] }}>
         <Divider />

@@ -85,7 +85,7 @@ export const Header = ({component}) => {
       ) : (
         <>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton color="inherit" aria-label="Volver" onClick={() => navigate(-1)} edge="start">
+            <IconButton color="inherit" aria-label={t('back')} onClick={() => navigate(-1)} edge="start">
               <ArrowBackIcon />
             </IconButton>
             <HomeIcon sx={{ cursor: 'pointer' }} onClick={() => (navigate("/mainview"))} />
