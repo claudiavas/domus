@@ -95,6 +95,7 @@
     "saveSearch": "Guardar Búsqueda",
     "clearFilters": "Limpiar filtros",
     "closeFilters": "Cerrar filtros",
+    "close": "Cerrar",
     "searchSaved": "Búsqueda guardada. La verás en la pestaña Mis búsquedas.",
     "searchSaveError": "No se pudo guardar la búsqueda.",
     "searchEmpty": "Ingresa tus preferencias de búsqueda antes de guardar.",
