@@ -36,6 +36,7 @@ export const Header = ({component}) => {
   };
 
   const { profile } = useContext(AuthContext);
+  const initials = getInitials(profile);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
