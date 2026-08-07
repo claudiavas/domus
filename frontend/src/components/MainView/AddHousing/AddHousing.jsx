@@ -229,9 +229,9 @@ export const AddHousing = () => {
         {/* Location: place search first, so picking a result fills the fields below */}
 
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
-          <Grid container spacing={1}>
+          <Grid container spacing={3}>
 
-            <Grid item xs={12} sm={12} md={12} lg={12} style={{ marginBottom: '0.75rem' }}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
               <PlaceSearch
                 value={lugarSeleccionado}
                 onPick={seleccionarLugar}
