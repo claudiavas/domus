@@ -201,9 +201,8 @@ export function PriceFilterMax() {
 /**
  * Minimum area, typed in freely: fixed brackets cannot express a 1500 m²
  * plot, and the previous slider showed no readable value until dragged and
- * started at a minimum the user never chose. The label is pinned open
- * (shrink) so it never sits on top of the outline. The value lives in the
- * shared context only, so "clear filters" resets it.
+ * started at a minimum the user never chose. The value lives in the shared
+ * context only, so "clear filters" resets it.
  */
 export function SquareMeters() {
   const { t } = useTranslation('ui');
@@ -217,7 +216,6 @@ export function SquareMeters() {
       placeholder={t('anyValue')}
       value={meter}
       onChange={(event) => setMeter(event.target.value)}
-      InputLabelProps={{ shrink: true }}
       InputProps={{
         endAdornment: <InputAdornment position="end">m²</InputAdornment>,
         inputProps: { min: 0, step: 10 },
