@@ -89,13 +89,11 @@ function Filters(props) {
       // aligns the first heading with the tab titles of the main area
       pt: 3,
       '& h3': { m: '10px 0 6px 16px', fontSize: 15 },
-      '& .MuiFormControl-root': { my: 0.75, display: 'flex' }, // block-level flex removes the inline line-gap between stacked selects
+      // Compact type for the whole field: input, label and the notch measured
+      // from it all inherit this single size (see the theme overrides)
+      // block-level flex removes the inline line-gap between stacked selects
+      '& .MuiFormControl-root': { my: 0.75, display: 'flex', fontSize: 14 },
       '& .MuiDivider-root': { mt: 1.5 },
-      '& .MuiInputBase-root': { fontSize: 14 },
-      // The notch cut into the outline is sized from the field's own font
-      // (14 → 10.5 shrunk), so the label has to shrink from the same 14 or the
-      // floated text is wider than its gap and lands on top of the border
-      '& .MuiInputLabel-root': { fontSize: 14 },
       '& .MuiFormControlLabel-root': { my: '-4px' },
       '& .MuiCheckbox-root': { py: '4px' },
     }}>
