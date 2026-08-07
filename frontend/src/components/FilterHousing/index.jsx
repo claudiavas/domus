@@ -198,33 +198,32 @@ export function PriceFilterMax() {
 ///// End Price filter
 ///// Start Square_meters filter
 
-const TRAMOS_M2 = [40, 60, 80, 100, 120, 150, 200, 300];
-
 /**
- * Minimum area, as a dropdown rather than a slider: a bare slider showed no
- * readable value until dragged and started at a minimum the user never chose.
- * The value lives in the shared context only, so "clear filters" resets it.
+ * Minimum area, typed in freely: fixed brackets cannot express a 1500 m²
+ * plot, and the previous slider showed no readable value until dragged and
+ * started at a minimum the user never chose. The label is pinned open
+ * (shrink) so it never sits on top of the outline. The value lives in the
+ * shared context only, so "clear filters" resets it.
  */
 export function SquareMeters() {
   const { t } = useTranslation('ui');
   const { meter, setMeter } = useContext(HousingContext);
 
   return (
-    <FormControl sx={{ my: 0.75, width: '90%', marginLeft: '1em' }} size="small">
-      <InputLabel id="meters-filter-label">{t('minArea')}</InputLabel>
-      <Select
-        labelId="meters-filter-label"
-        id="meters-filter"
-        value={meter || 0}
-        label={t('minArea')}
-        onChange={(event) => setMeter(event.target.value)}
-      >
-        <MenuItem value={0}>{t('anyValue')}</MenuItem>
-        {TRAMOS_M2.map((m) => (
-          <MenuItem key={m} value={m}>{`${m}+ m²`}</MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <TextField
+      size="small"
+      type="number"
+      label={t('minArea')}
+      placeholder={t('anyValue')}
+      value={meter}
+      onChange={(event) => setMeter(event.target.value)}
+      InputLabelProps={{ shrink: true }}
+      InputProps={{
+        endAdornment: <InputAdornment position="end">m²</InputAdornment>,
+        inputProps: { min: 0, step: 10 },
+      }}
+      sx={{ my: 0.75, width: '90%', marginLeft: '1em' }}
+    />
   );
 }
 ///// End Square_meters filter
