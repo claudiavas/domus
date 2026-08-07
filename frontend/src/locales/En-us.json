@@ -80,10 +80,6 @@
     "rooms": "Bedrooms",
     "baths": "Bathrooms",
     "garage": "Garage",
-    "province": "Province",
-    "municipality": "Municipality",
-    "population": "Town",
-    "neighborhood": "Neighbourhood",
     "saveSearch": "Save Search",
     "clearFilters": "Clear filters",
     "closeFilters": "Close filters",
@@ -133,6 +129,11 @@
     "operation": "Operation",
     "buy": "Buy",
     "rent": "Rent",
-    "vacation": "Vacation"
+    "vacation": "Vacation",
+    "searchLocation": "Search location",
+    "radius": "Radius",
+    "km": "km",
+    "kmAway": "{{count}} km away",
+    "typeToSearch": "Type at least 3 letters"
   }
 }

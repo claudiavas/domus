@@ -89,10 +89,6 @@
     "rooms": "Habitaciones",
     "baths": "Baños",
     "garage": "Garaje",
-    "province": "Provincia",
-    "municipality": "Municipio",
-    "population": "Población",
-    "neighborhood": "Barrio",
     "saveSearch": "Guardar Búsqueda",
     "clearFilters": "Limpiar filtros",
     "closeFilters": "Cerrar filtros",
@@ -142,6 +138,11 @@
     "operation": "Tipo de operación",
     "buy": "Comprar",
     "rent": "Alquilar",
-    "vacation": "Vacacional"
+    "vacation": "Vacacional",
+    "searchLocation": "Buscar ubicación",
+    "radius": "Radio",
+    "km": "km",
+    "kmAway": "a {{count}} km",
+    "typeToSearch": "Escribe al menos 3 letras"
   }
 }

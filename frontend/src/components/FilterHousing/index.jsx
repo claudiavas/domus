@@ -17,9 +17,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import Autocomplete from '@mui/material/Autocomplete';
 import HousingContext from './HousingContextFilter';
-import { LocationContext } from '../Contexts/LocationContext'
-import { GEOAPI_KEY, GEOAPI_URL } from '../../config';
+import { PHOTON_URL } from '../../config';
 
 /**
  * Primary filter of the panel: buy / rent / vacation rental.
@@ -47,101 +47,97 @@ export function TransactionFilter() {
 }
 
 /**
- * Cascading location selects backed by the Spanish INE geo API.
- * Values live in the shared filter context so "clear filters" and
- * "use saved search" stay in sync with the dropdowns.
+ * Formats a Photon (OpenStreetMap) feature as "name, city, state, country"
+ * without repeating identical segments, plus its coordinates.
+ * Shared by the filter panel and the publish/edit forms.
+ */
+export function photonFeatureToPlace(feature) {
+  const p = feature.properties || {};
+  const partes = [p.name, p.city, p.state, p.country]
+    .filter(Boolean)
+    .filter((v, i, arr) => arr.indexOf(v) === i);
+  const [lng, lat] = feature.geometry?.coordinates || [];
+  return { name: partes.join(', '), lat, lng, properties: p };
+}
+
+/**
+ * Autocomplete wired to the Photon geocoder (OpenStreetMap data, no API
+ * key, worldwide coverage). Notifies the picked place — { name, lat, lng,
+ * properties } — through onPick; the parent decides where to store it.
+ */
+export function PlaceSearch({ value, onPick, label, sx }) {
+  const { t } = useTranslation('ui');
+  const [options, setOptions] = useState([]);
+  const [inputValue, setInputValue] = useState(value?.name || '');
+
+  // Debounced lookup while the user types; Photon needs no key and
+  // already ranks results by importance
+  useEffect(() => {
+    if (inputValue.trim().length < 3) { setOptions([]); return; }
+    const timer = setTimeout(() => {
+      axios.get(`${PHOTON_URL}/?q=${encodeURIComponent(inputValue)}&limit=6`)
+        .then(({ data }) => {
+          const places = (data.features || [])
+            .map(photonFeatureToPlace)
+            .filter((o) => o.name && Number.isFinite(o.lat) && Number.isFinite(o.lng));
+          setOptions(places);
+        })
+        .catch(() => setOptions([]));
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [inputValue]);
+
+  return (
+    <Autocomplete
+      size="small"
+      sx={sx}
+      options={options}
+      filterOptions={(x) => x}
+      getOptionLabel={(o) => o?.name || ''}
+      isOptionEqualToValue={(o, v) => o?.name === v?.name}
+      value={value || null}
+      onChange={(_e, place) => onPick(place || undefined)}
+      inputValue={inputValue}
+      onInputChange={(_e, nuevo) => setInputValue(nuevo)}
+      noOptionsText={t('typeToSearch')}
+      renderInput={(params) => <TextField {...params} label={label} />}
+    />
+  );
+}
+
+/**
+ * Location search of the filter panel: a place autocomplete plus a radius
+ * slider. The picked place and radius live in the shared filter context so
+ * "clear filters" stays in sync; listings are then distance-filtered.
  */
 export function LocationFilter() {
   const { t } = useTranslation('ui');
-  const { provinces } = useContext(LocationContext);
-  // Values live in the shared filter context so "clear filters" and
-  // "use saved search" stay in sync with these dropdowns
-  const { province, setProvince, municipality, setMunicipality, population, setPopulation, neighborhood, setNeighborhood } = useContext(HousingContext);
-
-  const [municipalities, setMunicipalities] = useState([]);
-  const [populations, setPopulations] = useState([]);
-  const [neighborhoods, setNeighborhoods] = useState([]);
-
-
-  useEffect(() => {
-    if (province?.CPRO) {
-      axios.get(`${GEOAPI_URL}/municipios?CPRO=${province.CPRO}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`)
-        .then(({ data }) => setMunicipalities(data.data || []))
-        .catch(console.error);
-    } else {
-      setMunicipalities([]);
-    }
-  }, [province]);
-
-  useEffect(() => {
-    if (province?.CPRO && municipality?.CMUM) {
-      axios.get(`${GEOAPI_URL}/poblaciones?CPRO=${province.CPRO}&CMUM=${municipality.CMUM}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`)
-        .then(({ data }) => setPopulations(data.data || []))
-        .catch(console.error);
-    } else {
-      setPopulations([]);
-    }
-  }, [province, municipality]);
-
-  useEffect(() => {
-    if (province?.CPRO && municipality?.CMUM && population?.NENTSI50) {
-      const nents = population.NENTSI50.replace(/\s/g, '%20');
-      axios.get(`${GEOAPI_URL}/nucleos?CPRO=${province.CPRO}&CMUM=${municipality.CMUM}&NENTSI50=${nents}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`)
-        .then(({ data }) => setNeighborhoods((data.data || []).filter(n => !/DISEMINADO/i.test(n.NNUCLE50 || ''))))
-        .catch(console.error);
-    } else {
-      setNeighborhoods([]);
-    }
-  }, [province, municipality, population]);
-
-  // Al cambiar un nivel se limpian los inferiores
-  const elegirProvincia = (e) => { setProvince(e.target.value || undefined); setMunicipality(undefined); setPopulation(undefined); setNeighborhood(undefined); };
-  const elegirMunicipio = (e) => { setMunicipality(e.target.value || undefined); setPopulation(undefined); setNeighborhood(undefined); };
-  const elegirPoblacion = (e) => { setPopulation(e.target.value || undefined); setNeighborhood(undefined); };
-  const elegirBarrio = (e) => { setNeighborhood(e.target.value || undefined); };
-
-  // MUI Select compares by identity: resolve the list object with the same code
-  const valorEnLista = (lista, sel, campo) => lista.find(x => x[campo] === sel?.[campo]) || '';
+  const { location, setLocation, radius, setRadius } = useContext(HousingContext);
 
   return (
-    // Flex column so vertical margins between the selects do not collapse
+    // Flex column so vertical margins between the fields do not collapse
     // and the rhythm matches the rest of the panel
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <FormControl size="small" sx={{ width: '90%', ml: '1em' }}>
-        <InputLabel id="province-label">{t('province')}*</InputLabel>
-        <Select labelId="province-label" label={`${t('province')}*`} name="province" value={valorEnLista(provinces, province, 'CPRO')} onChange={elegirProvincia}>
-          {provinces.map((p) => (
-            <MenuItem key={p.CPRO} value={p}>{p.PRO}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!municipalities.length}>
-        <InputLabel id="municipality-label">{t('municipality')}*</InputLabel>
-        <Select labelId="municipality-label" label={`${t('municipality')}*`} name="municipality" value={valorEnLista(municipalities, municipality, 'CMUM')} onChange={elegirMunicipio}>
-          {municipalities.map((m) => (
-            <MenuItem key={m.CMUM} value={m}>{m.DMUN50}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!populations.length}>
-        <InputLabel id="population-label">{t('population')}*</InputLabel>
-        <Select labelId="population-label" label={`${t('population')}*`} name="population" value={valorEnLista(populations, population, 'CPOB')} onChange={elegirPoblacion}>
-          {populations.map((pob) => (
-            <MenuItem key={pob.CPOB} value={pob}>{pob.NENTSI50}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl size="small" sx={{ width: '90%', ml: '1em' }} disabled={!neighborhoods.length}>
-        <InputLabel id="neighborhood-label">{t('neighborhood')}*</InputLabel>
-        <Select labelId="neighborhood-label" label={`${t('neighborhood')}*`} name="neighborhood" value={valorEnLista(neighborhoods, neighborhood, 'NNUCLE50')} onChange={elegirBarrio}>
-          {neighborhoods.map((n, i) => (
-            <MenuItem key={n.NNUCLE50 || i} value={n}>{n.NNUCLE50}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <PlaceSearch
+        value={location}
+        onPick={(place) => setLocation(place ? { name: place.name, lat: place.lat, lng: place.lng } : undefined)}
+        label={t('searchLocation')}
+        sx={{ width: '90%', ml: '1em' }}
+      />
+      {location && (
+        <Box sx={{ width: '90%', ml: '1em', mt: 0.5 }}>
+          <FormLabel sx={{ fontSize: 13 }}>{`${t('radius')}: ${radius} km`}</FormLabel>
+          <Slider
+            size="small"
+            value={radius}
+            min={5}
+            max={100}
+            step={5}
+            valueLabelDisplay="auto"
+            onChange={(_e, valor) => setRadius(valor)}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
