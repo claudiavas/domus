@@ -80,7 +80,7 @@ export const AddHousing = () => {
       population: p.name || p.city || '',
       neighborhood: p.district || p.suburb || p.name || '',
       zipCode: p.postcode || prevFormData.zipCode || '',
-      roadName: p.street || prevFormData.roadName || '',
+      roadName: p.street || (p.osm_key === 'highway' ? p.name : undefined) || prevFormData.roadName || '',
       houseNumber: p.housenumber || prevFormData.houseNumber || '',
       coordinates: place ? { lat: place.lat, lng: place.lng } : undefined,
     }));
@@ -231,7 +231,7 @@ export const AddHousing = () => {
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
           <Grid container spacing={1}>
 
-            <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Grid item xs={12} sm={12} md={12} lg={12} style={{ marginBottom: '0.75rem' }}>
               <PlaceSearch
                 value={lugarSeleccionado}
                 onPick={seleccionarLugar}
@@ -243,7 +243,6 @@ export const AddHousing = () => {
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
                 <TextField
-                  required
                   name="country"
                   label={t('form:country')}
                   value={formData.country}
@@ -255,7 +254,6 @@ export const AddHousing = () => {
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
                 <TextField
-                  required
                   name="province"
                   label={t('form:province')}
                   value={formData.province || ''}
