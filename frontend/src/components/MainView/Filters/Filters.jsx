@@ -147,10 +147,8 @@ function Filters(props) {
         <PriceFilterMax />
       </Box>
       <Divider />
-      <h3>M²</h3>
-      <SquareMeters />
-      <Divider />
       <h3>{t('features')}</h3>
+      <SquareMeters />
       <RoomFilter />
       <BathFilter />
       <GaragesFilter />
