@@ -1,8 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { GEOAPI_KEY } from '../../../config';
-import axios from 'axios';
-import { LocationContext } from '../../Contexts/LocationContext';
 import { TextField, Box, Fab, Button, FormControl, Link, InputLabel, Select, MenuItem, FormControlLabel, Paper, Grid, Switch, Typography } from '@mui/material/';
+import { PlaceSearch } from '../../FilterHousing';
 import { updateHousing } from '../../apiService/apiService';
 import { Images } from '../Images/Images';
 import { ImagesContext } from '../../Contexts/ImagesContext';
@@ -25,23 +23,27 @@ export const UpdateHousing = () => {
   const { housingData } = location.state;
   // const history = useHistory();
 
-  const { provinces } = useContext(LocationContext);
   const { imageUrls, setImageUrls } = useContext(ImagesContext)
   const { profile } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [municipalities, setMunicipalities] = useState([]);
-  const [populations, setPopulations] = useState([]);
-  const [neighborhoods, setNeighborhoods] = useState([]);
-  const [zipCodes, setZipCodes] = useState([]);
-  const [roads, setRoads] = useState([]);
+  // Legacy listings stored INE objects for the address parts; extract a
+  // readable name either way
+  const nombreLegado = (v) =>
+    typeof v === 'object' ? v?.PRO || v?.DMUN50 || v?.NENTSI50 || v?.NNUCLE50 || '' : v || '';
 
-  const [selectedProvince, setSelectedProvince] = useState([]);
-  const [selectedMunicipality, setSelectedMunicipality] = useState([]);
-  const [selectedPopulation, setSelectedPopulation] = useState([]);
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState([]);
-  const [selectedZipCode, setSelectedZipCode] = useState([]);
-  const [selectedRoad, setSelectedRoad] = useState([]);
+  // Seed the place search with the listing's current location so the field
+  // is not empty while editing
+  const [lugarSeleccionado, setLugarSeleccionado] = useState(() => {
+    const nombre = [housingData.population, housingData.municipality, housingData.province]
+      .map(nombreLegado)
+      .filter(Boolean)
+      .filter((v, i, arr) => arr.indexOf(v) === i)
+      .join(', ');
+    return nombre
+      ? { name: nombre, lat: housingData.coordinates?.lat, lng: housingData.coordinates?.lng }
+      : undefined;
+  });
 
   const [formData, setFormData] = useState({
     user: profile._id,
@@ -52,11 +54,9 @@ export const UpdateHousing = () => {
     transaction: housingData.transaction,
     country: housingData.country,
     province: housingData.province,
-    // municipality: housingData.municipality,
-    // population: housingData.population,
-    // neighborhood: housingData.neighborhood,
-    // zipCode: housingData.zipCode,
-    // roadName: housingData.roadName ? housingData.roadName : "null",
+    zipCode: housingData.zipCode,
+    roadName: housingData.roadName,
+    coordinates: housingData.coordinates,
     squareMeters: housingData.squareMeters,
     currency: housingData.currency,
     price: housingData.price,
@@ -134,105 +134,29 @@ export const UpdateHousing = () => {
     const { name, value, type, checked } = event.target;
     const fieldValue = type === 'checkbox' ? checked : value;
 
-    switch (name) {
-      case 'province':
-        setSelectedProvince(value);
-        break;
-      case 'municipality':
-        setSelectedMunicipality(value);
-        break;
-      case 'population':
-        setSelectedPopulation(value);
-        break;
-      case 'neighborhood':
-        setSelectedNeighborhood(value);
-        break;
-      case 'zipCode':
-        setSelectedZipCode(value);
-        break;
-      default:
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: fieldValue,
-        }));
-        break;
-    }
-  };
-  const fetchMunicipalities = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/municipios?CPRO=${selectedProvince.CPRO}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-      setMunicipalities(data.data);
-    } catch (error) {
-      console.error(error);
-    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: fieldValue,
+    }));
   };
 
-  const fetchPopulations = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/poblaciones?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-      setPopulations(data.data);
-    } catch (error) {
-      console.error(error);
-    }
+  // The geocoder returns one place; split it into the address fields the
+  // listing stores and keep the coordinates for the map and radius search
+  const seleccionarLugar = (place) => {
+    setLugarSeleccionado(place);
+    const p = place?.properties || {};
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      country: p.country || prevFormData.country,
+      province: p.state || p.county || '',
+      municipality: p.city || p.county || p.name || '',
+      population: p.name || p.city || '',
+      neighborhood: p.district || p.suburb || p.name || '',
+      zipCode: p.postcode || prevFormData.zipCode || '',
+      roadName: p.street || prevFormData.roadName || '',
+      coordinates: place ? { lat: place.lat, lng: place.lng } : prevFormData.coordinates,
+    }));
   };
-
-  const fetchNeighborhoods = async () => {
-    try {
-      const encodedNENTS150 = selectedPopulation.NENTSI50.replace(/\s/g, '%20');
-      const { data } = await axios.get(`https://apiv1.geoapi.es/nucleos?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&NENTSI50=${encodedNENTS150}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-      setNeighborhoods(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchZipCodes = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/cps?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-      setZipCodes(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchRoads = async () => {
-    try {
-      const { data } = await axios.get(`https://apiv1.geoapi.es/calles?CPRO=${selectedProvince.CPRO}&CMUM=${selectedMunicipality.CMUM}&CUN=${selectedNeighborhood.CUN}&CPOS=${selectedZipCode.CPOS}&type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-      setRoads(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedProvince) {
-      fetchMunicipalities();
-    }
-  }, [selectedProvince]);
-
-  useEffect(() => {
-    if (selectedMunicipality) {
-      fetchPopulations();
-    }
-  }, [selectedMunicipality]);
-
-  useEffect(() => {
-    if (selectedPopulation) {
-      fetchNeighborhoods();
-    }
-  }, [selectedPopulation]);
-
-  useEffect(() => {
-    if (selectedNeighborhood) {
-      fetchZipCodes();
-    }
-  }, [selectedNeighborhood]);
-
-  useEffect(() => {
-    if (selectedZipCode) {
-      fetchRoads();
-    }
-  }, [selectedZipCode]);
 
 
 
@@ -397,141 +321,34 @@ export const UpdateHousing = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <InputLabel id="province-label">Provincia*</InputLabel>
-                <Select
-                  labelId="province-label"
-                  label="Provincia"
-                  name="province"
-                  value={formData.province}
-                  onChange={handleChange}
-                // error={!!errors.province}
-                // helpertext={errors.province}
-                >
-
-                  {provinces.map((province) => (
-                    <MenuItem key={province.CPRO} value={province}>
-                      {province.PRO}
-                    </MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
+            <Grid item xs={12} sm={6} md={8} lg={8}>
+              <PlaceSearch
+                value={lugarSeleccionado}
+                onPick={seleccionarLugar}
+                label="Ubicación (ciudad, dirección…)*"
+                sx={{ width: '95%' }}
+              />
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
-                <InputLabel id="municipality-label">Municipio*</InputLabel>
-                <Select
-                  labelId="municipality-label"
-                  label="Municipio*"
-                  name="municipality"
-                  value={formData.municipality}
-                  onChange={handleChange}
-                // error={!!errors.municipality}
-                // helpertext={errors.municipality}
-                >
-
-                  {municipalities.map((municipality) => (
-                    <MenuItem key={municipality.CMUM} value={municipality}>
-                      {municipality.DMUN50}
-                    </MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <InputLabel id="population-label">Población*</InputLabel>
-                <Select
-                  labelId="population-label"
-                  label="Población*"
-                  name="population"
-                  value={formData.population}
-                  onChange={handleChange}
-                // error={!!errors.population}
-                // helpertext={errors.population}
-                >
-
-                  {populations.map((population) => (
-                    <MenuItem key={population.CUN} value={population}>
-                      {population.NENTSI50}
-                    </MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <InputLabel id="neighborhood-label">Barrio*</InputLabel>
-                <Select
-                  labelId="neighborhood-label*"
-                  label="Barrio*"
-                  name="neighborhood"
-                  value={formData.neighborhood}
-                  onChange={handleChange}
-                // error={!!errors.neighborhood} 
-                // helpertext={errors.neighborhood}
-                >
-
-                  {neighborhoods.map((neighborhood) => (
-                    <MenuItem key={neighborhood.NNUCLE50} value={neighborhood}>
-                      {neighborhood.NNUCLE50}
-                    </MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <FormControl style={{ width: '90%' }}>
-                <InputLabel id="zipCode-label">Código Postal</InputLabel>
-                <Select
-                  labelId="zipCode-label"
+                <TextField InputLabelProps={{ shrink: true }}
                   name="zipCode"
                   label="Código Postal"
-                  value={formData.zipCode}
+                  value={typeof formData.zipCode === 'object' ? formData.zipCode?.CPOS || '' : formData.zipCode || ''}
                   onChange={handleChange}
-                // error={!!errors.zipCode}
-                // helpertext={errors.zipCode}
-                >
-
-                  {zipCodes.map((zipCode) => (
-                    <MenuItem key={zipCode.CPOS} value={zipCode}>
-                      {zipCode.CPOS}
-                    </MenuItem>
-                  ))}
-
-                </Select>
+                />
               </FormControl>
             </Grid>
-
 
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <FormControl style={{ width: '97%' }}>
-                <InputLabel id="roadName-label">Vía</InputLabel>
-
-                <Select
-                  labelId="roadName-label"
-                  label="Vía"
+                <TextField InputLabelProps={{ shrink: true }}
                   name="roadName"
-                  value={formData.roadName}
+                  label="Vía"
+                  value={typeof formData.roadName === 'object' ? formData.roadName?.NVIAC || '' : formData.roadName || ''}
                   onChange={handleChange}
-                // error={!!errors.roadName}
-                // helpertext={errors.roadName}
-                >
-                  {roads.map((road) => (
-                    <MenuItem key={road.NVIAC} value={road}>
-                      {`${road.NVIAC} (${road.TVIA})`}
-                    </MenuItem>
-                  ))}
-                </Select>
+                />
               </FormControl>
             </Grid>
           </Grid>

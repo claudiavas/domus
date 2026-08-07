@@ -49,6 +49,16 @@ const requestSchema = new mongoose.Schema({
     type: Object
   },
 
+  // Geocoded place of the search: { name, lat, lng }
+  location: {
+    type: Object
+  },
+
+  // Search radius in km around the location
+  radius: {
+    type: Number
+  },
+
   minM2: {
     type: Number
   },

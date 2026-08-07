@@ -22,10 +22,10 @@ export function InmueblesProvider({ children }) {
     storage: false,
     accessible: false,
   });
-  const [province, setProvince] = useState();
-  const [municipality, setMunicipality] = useState();
-  const [neighborhood, setNeighborhood] = useState();
-  const [population, setPopulation] = useState();
+  // Geocoded place picked in the search box: { name, lat, lng } or undefined
+  const [location, setLocation] = useState();
+  // Search radius in km around the picked place
+  const [radius, setRadius] = useState(25);
 
   const resetFilters = () => {
     setTransaction([]);
@@ -47,43 +47,15 @@ export function InmueblesProvider({ children }) {
       storage: false,
       accessible: false,
     });
-    setProvince(undefined);
-    setMunicipality(undefined);
-    setNeighborhood(undefined);
-    setPopulation(undefined);
+    setLocation(undefined);
+    setRadius(25);
   };
 
-  const value = {
-    meter,
-    setMeter,
-    room,
-    setRoom,
-    resetFilters,
-    baths,
-    setBaths,
-    garage,
-    setGarage,
-    minPrice,
-    setMinPrice,
-    maxPrice,
-    setMaxPrice,
-    checkbox,
-    setCheckbox,
-    province,
-    setProvince,
-    municipality,
-    setMunicipality,
-    neighborhood,
-    setNeighborhood,
-    population,
-    setPopulation,
-  };
   return (
-    <HousingContextFilter.Provider value={{ transaction, setTransaction, room, setRoom, baths, setBaths, meter, setMeter, garage, setGarage, minPrice, setMinPrice, maxPrice, setMaxPrice, checkbox, setCheckbox, province, setProvince, municipality, setMunicipality, neighborhood, setNeighborhood, population, setPopulation, resetFilters }}>
+    <HousingContextFilter.Provider value={{ transaction, setTransaction, room, setRoom, baths, setBaths, meter, setMeter, garage, setGarage, minPrice, setMinPrice, maxPrice, setMaxPrice, checkbox, setCheckbox, location, setLocation, radius, setRadius, resetFilters }}>
       {children}
     </HousingContextFilter.Provider>
   );
 }
 
 export default HousingContextFilter;
-

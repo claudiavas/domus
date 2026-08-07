@@ -34,24 +34,22 @@ const housingSchema = new Schema({
       default: "Spain",
       },
 
-    province: { // external API
-      type: Object,
-      required: true,
-      },
-    
-    municipality: { // external API
+    province: { // free text / geocoder result
       type: Object,
       required: true,
       },
 
-    population: { // external API
+    municipality: { // free text / geocoder result
       type: Object,
       required: true,
       },
-        
-    neighborhood: { // external API
+
+    population: { // free text / geocoder result
       type: Object,
-      required: true,
+      },
+
+    neighborhood: { // free text / geocoder result
+      type: Object,
       },
 
     zipCode: { // external API
