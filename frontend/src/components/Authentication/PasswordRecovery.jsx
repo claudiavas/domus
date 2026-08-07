@@ -18,10 +18,12 @@ import { ResetPassword } from './ResetPassword';
 import queryString from 'query-string';
 import { useParams, useLocation } from 'react-router-dom';
 import { getPayload } from '../apiService/apiService';
+import { useTranslation } from 'react-i18next';
 
 const defaultTheme = temaDomus;
 
 export function PasswordRecovery() {
+  const { t } = useTranslation('auth');
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -59,8 +61,8 @@ export function PasswordRecovery() {
       setUserId(payloaduserId); // Guardar el userId en el estado
       setEmail(payloademail); // Guardar el email en el estado
     } catch (error) {
-      console.error('El link ya expiró, genera otro correo de recuperación de contraseña', error);
-      alert('El link ya expiró, genera otro correo de recuperación de contraseña');
+      console.error('The recovery link has expired', error);
+      alert(t('linkExpired'));
     }
   };
 
@@ -79,14 +81,14 @@ export function PasswordRecovery() {
         >
           <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
           <Typography sx={{ marginBottom: "50px" }} component="h1" variant="h5">
-            ¡Estás de regreso!
+            {t('welcomeBack')}
           </Typography>
           <div style={{ marginBottom: "40px", display: 'flex', justifyContent: 'flex-end' }}>
-            <Button color="primary" variant="contained" onClick={handleResetPasswordOpen}>Cambiar contraseña</Button>
+            <Button color="primary" variant="contained" onClick={handleResetPasswordOpen}>{t('changePwd')}</Button>
             {open && <ResetPassword open={open} onClose={handleResetPasswordClose} userId={userId} email={email}/>}
           </div>
           <Link justifyContent="center" onClick={() => navigate("/forgotpassword")} variant="body2">
-                Volver a generar un correo de recuperación de contraseña.
+                {t('regenerateEmail')}
               </Link>
 
         </Box>

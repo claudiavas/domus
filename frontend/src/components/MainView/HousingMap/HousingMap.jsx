@@ -8,6 +8,7 @@ import { HousingContext } from '../../Contexts/HousingContext';
 import HousingContextFilter from '../../FilterHousing/HousingContextFilter';
 import { filtraViviendas } from '../../../utils/filtraViviendas';
 import { DOMUS_GREEN } from '../../../theme';
+import { useTranslation } from 'react-i18next';
 
 // Custom marker in the brand colour (avoids bundling Leaflet's default image assets)
 const pinDomus = L.divIcon({
@@ -19,6 +20,7 @@ const pinDomus = L.divIcon({
 });
 
 export function HousingMap() {
+  const { t } = useTranslation('ui');
   const navigate = useNavigate();
   const { housing } = useContext(HousingContext);
   const filtros = useContext(HousingContextFilter);
@@ -56,7 +58,7 @@ export function HousingMap() {
                     onClick={() => navigate(`/housingdetails/${h._id}`)}
                     sx={{ color: 'primary.main', textDecoration: 'underline', cursor: 'pointer', fontSize: 13 }}
                   >
-                    Ver más
+                    {t('seeMore')}
                   </Box>
                 </Box>
               </Box>
