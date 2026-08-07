@@ -176,6 +176,7 @@
     "floorNumber": "Número de piso",
     "door": "Puerta",
     "stair": "Escalera",
+    "optional": "opcional",
     "rooms": "Habitaciones*",
     "baths": "Baños",
     "garages": "Garajes",

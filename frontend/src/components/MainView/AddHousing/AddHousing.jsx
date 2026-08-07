@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { HousingContext } from '../../Contexts/HousingContext';
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Paper, Grid, Switch, Fab, IconButton } from '@mui/material/';
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Paper, Grid, Switch } from '@mui/material/';
 import { addHousing } from '../../apiService/apiService';
 import { Images } from '../Images/Images';
 import { ImagesContext } from '../../Contexts/ImagesContext';
@@ -8,7 +8,6 @@ import { AuthContext } from '../../Contexts/AuthContext';
 import { useNavigate } from "react-router-dom";
 import { Header } from '../../HomePage/Header/Header';
 import { Box } from '@mui/system';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { PlaceSearch } from '../../FilterHousing';
 import { useTranslation } from 'react-i18next';
 
@@ -37,15 +36,6 @@ export const AddHousing = () => {
     }));
   }, [imageUrls]);
 
-
-  // VALIDACIONES
-
-  //   });
-
-
-  // const { handleSubmit, setError, formState: { errors } } = useForm({
-  //   });
-
   const createHousing = async () => {
     try {
       const response = await addHousing(formData);
@@ -54,14 +44,11 @@ export const AddHousing = () => {
     } catch (error) {
       console.error(error);
     }
-  };  
-  
-  
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     await createHousing();
-
-    // clearErrors();   
   };
 
   useEffect(() => {
@@ -69,17 +56,6 @@ export const AddHousing = () => {
       navigate(`/housingdetails/${housingId}`);
     }
   }, [housingId]);
-
-
-  //   } catch (error) {
-  //     error.inner.forEach((err) => {
-  //       setError(err.path, {
-  //         type: 'manual',
-  //         message: err.message
-  //       });
-  //     })
-  //   }
-  // };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -105,22 +81,19 @@ export const AddHousing = () => {
       neighborhood: p.district || p.suburb || p.name || '',
       zipCode: p.postcode || prevFormData.zipCode || '',
       roadName: p.street || prevFormData.roadName || '',
+      houseNumber: p.housenumber || prevFormData.houseNumber || '',
       coordinates: place ? { lat: place.lat, lng: place.lng } : undefined,
     }));
   };
 
-
   return (
-
-    //  HEADING
-
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
-      
+
       <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component={t('form:addProperty')}/></h1>
 
       <form onSubmit={handleSubmit}>
 
-        {/* TRANSACTION */}
+        {/* Transaction */}
 
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
           <Grid container spacing={1}>
@@ -253,10 +226,19 @@ export const AddHousing = () => {
         </Paper>
 
 
-        {/* LOCATION */}
+        {/* Location: place search first, so picking a result fills the fields below */}
 
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
           <Grid container spacing={1}>
+
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <PlaceSearch
+                value={lugarSeleccionado}
+                onPick={seleccionarLugar}
+                label={t('form:locationSearch')}
+                sx={{ width: '97%' }}
+              />
+            </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
@@ -265,19 +247,8 @@ export const AddHousing = () => {
                   label={t('form:country')}
                   value={formData.country}
                   onChange={handleChange}
-                // error={!!errors.country}
-                // helpertext={errors.country}
                 />
               </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={8} lg={8}>
-              <PlaceSearch
-                value={lugarSeleccionado}
-                onPick={seleccionarLugar}
-                label={t('form:locationSearch')}
-                sx={{ width: '95%' }}
-              />
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -306,11 +277,9 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="houseNumber"
-                  label={t('form:portalNumber')}
-                  value={formData.houseNumber}
+                  label={`${t('form:portalNumber')} (${t('form:optional')})`}
+                  value={formData.houseNumber || ''}
                   onChange={handleChange}
-                // error={!!errors.houseNumber}
-                // helpertext={errors.houseNumber}
                 />
               </FormControl>
             </Grid>
@@ -319,11 +288,9 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="floorNumber"
-                  label={t('form:floorNumber')}
+                  label={`${t('form:floorNumber')} (${t('form:optional')})`}
                   value={formData.floorNumber}
                   onChange={handleChange}
-                // error={!!errors.floorNumber}
-                // helpertext={errors.floorNumber}
                 />
               </FormControl>
             </Grid>
@@ -332,11 +299,9 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="door"
-                  label={t('form:door')}
+                  label={`${t('form:door')} (${t('form:optional')})`}
                   value={formData.door}
                   onChange={handleChange}
-                // error={!!errors.door}
-                // helpertext={errors.door}
                 />
               </FormControl>
             </Grid>
@@ -345,11 +310,9 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="stair"
-                  label={t('form:stair')}
+                  label={`${t('form:stair')} (${t('form:optional')})`}
                   value={formData.stair}
                   onChange={handleChange}
-                // error={!!errors.stair}
-                // helpertext={errors.stair}
                 />
               </FormControl>
             </Grid>
@@ -357,7 +320,7 @@ export const AddHousing = () => {
           </Grid>
         </Paper>
 
-        {/* CARACTERÍSTICAS PRINCIPALES */}
+        {/* Main characteristics */}
 
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
           <Grid container spacing={1}>
@@ -369,12 +332,9 @@ export const AddHousing = () => {
                   label={t('form:rooms')}
                   value={formData.rooms}
                   onChange={handleChange}
-                // error={!!errors.rooms}
-                // helpertext={errors.rooms}
                 />
               </FormControl>
             </Grid>
-
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
@@ -383,8 +343,6 @@ export const AddHousing = () => {
                   label={t('form:baths')}
                   value={formData.baths}
                   onChange={handleChange}
-                // error={!!errors.baths}
-                // helpertext={errors.baths}
                 />
               </FormControl>
             </Grid>
@@ -396,12 +354,9 @@ export const AddHousing = () => {
                   label={t('form:garages')}
                   value={formData.garages}
                   onChange={handleChange}
-                // error={!!errors.garages}
-                // helpertext={errors.garages}
                 />
               </FormControl>
             </Grid>
-
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
@@ -420,8 +375,6 @@ export const AddHousing = () => {
               </FormControl>
             </Grid>
 
-
-
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
                 <InputLabel id="facing-label">{t('form:facing')}</InputLabel>
@@ -436,11 +389,9 @@ export const AddHousing = () => {
                   <MenuItem value="south" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.south`)}</MenuItem>
                   <MenuItem value="east" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.east`)}</MenuItem>
                   <MenuItem value="west" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.west`)}</MenuItem>
-
                 </Select>
               </FormControl>
             </Grid>
-
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
@@ -451,14 +402,12 @@ export const AddHousing = () => {
                   label={t('form:propertyAge')}
                   value={formData.propertyAge}
                   onChange={handleChange}
-
                 >
                   <MenuItem value="new" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.new`)}</MenuItem>
                   <MenuItem value="up_to_5 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.up_to_5 years`)}</MenuItem>
                   <MenuItem value="6_to_10 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.6_to_10 years`)}</MenuItem>
                   <MenuItem value="11_to_20 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.11_to_20 years`)}</MenuItem>
                   <MenuItem value="more_than_20 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.more_than_20 years`)}</MenuItem>
-
                 </Select>
               </FormControl>
             </Grid>
@@ -517,11 +466,10 @@ export const AddHousing = () => {
           </Grid>
         </Paper>
 
-        {/* CARACTERÍSTICAS ADICIONALES */}
+        {/* Additional characteristics */}
 
         <Paper elevation={3} style={{ padding: '1rem', marginBottom: '0.6rem' }}>
           <Grid container spacing={1}>
-
 
             <Grid item xs={12} sm={6} md={6} lg={2.4}>
               <FormControlLabel style={{ width: '100%' }}
@@ -628,7 +576,6 @@ export const AddHousing = () => {
               />
             </Grid>
 
-
             <Grid item xs={12} sm={6} md={6} lg={2.4}>
               <FormControlLabel style={{ width: '100%' }}
                 control={
@@ -658,7 +605,7 @@ export const AddHousing = () => {
           </Grid>
         </Paper>
 
-        {/* BOTÓN GUARDAR: siempre visible al pie */}
+        {/* Save button, always visible at the bottom */}
         <Box sx={{
           position: 'sticky',
           bottom: 0,
@@ -673,10 +620,6 @@ export const AddHousing = () => {
             {t('form:save')}
           </Button>
         </Box>
-
-        {/* Botón para volver a la ventana de navegación anterior */}
-
-        
 
       </form>
     </div>

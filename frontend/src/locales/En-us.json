@@ -166,6 +166,7 @@
     "floorNumber": "Floor number",
     "door": "Door",
     "stair": "Staircase",
+    "optional": "optional",
     "rooms": "Bedrooms*",
     "baths": "Bathrooms",
     "garages": "Garages",

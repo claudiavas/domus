@@ -75,13 +75,22 @@ export function PlaceSearch({ value, onPick, label, sx }) {
   useEffect(() => {
     if (inputValue.trim().length < 3) { setOptions([]); return; }
     const timer = setTimeout(() => {
-      axios.get(`${PHOTON_URL}/?q=${encodeURIComponent(inputValue)}&limit=6`)
-        .then(({ data }) => {
-          const places = (data.features || [])
-            .map(photonFeatureToPlace)
-            .filter((o) => o.name && Number.isFinite(o.lat) && Number.isFinite(o.lng));
-          setOptions(places);
+      const search = (q) => axios
+        .get(`${PHOTON_URL}/?q=${encodeURIComponent(q)}&lang=es&limit=6`)
+        .then(({ data }) => (data.features || [])
+          .map(photonFeatureToPlace)
+          .filter((o) => o.name && Number.isFinite(o.lat) && Number.isFinite(o.lng)));
+
+      search(inputValue)
+        .then((places) => {
+          if (places.length) return places;
+          // Photon often lacks house-number indexing for a street; retry
+          // with the trailing number stripped so the street itself is found
+          const withoutNumber = inputValue.replace(/\s+\d+\s*$/, '').trim();
+          if (!withoutNumber || withoutNumber === inputValue.trim()) return places;
+          return search(withoutNumber);
         })
+        .then(setOptions)
         .catch(() => setOptions([]));
     }, 350);
     return () => clearTimeout(timer);
