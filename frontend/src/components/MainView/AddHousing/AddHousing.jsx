@@ -23,7 +23,7 @@ export const AddHousing = () => {
   const [housingId, setHousingId] = useState("");
 
   const [formData, setFormData] = useState({
-    country: 'España',
+    country: '',
     showRealEstateLogo: true,
     user: profile._id,
     images: [],
