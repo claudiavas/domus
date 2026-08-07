@@ -19,7 +19,7 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 - **Modo claro/oscuro** con persistencia y **interfaz en español e inglés** conmutables desde la barra superior
 - **Ordenación** por recientes, precio o **relevancia**: con criterios activos cada vivienda muestra su % de coincidencia
 - **Paginación** de resultados y tipo de operación (comprar / alquilar / vacacional) como primer filtro
-- **Búsqueda con filtros combinables**: ubicación real de España (provincia → municipio → población → barrio vía [geoapi.es](https://geoapi.es)), precio, superficie, habitaciones, baños, garajes y 10 características de equipamiento
+- **Búsqueda con filtros combinables**: autocompletado de ubicación mundial con [Photon](https://photon.komoot.io) (OpenStreetMap) y radio de búsqueda en km (distancia Haversine), precio, superficie, habitaciones, baños, garajes y 10 características de equipamiento
 - **Requerimientos guardados**: un comprador guarda su búsqueda como "requerimiento" y los agentes pueden verlos para ofrecerle inmuebles
 - **Publicación de inmuebles** con subida de imágenes a Cloudinary
 - **Autenticación JWT** con registro, login, recuperación de contraseña por email y perfiles con avatar
@@ -34,7 +34,7 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 | Backend | Node.js, Express, Mongoose |
 | Base de datos | MongoDB |
 | Imágenes | Cloudinary |
-| Geografía | geoapi.es (provincias, municipios y núcleos reales del INE) |
+| Geocodificación | Photon (OpenStreetMap/Komoot, sin clave de API) |
 | Emails | Brevo (recuperación de contraseña) |
 | Deploy | Railway (3 servicios: frontend, backend y MongoDB) |
 
@@ -46,7 +46,7 @@ Plataforma inmobiliaria full-stack que conecta oferta, demanda y agentes inmobil
 │  React + Vite  │ REST │ Express + JWT  │      │  (Railway) │
 └───────┬────────┘      └────────────────┘      └────────────┘
         │
-        ├──► geoapi.es    (ubicaciones reales de España)
+        ├──► Photon       (autocompletado de ubicaciones, OpenStreetMap)
         └──► Cloudinary   (subida de imágenes desde el navegador)
 ```
 
@@ -62,7 +62,7 @@ npm run nodemon
 # Frontend (puerto 5173)
 cd frontend
 npm install
-# copia .env.example a .env y completa VITE_BACKEND_URL y VITE_GEOAPI_KEY
+# copia .env.example a .env y completa VITE_BACKEND_URL
 npm run dev
 ```
 
@@ -75,7 +75,7 @@ cd backend && railway up --ci    # servicio domus-backend
 cd frontend && railway up --ci   # servicio domus-frontend
 ```
 
-Variables de entorno en Railway: `MONGO_URL` (referencia al servicio MongoDB), `JWT_SECRET`, `FRONTEND_URL`, `BREVO_APIKEY` y `EMAIL_FROM` en el backend; `VITE_BACKEND_URL` y `VITE_GEOAPI_KEY` en el frontend.
+Variables de entorno en Railway: `MONGO_URL` (referencia al servicio MongoDB), `JWT_SECRET`, `FRONTEND_URL`, `BREVO_APIKEY` y `EMAIL_FROM` en el backend; `VITE_BACKEND_URL` en el frontend.
 
 ## Tests
 
@@ -105,10 +105,10 @@ Tests: 9 passed, 9 total
 
 ## Datos de demostración
 
-`backend/scripts/seed-housing.mjs` genera 120 viviendas realistas con al menos una por provincia (57 municipios con los códigos INE exactos que usan los filtros), coordenadas para el mapa y 10 usuarios ficticios con avatar:
+`backend/scripts/seed-housing.mjs` genera 120 viviendas realistas con al menos una por provincia (57 municipios españoles), coordenadas para el mapa y 10 usuarios ficticios con avatar:
 
 ```bash
-SEED_API_URL=http://localhost:8080 GEOAPI_KEY=tu-clave node backend/scripts/seed-housing.mjs
+SEED_API_URL=http://localhost:8080 node backend/scripts/seed-housing.mjs
 ```
 
 ---

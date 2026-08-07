@@ -16,6 +16,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { ColorModeContext } from '../../../theme';
 import { useTranslation } from 'react-i18next';
+import { getInitials } from '../../../utils/initials';
 
 
 export const Header = ({component}) => {
@@ -118,11 +119,15 @@ export const Header = ({component}) => {
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              {profile.profilePicture ? (
-                <Avatar alt="profile picture" src={profile.profilePicture} sx={{ width: 32, height: 32 }} />
-              ) : (
-                <Avatar sx={{ width: 32, height: 32 }} />
-              )}
+              {/* src puede estar roto (imagen borrada); MUI cae a los hijos,
+                  así que las iniciales sirven de respaldo en ambos casos */}
+              <Avatar
+                alt={initials || t('account')}
+                src={profile.profilePicture || undefined}
+                sx={{ width: 32, height: 32, fontSize: 14 }}
+              >
+                {initials || null}
+              </Avatar>
 
             </IconButton>
           </Tooltip>
