@@ -91,7 +91,7 @@ export const Header = ({component}) => {
             <HomeIcon sx={{ cursor: 'pointer' }} onClick={() => (navigate("/mainview"))} />
           </Box>
 
-          <Typography variant="h6" noWrap component="div" sx={{ fontSize: { xs: 16, sm: 20 } }}>
+          <Typography variant="h6" noWrap component="div" sx={{ ml: 1.5, fontSize: { xs: 16, sm: 20 } }}>
             {component}
           </Typography>
         </>
