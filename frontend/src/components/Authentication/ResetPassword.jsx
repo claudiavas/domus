@@ -4,25 +4,28 @@ import { resetPassword } from '../apiService/apiService';
 import { AuthContext } from '../Contexts/AuthContext';
 import { login } from '../apiService/apiService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const ResetPassword = ({ open, onClose, userId, email }) => {
 
+  const { t } = useTranslation('auth');
+
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [newPwd, setNewPwd] = useState('');
+  const [confirmPwd, setConfirmPwd] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
-  const handleLogin = async (newPassword, email) => {
+  const handleLogin = async (newPwd, email) => {
     setIsLoading(true);
     try {
       const response = await login({
         email: email,
-        password: newPassword
+        password: newPwd
       });
       const token = response.token;
       window.localStorage.setItem("token", token);
@@ -40,52 +43,52 @@ export const ResetPassword = ({ open, onClose, userId, email }) => {
   };
 
 
-  const handleUpdate = async (userId, newPassword) => {
+  const handleUpdate = async (userId, newPwd) => {
     try {
-      const response = await resetPassword(userId, { password: newPassword });
-      setSuccessMessage(response.message || "Contraseña actualizada correctamente.");
+      const response = await resetPassword(userId, { password: newPwd });
+      setSuccessMessage(response.message || t('passwordUpdated'));
       setSuccessSnackbarOpen(true);
-      alert("Contraseña actualizada correctamente.");
+      alert(t('passwordUpdated'));
       if (!isLoggedIn) {
-        handleLogin(newPassword, email);
+        handleLogin(newPwd, email);
       }
       // onClose();
 
     } catch (error) {
-      console.error('Error al actualizar la contraseña:', error);
-      alert("Error al actualizar la contraseña. Por favor, intenta nuevamente.");
-      setErrorMessage('Error al actualizar la contraseña. Por favor, intenta nuevamente.');
+      console.error('Error updating the password:', error);
+      alert(t('passwordUpdateError'));
+      setErrorMessage(t('passwordUpdateError'));
       setErrorSnackbarOpen(true);
     }
   };
 
   const handleSubmit = async (event) => {
  
-    if (!newPassword) {
-      setErrorMessage('Ingresa una contraseña válida');
+    if (!newPwd) {
+      setErrorMessage(t('passwordRequired'));
       setErrorSnackbarOpen(true);
       return;
     }
 
-    if (!confirmPassword) {
-      setErrorMessage('Confirma tu contraseña');
+    if (!confirmPwd) {
+      setErrorMessage(t('confirmRequired'));
       setErrorSnackbarOpen(true);
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      setErrorMessage('Las contraseñas no coinciden.');
+    if (newPwd !== confirmPwd) {
+      setErrorMessage(t('passwordsDontMatch'));
       setErrorSnackbarOpen(true);
       return;
     }
 
-    handleUpdate(userId, newPassword)
+    handleUpdate(userId, newPwd)
     onClose();
   };
 
   const handleClose = () => {
-    setNewPassword('');
-    setConfirmPassword('');
+    setNewPwd('');
+    setConfirmPwd('');
     setErrorMessage('');
     setErrorSnackbarOpen(false);
     setSuccessMessage('');
@@ -96,22 +99,22 @@ export const ResetPassword = ({ open, onClose, userId, email }) => {
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Cambiar Contraseña</DialogTitle>
+        <DialogTitle>{t('changePwd')}</DialogTitle>
         <DialogContent>
           <TextField
-            label="Nueva Contraseña"
+            label={t('newPwd')}
             type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            value={newPwd}
+            onChange={(e) => setNewPwd(e.target.value)}
             fullWidth
             margin="normal"
             InputLabelProps={{ shrink: true }}
           />
           <TextField
-            label="Confirmar Contraseña"
+            label={t('confirmPwd')}
             type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPwd}
+            onChange={(e) => setConfirmPwd(e.target.value)}
             fullWidth
             margin="normal"
             InputLabelProps={{ shrink: true }}
@@ -119,10 +122,10 @@ export const ResetPassword = ({ open, onClose, userId, email }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancelar
+            {t('cancel')}
           </Button>
           <Button onClick={handleSubmit} color="primary" variant="contained">
-            Guardar
+            {t('save')}
           </Button>
         </DialogActions>
       </Dialog>
