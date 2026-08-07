@@ -7,8 +7,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate } from 'react-router-dom';
 import { findUserByEmail } from '../apiService/apiService';
 import { sendPasswordResetEmail } from '../apiService/apiService';
+import { useTranslation } from 'react-i18next';
 
 export function ForgotPassword() {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const [sent, setSent] = useState(false);
   const [email, setEmail] = useState('');
@@ -27,10 +29,10 @@ export function ForgotPassword() {
         };
         const response = await sendPasswordResetEmail(body);
         setSuccessSnackbarOpen(true);
-        setSuccessMessage('Correo de recuperación de contraseña enviado correctamente');
+        setSuccessMessage(t('emailSentOk'));
       } catch (error) {
-        console.error('Error al enviar el correo de recuperación de contraseña:', error);
-        setErrorMessage('Ocurrió un error al enviar el correo de recuperación de contraseña');
+        console.error('Error sending the password reset email:', error);
+        setErrorMessage(t('emailSendError'));
       }
     };
 
@@ -38,13 +40,13 @@ export function ForgotPassword() {
     event.preventDefault();
     try {
       if (!email) {
-        setErrorMessage('Por favor ingresa tu correo electrónico');
+        setErrorMessage(t('emailRequired'));
         setErrorSnackbarOpen(true);
         return;
       }
 
       if (!email.includes('@') || !email.includes('.') || email.length > 320 || email.length < 6) {
-        setErrorMessage('Por favor ingresa un correo electrónico válido');
+        setErrorMessage(t('emailInvalid'));
         setErrorSnackbarOpen(true);
         return;
       }
@@ -58,13 +60,13 @@ export function ForgotPassword() {
           const userId = user._id;
           sendEmail(email, name, userId);
         } else {
-          setErrorMessage('El correo electrónico no se encuentra en nuestra base de datos, por favor revísalo o regístrate.');
+          setErrorMessage(t('emailNotFound'));
           setErrorSnackbarOpen(true);
         }
       
     } catch (error) {
       console.error('Error:', error);
-      setErrorMessage('El correo electrónico no se encuentra en nuestra base de datos, por favor revísalo o regístrate.');
+      setErrorMessage(t('emailNotFound'));
       setErrorSnackbarOpen(true);
     }
   };
@@ -85,7 +87,7 @@ export function ForgotPassword() {
         >
           <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
           <Typography align="center" component="h1" variant="h5">
-            Te enviaremos un correo para recuperar tu contraseña
+            {t('forgotTitle')}
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -93,7 +95,7 @@ export function ForgotPassword() {
               required
               fullWidth
               id="email"
-              label="Email"
+              label={t('email')}
               name="email"
               autoComplete="email"
               autoFocus
@@ -107,17 +109,17 @@ export function ForgotPassword() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              <span>Enviar Correo</span>
+              <span>{t('sendEmail')}</span>
             </LoadingButton>
             <Grid container>
               <Grid item xs>
                 <Link variant="body2" onClick={() => navigate('/register')}>
-                  Quiero regístrarme
+                  {t('wantRegister')}
                 </Link>
               </Grid>
               <Grid item>
                 <Link variant="body2" onClick={() => navigate('/login')}>
-                  Regresar al login
+                  {t('backToLogin')}
                 </Link>
               </Grid>
             </Grid>

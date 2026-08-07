@@ -10,9 +10,11 @@ import { Header } from '../../HomePage/Header/Header';
 import { Box } from '@mui/system';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { PlaceSearch } from '../../FilterHousing';
+import { useTranslation } from 'react-i18next';
 
 export const AddHousing = () => {
 
+  const { t } = useTranslation(['form', 'housing']);
   const { housing, setHousing } = useContext(HousingContext);
   const { imageUrls, setImageUrls } = useContext(ImagesContext)
   const { profile } = useContext(AuthContext);
@@ -114,7 +116,7 @@ export const AddHousing = () => {
 
     <div style={{ margin: '0 3rem 3rem 3rem' }}>
       
-      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component="Añadir Propiedad"/></h1>
+      <h1 style={{ marginTop: 0, background: '#31AFB4', color: 'white', padding: '0.5rem' }}><Header component={t('form:addProperty')}/></h1>
 
       <form onSubmit={handleSubmit}>
 
@@ -125,37 +127,37 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
-                <InputLabel id="type-label">Tipo de inmueble*</InputLabel>
+                <InputLabel id="type-label">{t('form:propertyType')}</InputLabel>
                 <Select
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
                   labelId="type-label"
-                  label="Tipo de inmueble"
+                  label={t('form:propertyType')}
                 >
-                  <MenuItem value="apartment">Piso</MenuItem>
-                  <MenuItem value="penthouse">Ático</MenuItem>
-                  <MenuItem value="duplex">Duplex</MenuItem>
-                  <MenuItem value="house">Casa</MenuItem>
-                  <MenuItem value="chalet">Chalet</MenuItem>
-                  <MenuItem value="other">Otro</MenuItem>
+                  <MenuItem value="apartment" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.apartment`)}</MenuItem>
+                  <MenuItem value="penthouse" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.penthouse`)}</MenuItem>
+                  <MenuItem value="duplex" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.duplex`)}</MenuItem>
+                  <MenuItem value="house" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.house`)}</MenuItem>
+                  <MenuItem value="chalet" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.chalet`)}</MenuItem>
+                  <MenuItem value="other" sx={{ textTransform: 'capitalize' }}>{t(`housing:type.other`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
-                <InputLabel id="transaction-label">Tipo de transacción*</InputLabel>
+                <InputLabel id="transaction-label">{t('form:transactionType')}</InputLabel>
                 <Select
                   name="transaction"
                   value={formData.transaction}
                   onChange={handleChange}
                   labelId="transaction-label"
-                  label="Tipo de transacción"
+                  label={t('form:transactionType')}
                 >
-                  <MenuItem value="sale">Venta</MenuItem>
-                  <MenuItem value="rent">Alquiler</MenuItem>
-                  <MenuItem value="vacation_rentals">Alquiler Vacacional</MenuItem>
+                  <MenuItem value="sale" sx={{ textTransform: 'capitalize' }}>{t(`housing:transaction.sale`)}</MenuItem>
+                  <MenuItem value="rent" sx={{ textTransform: 'capitalize' }}>{t(`housing:transaction.rent`)}</MenuItem>
+                  <MenuItem value="vacation_rentals" sx={{ textTransform: 'capitalize' }}>{t(`housing:transaction.vacation_rentals`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -164,7 +166,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '90%' }}>
                 <TextField
                   name="squareMeters"
-                  label="Metros Cuadrados*"
+                  label={t('form:squareMeters')}
                   value={formData.squareMeters}
                   onChange={handleChange}
                 />
@@ -173,13 +175,13 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
-                <InputLabel id="currency-label">Moneda*</InputLabel>
+                <InputLabel id="currency-label">{t('form:currency')}</InputLabel>
                 <Select
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
                   labelId="currency-label"
-                  label="Moneda"
+                  label={t('form:currency')}
                 >
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="DOL">DOL</MenuItem>
@@ -191,7 +193,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '90%' }}>
                 <TextField
                   name="price"
-                  label="Precio*"
+                  label={t('form:price')}
                   value={formData.price}
                   onChange={handleChange}
                 />
@@ -208,7 +210,7 @@ export const AddHousing = () => {
                       color="primary"
                     />
                   }
-                  label="Mostrar Logo Inmobiliaria"
+                  label={t('form:showAgencyLogo')}
                 />
               </Grid>
             )}
@@ -217,7 +219,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="title"
-                  label="Título"
+                  label={t('form:listingTitle')}
                   value={formData.title}
                   onChange={handleChange}
                 />
@@ -229,7 +231,7 @@ export const AddHousing = () => {
                 <FormControl style={{ width: '85%' }}>
                   <TextField
                     name="description"
-                    label="Descripción"
+                    label={t('form:description')}
                     value={formData.description}
                     onChange={handleChange}
                   />
@@ -260,7 +262,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '90%' }}>
                 <TextField
                   name="country"
-                  label="País*"
+                  label={t('form:country')}
                   value={formData.country}
                   onChange={handleChange}
                 // error={!!errors.country}
@@ -273,7 +275,7 @@ export const AddHousing = () => {
               <PlaceSearch
                 value={lugarSeleccionado}
                 onPick={seleccionarLugar}
-                label="Ubicación (ciudad, dirección…)*"
+                label={t('form:locationSearch')}
                 sx={{ width: '95%' }}
               />
             </Grid>
@@ -282,7 +284,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '90%' }}>
                 <TextField
                   name="zipCode"
-                  label="Código Postal"
+                  label={t('form:zipCode')}
                   value={formData.zipCode || ''}
                   onChange={handleChange}
                 />
@@ -293,7 +295,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '97%' }}>
                 <TextField
                   name="roadName"
-                  label="Vía"
+                  label={t('form:street')}
                   value={formData.roadName || ''}
                   onChange={handleChange}
                 />
@@ -304,7 +306,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="houseNumber"
-                  label="Número de portal"
+                  label={t('form:portalNumber')}
                   value={formData.houseNumber}
                   onChange={handleChange}
                 // error={!!errors.houseNumber}
@@ -317,7 +319,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="floorNumber"
-                  label="Número de Piso"
+                  label={t('form:floorNumber')}
                   value={formData.floorNumber}
                   onChange={handleChange}
                 // error={!!errors.floorNumber}
@@ -330,7 +332,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="door"
-                  label="Puerta"
+                  label={t('form:door')}
                   value={formData.door}
                   onChange={handleChange}
                 // error={!!errors.door}
@@ -343,7 +345,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '85%' }}>
                 <TextField
                   name="stair"
-                  label="Escalera"
+                  label={t('form:stair')}
                   value={formData.stair}
                   onChange={handleChange}
                 // error={!!errors.stair}
@@ -364,7 +366,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '75%' }}>
                 <TextField
                   name="rooms"
-                  label="Habitaciones*"
+                  label={t('form:rooms')}
                   value={formData.rooms}
                   onChange={handleChange}
                 // error={!!errors.rooms}
@@ -378,7 +380,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '75%' }}>
                 <TextField
                   name="baths"
-                  label="Baños"
+                  label={t('form:baths')}
                   value={formData.baths}
                   onChange={handleChange}
                 // error={!!errors.baths}
@@ -391,7 +393,7 @@ export const AddHousing = () => {
               <FormControl style={{ width: '75%' }}>
                 <TextField
                   name="garages"
-                  label="Garajes"
+                  label={t('form:garages')}
                   value={formData.garages}
                   onChange={handleChange}
                 // error={!!errors.garages}
@@ -403,17 +405,17 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="floorLevel-label">Nivel del Piso</InputLabel>
+                <InputLabel id="floorLevel-label">{t('form:floorLevel')}</InputLabel>
                 <Select
                   name="floorLevel"
                   value={formData.floorLevel}
                   onChange={handleChange}
                   labelId="floorLevel-label"
-                  label="Nivel del Piso"
+                  label={t('form:floorLevel')}
                 >
-                  <MenuItem value="top_floor">Último Piso</MenuItem>
-                  <MenuItem value="intermediate_floor">Piso Intermedio</MenuItem>
-                  <MenuItem value="ground_floor">Planta Baja</MenuItem>
+                  <MenuItem value="top_floor" sx={{ textTransform: 'capitalize' }}>{t(`housing:floorLevel.top_floor`)}</MenuItem>
+                  <MenuItem value="intermediate_floor" sx={{ textTransform: 'capitalize' }}>{t(`housing:floorLevel.intermediate_floor`)}</MenuItem>
+                  <MenuItem value="ground_floor" sx={{ textTransform: 'capitalize' }}>{t(`housing:floorLevel.ground_floor`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -422,18 +424,18 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="facing-label">Orientación</InputLabel>
+                <InputLabel id="facing-label">{t('form:facing')}</InputLabel>
                 <Select
                   name="facing"
                   labelId="facing-label"
-                  label="Orientación"
+                  label={t('form:facing')}
                   value={formData.facing}
                   onChange={handleChange}
                 >
-                  <MenuItem value="north">Norte</MenuItem>
-                  <MenuItem value="south">Sur</MenuItem>
-                  <MenuItem value="east">Este</MenuItem>
-                  <MenuItem value="west">Oeste</MenuItem>
+                  <MenuItem value="north" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.north`)}</MenuItem>
+                  <MenuItem value="south" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.south`)}</MenuItem>
+                  <MenuItem value="east" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.east`)}</MenuItem>
+                  <MenuItem value="west" sx={{ textTransform: 'capitalize' }}>{t(`housing:facing.west`)}</MenuItem>
 
                 </Select>
               </FormControl>
@@ -442,20 +444,20 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="propertyAge-label">Antigüedad</InputLabel>
+                <InputLabel id="propertyAge-label">{t('form:propertyAge')}</InputLabel>
                 <Select
                   name="propertyAge"
                   labelId="propertyAge-label"
-                  label="Antigüedad"
+                  label={t('form:propertyAge')}
                   value={formData.propertyAge}
                   onChange={handleChange}
 
                 >
-                  <MenuItem value="new">Nuevo</MenuItem>
-                  <MenuItem value="up_to_5 years">Hasta 5 años</MenuItem>
-                  <MenuItem value="6_to_10 years">De 6 a 10 años</MenuItem>
-                  <MenuItem value="11_to_20 years">De 11 a 20 años</MenuItem>
-                  <MenuItem value="more_than_20 years">Más de 20 años</MenuItem>
+                  <MenuItem value="new" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.new`)}</MenuItem>
+                  <MenuItem value="up_to_5 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.up_to_5 years`)}</MenuItem>
+                  <MenuItem value="6_to_10 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.6_to_10 years`)}</MenuItem>
+                  <MenuItem value="11_to_20 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.11_to_20 years`)}</MenuItem>
+                  <MenuItem value="more_than_20 years" sx={{ textTransform: 'capitalize' }}>{t(`housing:propertyAge.more_than_20 years`)}</MenuItem>
 
                 </Select>
               </FormControl>
@@ -463,51 +465,51 @@ export const AddHousing = () => {
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="condition-label">Estado</InputLabel>
+                <InputLabel id="condition-label">{t('form:condition')}</InputLabel>
                 <Select
                   name="condition"
                   value={formData.condition}
                   onChange={handleChange}
                   labelId="condition-label"
-                  label="Estado"
+                  label={t('form:condition')}
                 >
-                  <MenuItem value="new">Nuevo</MenuItem>
-                  <MenuItem value="good_condition">Buen Estado</MenuItem>
-                  <MenuItem value="to_renovate">Para Renovar</MenuItem>
+                  <MenuItem value="new" sx={{ textTransform: 'capitalize' }}>{t(`housing:condition.new`)}</MenuItem>
+                  <MenuItem value="good_condition" sx={{ textTransform: 'capitalize' }}>{t(`housing:condition.good_condition`)}</MenuItem>
+                  <MenuItem value="to_renovate" sx={{ textTransform: 'capitalize' }}>{t(`housing:condition.to_renovate`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="furnished-label">Nivel de amueblado</InputLabel>
+                <InputLabel id="furnished-label">{t('form:furnished')}</InputLabel>
                 <Select
                   name="furnished"
                   value={formData.furnished}
                   onChange={handleChange}
                   labelId="furnished-label"
-                  label="Nivel de amueblado"
+                  label={t('form:furnished')}
                 >
-                  <MenuItem value="unfurnished">Sin Amueblar</MenuItem>
-                  <MenuItem value="semifurnished">Semi Amueblado</MenuItem>
-                  <MenuItem value="furnished">Amueblado</MenuItem>
+                  <MenuItem value="unfurnished" sx={{ textTransform: 'capitalize' }}>{t(`housing:furnished.unfurnished`)}</MenuItem>
+                  <MenuItem value="semifurnished" sx={{ textTransform: 'capitalize' }}>{t(`housing:furnished.semifurnished`)}</MenuItem>
+                  <MenuItem value="furnished" sx={{ textTransform: 'capitalize' }}>{t(`housing:furnished.furnished`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={4}>
               <FormControl style={{ width: '75%' }}>
-                <InputLabel id="kitchenEquipment-label">Equipamiento de Cocina</InputLabel>
+                <InputLabel id="kitchenEquipment-label">{t('form:kitchenEquipment')}</InputLabel>
                 <Select
                   name="kitchenEquipment"
                   value={formData.kitchenEquipment}
                   onChange={handleChange}
                   labelId="kitchenEquipment-label"
-                  label="Equipamiento de Cocina"
+                  label={t('form:kitchenEquipment')}
                 >
-                  <MenuItem value="standard_equipment">Equipamiento Estándar</MenuItem>
-                  <MenuItem value="semi_equipped">Semi Equipado</MenuItem>
-                  <MenuItem value="fully_equipped">Completamente Equipado</MenuItem>
+                  <MenuItem value="standard_equipment" sx={{ textTransform: 'capitalize' }}>{t(`housing:kitchenEquipment.standard_equipment`)}</MenuItem>
+                  <MenuItem value="semi_equipped" sx={{ textTransform: 'capitalize' }}>{t(`housing:kitchenEquipment.semi_equipped`)}</MenuItem>
+                  <MenuItem value="fully_equipped" sx={{ textTransform: 'capitalize' }}>{t(`housing:kitchenEquipment.fully_equipped`)}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -531,7 +533,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Aire Acondicionado"
+                label={t('form:airConditioned')}
               />
             </Grid>
 
@@ -544,7 +546,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Calefacción"
+                label={t('form:heating')}
               />
             </Grid>
 
@@ -557,7 +559,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Ascensor"
+                label={t('form:elevator')}
               />
             </Grid>
 
@@ -570,7 +572,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Trastero"
+                label={t('form:storage')}
               />
             </Grid>
 
@@ -583,7 +585,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Vistas al Exterior"
+                label={t('form:outsideView')}
               />
             </Grid>
 
@@ -596,7 +598,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Jardín"
+                label={t('form:garden')}
               />
             </Grid>
 
@@ -609,7 +611,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Piscina"
+                label={t('form:pool')}
               />
             </Grid>
 
@@ -622,7 +624,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Terraza"
+                label={t('form:terrace')}
               />
             </Grid>
 
@@ -636,7 +638,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Armarios Empotrados"
+                label={t('form:closets')}
               />
             </Grid>
 
@@ -649,7 +651,7 @@ export const AddHousing = () => {
                     onChange={handleChange}
                   />
                 }
-                label="Accesible"
+                label={t('form:accessible')}
               />
             </Grid>
 
@@ -668,7 +670,7 @@ export const AddHousing = () => {
           justifyContent: 'flex-end',
         }}>
           <Button variant="contained" color="primary" type="submit">
-            Guardar
+            {t('form:save')}
           </Button>
         </Box>
 

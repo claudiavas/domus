@@ -16,10 +16,12 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../Contexts/AuthContext';
 import { login } from '../apiService/apiService';
+import { useTranslation } from 'react-i18next';
 
 const defaultTheme = temaDomus;
 
 export function Login() {
+  const { t } = useTranslation('auth');
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -67,7 +69,7 @@ export function Login() {
           >
             <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
             <Typography component="h1" variant="h5">
-              Ingresa a Domus
+              {t('loginTitle')}
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
@@ -75,7 +77,7 @@ export function Login() {
                 required
                 fullWidth
                 id="email"
-                label="Email"
+                label={t('email')}
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -85,7 +87,7 @@ export function Login() {
                 required
                 fullWidth
                 name="password"
-                label="Contraseña"
+                label={t('passwordLabel')}
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -97,24 +99,24 @@ export function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                <span>Ingresar</span>
+                <span>{t('signIn')}</span>
               </LoadingButton>
               {error && <p style={{ color: 'red', align: "center"}}>{error}</p>}
               <Grid container>
                 <Grid item xs>
                   <Link onClick={() => navigate("/forgotpassword")} variant="body2">
-                    ¿Olvidaste tu password?
+                    {t('forgotPwd')}
                   </Link>
                 </Grid>
                 <Grid item>
                   <Link onClick={() => navigate("/register")} variant="body2">
-                    {"¿No tienes una cuenta? Regístrate"}
+                    {t('noAccount')}
                   </Link>
                 </Grid>
               </Grid>
               <Box sx={{ textAlign: 'center', mt: 2 }}>
                 <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
-                  Continuar como invitado
+                  {t('continueAsGuest')}
                 </Link>
               </Box>
             </Box>

@@ -108,10 +108,10 @@ function Filters(props) {
           borderBottom: 1, borderColor: 'divider',
           justifyContent: 'space-between',
         }}>
-          <IconButton aria-label="Limpiar filtros" onClick={resetFilters} size="small" sx={{ color: 'text.secondary' }}>
+          <IconButton aria-label={t('clearFilters')} onClick={resetFilters} size="small" sx={{ color: 'text.secondary' }}>
             <FilterAltOffIcon fontSize="small" />
           </IconButton>
-          <IconButton aria-label="Cerrar filtros" onClick={props.onClose} size="small">
+          <IconButton aria-label={t('closeFilters')} onClick={props.onClose} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
@@ -123,7 +123,7 @@ function Filters(props) {
       {!props.onClose && <Tooltip title="Limpiar filtros" arrow>
         <IconButton
           size="small"
-          aria-label="Limpiar filtros"
+          aria-label={t('clearFilters')}
           onClick={resetFilters}
           sx={{ position: 'fixed', top: 74, left: 280, zIndex: 3, color: 'text.secondary' }}
         >
