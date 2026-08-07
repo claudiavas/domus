@@ -18,30 +18,20 @@ export function haversineKm(a, b) {
 }
 
 /**
- * Only two criteria exclude a listing outright, because answering them wrong
- * makes the result useless rather than merely worse:
- *
- * - the operation (buy / rent / vacation): a flat for sale is never an answer
- *   to a rental search;
- * - the location radius: someone searching in Valencia is not served by a
- *   house in Galicia, however well it matches on paper.
- *
- * Every other criterion (rooms, baths, garage, m², price, amenities) is a
- * preference, not a requirement: those listings stay in the results and lose
- * match percentage instead — see puntuaRelevancia. Asking for 4 bedrooms still
- * surfaces the 3-bedroom ones, just further down and with a lower score.
+ * Only the operation (buy / rent / vacation) excludes a listing outright: a
+ * flat for sale is never an answer to a rental search. Every other criterion,
+ * including the location radius, is a preference, not a requirement — those
+ * listings stay in the results and lose match percentage instead, see
+ * puntuaRelevancia. A house 500m past the radius still shows up, just with a
+ * lower score than one right at the search centre.
  */
 export function filtraViviendas(housing, filtros) {
-  const { transaction, location, radius } = filtros;
+  const { transaction } = filtros;
 
   return (housing || []).filter((house) => {
     const operacion = transaction?.length ? transaction.includes(house.transaction) : true;
-    // Radius search: listings without coordinates cannot match a located search
-    const zona = !location ||
-      (house.coordinates?.lat != null && house.coordinates?.lng != null &&
-        haversineKm(location, house.coordinates) <= (radius || 25));
 
-    return operacion && zona;
+    return operacion;
   });
 }
 
@@ -53,17 +43,28 @@ export function filtraViviendas(housing, filtros) {
  * Numeric criteria award partial credit the closer the property gets to the
  * requested value: asking for 2 bathrooms and finding 1 scores 0.5 for that
  * criterion instead of failing it outright.
- * Operation and location do not take part in the score: they are exclusive
- * filters, so every scored listing already satisfies them and adding a
- * constant 1 would only dilute the average.
+ * Operation does not take part in the score: it is an exclusive filter, so
+ * every scored listing already satisfies it and adding a constant 1 would
+ * only dilute the average. Location does take part: it scores 1 inside the
+ * radius and decays the further past it a listing sits.
  */
 export function puntuaRelevancia(house, filtros) {
   const {
-    meter, room, baths, garage, minPrice, maxPrice, checkbox,
+    meter, room, baths, garage, minPrice, maxPrice, checkbox, location, radius,
   } = filtros;
 
   const puntos = [];
   const ratio = (real, pedido) => Math.max(0, Math.min(1, (real || 0) / pedido));
+
+  if (location) {
+    if (house.coordinates?.lat != null && house.coordinates?.lng != null) {
+      const distancia = haversineKm(location, house.coordinates);
+      const radioKm = radius || 25;
+      puntos.push(distancia <= radioKm ? 1 : radioKm / distancia);
+    } else {
+      puntos.push(0);
+    }
+  }
 
   if (room) puntos.push(ratio(house.rooms, parseInt(room)));
   if (baths) puntos.push(ratio(house.baths, parseInt(baths)));

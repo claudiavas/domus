@@ -26,7 +26,7 @@ export function HousingList({ myHousingSwitch, onToggleMias }) {
   const esMovil = useMediaQuery('(max-width:600px)');
 
   // Filters shared with the map view plus the "mine only" toggle.
-  // Only operation and location exclude; the rest score (see filtraViviendas)
+  // Only operation excludes; the rest, including location, score (see filtraViviendas)
   const filtros = { transaction, meter, room, baths, garage, minPrice, maxPrice, checkbox, location, radius };
   const housingFiltrado = filtraViviendas(housing, filtros)
     .filter((house) => (myHousingSwitch ? house.user._id === profile._id : true))
