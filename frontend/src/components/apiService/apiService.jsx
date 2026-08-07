@@ -1,5 +1,4 @@
 import axios from "axios";
-import { GEOAPI_KEY } from '../../config';
 // import BackendUrl from "../../configGlobal";
 
 // Vite inyecta las variables VITE_* en build; dotenv no funciona en navegador
@@ -86,18 +85,6 @@ export const addRequest = async (body) => {
 
 export const updateRequest = async (_id, body) => {
   const { data } = await axios.put(`${BackendUrl}/api/request/${_id}`, body);
-  return data;
-}
-
-//GEOAPI
-
-export const getCommunities = async () => { 
-  const { data } = await axios.get(`https://apiv1.geoapi.es/comunidades?type=JSON&key=${GEOAPI_KEY}&sandbox=0`);
-  return data;
-} 
-
-export const getProvinces = async () => { 
-  const { data } = await axios.get(`https://apiv1.geoapi.es/provincias?type=JSON&key=${GEOAPI_KEY}&sandbox=0`); 
   return data;
 }
 
