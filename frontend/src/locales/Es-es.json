@@ -169,6 +169,7 @@
     "listingTitle": "Título",
     "description": "Descripción",
     "country": "País*",
+    "province": "Provincia*",
     "locationSearch": "Ubicación (ciudad, dirección…)*",
     "zipCode": "Código postal",
     "street": "Vía",

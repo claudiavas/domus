@@ -76,7 +76,7 @@ export function PlaceSearch({ value, onPick, label, sx }) {
     if (inputValue.trim().length < 3) { setOptions([]); return; }
     const timer = setTimeout(() => {
       const search = (q) => axios
-        .get(`${PHOTON_URL}/?q=${encodeURIComponent(q)}&lang=es&limit=6`)
+        .get(`${PHOTON_URL}/?q=${encodeURIComponent(q)}&limit=6`)
         .then(({ data }) => (data.features || [])
           .map(photonFeatureToPlace)
           .filter((o) => o.name && Number.isFinite(o.lat) && Number.isFinite(o.lng)));

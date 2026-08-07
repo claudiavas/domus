@@ -243,9 +243,22 @@ export const AddHousing = () => {
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <FormControl style={{ width: '90%' }}>
                 <TextField
+                  required
                   name="country"
                   label={t('form:country')}
                   value={formData.country}
+                  onChange={handleChange}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4} lg={4}>
+              <FormControl style={{ width: '90%' }}>
+                <TextField
+                  required
+                  name="province"
+                  label={t('form:province')}
+                  value={formData.province || ''}
                   onChange={handleChange}
                 />
               </FormControl>
