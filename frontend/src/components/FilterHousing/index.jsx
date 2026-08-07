@@ -198,35 +198,32 @@ export function PriceFilterMax() {
 ///// End Price filter
 ///// Start Square_meters filter
 
-function meters(value) {
-  return `${value}²`;
-}
-
+/**
+ * Minimum area, typed in freely: fixed brackets cannot express a 1500 m²
+ * plot, and the previous slider showed no readable value until dragged and
+ * started at a minimum the user never chose. The label is pinned open
+ * (shrink) so it never sits on top of the outline. The value lives in the
+ * shared context only, so "clear filters" resets it.
+ */
 export function SquareMeters() {
-
+  const { t } = useTranslation('ui');
   const { meter, setMeter } = useContext(HousingContext);
-  const [filterValue, setFilterValue] = useState(60);
-
-  const handleChangeMeters = (event, value) => {
-    setFilterValue(value)
-    setMeter(value)
-  };
-
 
   return (
-    <Box sx={{ width: '90%', marginLeft:'1em' }}>
-      <Slider
-        aria-label="M²"
-        value={filterValue}
-        getAriaValueText={meters}
-        valueLabelDisplay="auto"
-        step={20}
-        marks={true}
-        min={30}
-        max={300}
-        onChange={handleChangeMeters}
-      />
-    </Box>
+    <TextField
+      size="small"
+      type="number"
+      label={t('minArea')}
+      placeholder={t('anyValue')}
+      value={meter}
+      onChange={(event) => setMeter(event.target.value)}
+      InputLabelProps={{ shrink: true }}
+      InputProps={{
+        endAdornment: <InputAdornment position="end">m²</InputAdornment>,
+        inputProps: { min: 0, step: 10 },
+      }}
+      sx={{ my: 0.75, width: '90%', marginLeft: '1em' }}
+    />
   );
 }
 ///// End Square_meters filter

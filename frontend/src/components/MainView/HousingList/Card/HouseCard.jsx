@@ -12,6 +12,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../../../Contexts/AuthContext';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import CloseIcon from '@mui/icons-material/Close';
 import { PhoneNumber } from '../../Contact/PhoneNumber';
 import { WhatsAppButton } from '../../Contact/WhatsappButton';
 import { MiniMapa } from '../../HousingMap/MiniMapa';
@@ -135,8 +136,20 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
             </div>
 
             {/* Dialog with the property location */}
-            <Dialog open={mapaAbierto} onClose={(e) => setMapaAbierto(false)} maxWidth="sm" fullWidth onClick={(e) => e.stopPropagation()}>
-              <DialogTitle sx={{ py: 1.5, fontSize: 16 }}>{locationText}</DialogTitle>
+            <Dialog open={mapaAbierto} onClose={() => setMapaAbierto(false)} maxWidth="sm" fullWidth onClick={(e) => e.stopPropagation()}>
+              {/* The title carries an explicit close button: the map fills the
+                  dialog, so there is barely any backdrop left to click on */}
+              <DialogTitle sx={{ py: 1.5, pr: 6, fontSize: 16 }}>
+                {locationText}
+                <IconButton
+                  aria-label={t('ui:close')}
+                  onClick={() => setMapaAbierto(false)}
+                  size="small"
+                  sx={{ position: 'absolute', right: 8, top: 8, color: 'text.secondary' }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </DialogTitle>
               <Box sx={{ height: 380 }}>
                 {mapaAbierto && coordinates?.lat && <MiniMapa lat={coordinates.lat} lng={coordinates.lng} />}
               </Box>

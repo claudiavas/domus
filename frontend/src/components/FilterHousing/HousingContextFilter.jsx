@@ -6,7 +6,7 @@ export function InmueblesProvider({ children }) {
   const [transaction, setTransaction] = useState([]);
   const [room, setRoom] = useState('');
   const [baths, setBaths] = useState('');
-  const [meter, setMeter] = useState(0); // no minimum by default
+  const [meter, setMeter] = useState(''); // no minimum by default
   const [garage, setGarage] = useState ('');
   const [minPrice, setMinPrice] = useState ('');
   const [maxPrice, setMaxPrice] = useState (''); // no ceiling by default, mirroring the minimum
@@ -29,7 +29,7 @@ export function InmueblesProvider({ children }) {
 
   const resetFilters = () => {
     setTransaction([]);
-    setMeter(0);
+    setMeter('');
     setRoom('');
     setBaths('');
     setGarage('');
