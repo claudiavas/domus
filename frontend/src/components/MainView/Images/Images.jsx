@@ -5,9 +5,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ImagesContext } from '../../Contexts/ImagesContext';
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 
 export const Images = ({ singular }) => {
+  const { t } = useTranslation('form');
   const { imageUrls, setImageUrls } = useContext(ImagesContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
@@ -93,18 +95,18 @@ useEffect(() => {
   return (
     <>
       <Button color="primary" startIcon={<CloudUploadIcon />} onClick={handleOpenDialog}>
-        {singular ? 'Subir Imagen' : 'Subir Imágenes'}
+        {singular ? t('uploadImage') : t('uploadImages')}
       </Button>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md">
         <DialogTitle>
           <Grid container alignItems="center">
             <Grid item xs={6}>
-              {singular ? 'Subir Imagen' : 'Subir Imágenes y/o Videos'}
+              {singular ? t('uploadImage') : t('uploadImagesVideos')}
             </Grid>
             <Grid item xs={6} container justifyContent="flex-end">
               <Button variant="contained" component="label">
-                Seleccionar Archivos
+                {t('selectFiles')}
                 <Input
                   type="file"
                   hidden
@@ -149,11 +151,11 @@ useEffect(() => {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" color="primary" onClick={handleCloseDialog}>
-            Cancelar
+            {t('cancel')}
           </Button>
           {!uploading && (
             <Button variant="contained" color="primary" onClick={handleUploadImages}>
-              Subir
+              {t('upload')}
             </Button>
           )}
         </DialogActions>

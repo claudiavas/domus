@@ -96,9 +96,9 @@ export default function HouseCard({ _id, user, showRealEstateLogo, province, mun
                 <>
                   <Chip label={t(`transaction.${transaction}`, {ns:"housing"})} color="primary" variant="contained" size="small" />
                   <Chip label={t(`type.${type}`, {ns:"housing"})} color="primary" variant="outlined" size="small" />
-                  {pool ? <Chip label="Piscina" color="primary" variant="outlined" size="small" />
-                    : terrace ? <Chip label="Terraza" color="primary" variant="outlined" size="small" />
-                    : garden ? <Chip label="Jardín" color="primary" variant="outlined" size="small" />
+                  {pool ? <Chip label={t('ui:pool')} color="primary" variant="outlined" size="small" />
+                    : terrace ? <Chip label={t('ui:terrace')} color="primary" variant="outlined" size="small" />
+                    : garden ? <Chip label={t('ui:garden')} color="primary" variant="outlined" size="small" />
                     : furnished ? <Chip label={t(`furnished.${furnished}`, {ns:"housing"})} color="primary" variant="outlined" size="small" /> : null}
                 </>
               }
