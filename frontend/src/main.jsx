@@ -15,7 +15,6 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { buildTheme, ColorModeContext } from './theme';
 import { AuthProvider } from './components/Contexts/AuthContext.jsx';
-import { LocationProvider } from './components/Contexts/LocationContext.jsx';
 import { HousingProvider } from './components/Contexts/HousingContext.jsx';
 import { ImagesProvider } from './components/Contexts/ImagesContext.jsx';
 
@@ -44,15 +43,13 @@ function Root() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
-          <LocationProvider>
-            <HousingProvider>
-              <ImagesProvider>
-                <InmueblesProvider>
-                  <App />
-                </InmueblesProvider>
-              </ImagesProvider>
-            </HousingProvider>
-          </LocationProvider>
+          <HousingProvider>
+            <ImagesProvider>
+              <InmueblesProvider>
+                <App />
+              </InmueblesProvider>
+            </ImagesProvider>
+          </HousingProvider>
         </AuthProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>

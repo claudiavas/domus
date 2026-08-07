@@ -68,11 +68,12 @@ export const HousingDetails = () => {
   };
 
   const locationText = [
-    housingData.province.PRO,
-    housingData.municipality.DMUN50,
-    housingData.population.NENTSI50,
-    housingData.neighborhood.NNUCLE50
+    housingData.province?.PRO || housingData.province,
+    housingData.municipality?.DMUN50 || housingData.municipality,
+    housingData.population?.NENTSI50 || housingData.population,
+    housingData.neighborhood?.NNUCLE50 || housingData.neighborhood
   ]
+    .filter((value) => typeof value === 'string')
     .filter(Boolean)
     .filter((value, index, self) => self.indexOf(value) === index)
     .map(removeTextInParentheses)
