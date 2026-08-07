@@ -53,7 +53,9 @@ export function TransactionFilter() {
  */
 export function photonFeatureToPlace(feature) {
   const p = feature.properties || {};
-  const partes = [p.name, p.city, p.state, p.country]
+  // House-type results have no `name`; the address lives in street/housenumber instead
+  const street = [p.street, p.housenumber].filter(Boolean).join(' ');
+  const partes = [p.name || street, p.city, p.state, p.country]
     .filter(Boolean)
     .filter((v, i, arr) => arr.indexOf(v) === i);
   const [lng, lat] = feature.geometry?.coordinates || [];
