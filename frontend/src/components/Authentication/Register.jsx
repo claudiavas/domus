@@ -18,10 +18,12 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useContext } from 'react';
 import { register } from '../apiService/apiService';
 import { AuthContext } from '../Contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const defaultTheme = temaDomus;
 
 export function Register() {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const { setIsLoggedIn } = useContext(AuthContext);
@@ -73,7 +75,7 @@ export function Register() {
         >
           <Box component="img" src="/favicon-domus.png" alt="Domus" sx={{ m: 1, height: 56 }} />
           <Typography component="h1" variant="h5">
-           Regístrate en Domus
+           {t('registerTitle')}
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -84,7 +86,7 @@ export function Register() {
                   required
                   fullWidth
                   id="name"
-                  label="Nombre"
+                  label={t('name')}
                   autoFocus
                 />
               </Grid>
@@ -93,7 +95,7 @@ export function Register() {
                   required
                   fullWidth
                   id="surname"
-                  label="Apellidos"
+                  label={t('surname')}
                   name="surname"
                   autoComplete="family-name"
                 />
@@ -103,7 +105,7 @@ export function Register() {
                   required
                   fullWidth
                   id="email"
-                  label="email"
+                  label={t('email')}
                   name="email"
                   autoComplete="email"
                 />
@@ -113,7 +115,7 @@ export function Register() {
                   required
                   fullWidth
                   name="password"
-                  label="contraseña"
+                  label={t('passwordLabel')}
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -129,7 +131,7 @@ export function Register() {
                   checked={subscription}
                   onChange={(event) => setSubscription(event.target.checked)}
                   />}
-                  label="Quiero recibir inspiración, promociones de marketing y actualizaciones via email."
+                  label={t('subscribeLabel')}
                 />
               </Grid>
             </Grid>
@@ -140,19 +142,19 @@ export function Register() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              <span>Registrarme</span>
+              <span>{t('signUp')}</span>
             </LoadingButton>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {/* Guest link on the left, sign-in link on the right */}
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item xs>
                 <Link onClick={() => navigate('/')} variant="body2" sx={{ cursor: 'pointer' }}>
-                  Continuar como invitado
+                  {t('continueAsGuest')}
                 </Link>
               </Grid>
               <Grid item sx={{ maxWidth: 160, textAlign: 'right' }}>
                 <Link onClick={() => navigate("/login")} variant="body2">
-                  ¿Ya tienes una cuenta? Ingresa aquí
+                  {t('haveAccount')}
                 </Link>
               </Grid>
             </Grid>

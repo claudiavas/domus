@@ -2,9 +2,11 @@ import React from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function PageNotFound() {
 
+  const { t } = useTranslation('ui');
   const navigate = useNavigate()
 
   return (
@@ -29,10 +31,10 @@ export function PageNotFound() {
               404
             </Typography>
             <Typography variant="h6">
-              Oops...la página que estás buscando no existe
+              {t('notFound')}
             </Typography>
             <br/>
-            <Button variant="contained" onClick={() => navigate("/")}>Regresar al Inicio</Button>
+            <Button variant="contained" onClick={() => navigate("/")}>{t('backHome')}</Button>
           </Grid>
         </Grid>
       </Container>
