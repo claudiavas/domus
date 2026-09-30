@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Domus</title>
 
+    <!-- Internal traffic opt-out: ?internal=1 flags this browser, ?internal=0 clears it -->
+    <script>(function(w,ids){var k='internal_traffic',m=/[?&]internal=([01])(?:&|$)/.exec(w.location.search),f=!1;try{if(m){m[1]==='1'?localStorage.setItem(k,'1'):localStorage.removeItem(k)}f=localStorage.getItem(k)==='1'}catch(e){}w.__internalTraffic=f;w.dataLayer=w.dataLayer||[];if(f)ids.forEach(function(i){w['ga-disable-'+i]=!0})})(window,['G-DZZJKQ86RW']);</script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DZZJKQ86RW"></script>
+    <script>if(!window.__internalTraffic)(function(s){s.async=!0;s.src='https://www.googletagmanager.com/gtag/js?id=G-DZZJKQ86RW';document.head.appendChild(s)})(document.createElement('script'))</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
